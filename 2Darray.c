@@ -2,7 +2,7 @@
 #include<stdio.h>
 
 
-int **arrayA(int x, int y) {
+int **makeWorld(int x, int y) {
 	
 
 
@@ -14,7 +14,7 @@ int **arrayA(int x, int y) {
 	return Mudball;
 }
 
-int sumA(int **array, int x, int y) {
+int sumArr(int **array, int x, int y) {
 
 	int sum = 0;
 
@@ -27,7 +27,7 @@ int sumA(int **array, int x, int y) {
 	return sum;
 }
 
-void showA(int **array, int x, int y) {
+void showArr(int **array, int x, int y) {
 
 
 	for (int i = 0; i < x; i +=1) {
@@ -36,4 +36,14 @@ void showA(int **array, int x, int y) {
 		}
 		printf( "\n" );
 	}
+}
+
+void deleteWorld(int **array, int x) {
+
+	
+	for (int i = 0; i < x ; i += 1) {
+		free(array[i]); 
+	}
+
+	free(array);
 }
