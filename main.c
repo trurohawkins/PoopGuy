@@ -4,7 +4,7 @@
 #define STDLIB_H
 #include <stdlib.h>
 #endif
-#include "form/FormGraphics.h"
+#include "form/Form.h"
 
 int main(int argc, char **argv) {
 	int worldX = 10;

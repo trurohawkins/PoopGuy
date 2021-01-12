@@ -15,3 +15,5 @@ Form *makeForm(float r, float g, float b) {
 	newForm->color[2] = b;
 	return newForm;
 }
+
+#include "FormGraphics.c"

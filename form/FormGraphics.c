@@ -1,5 +1,4 @@
-#include "Form.c"
-#include "../graphicsSource/Graphics.c"
+#include "../graphicsSource/Graphics.h"
 
 void drawForm(Form * f, int x, int y, int size) {
 	drawSquare(f->color, x, y, size);

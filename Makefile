@@ -3,17 +3,20 @@ GL = -lglut -lGL -lGLU
 FD = form/
 GD = graphicsSource/
 
-PoopGuy: main.o libgraphics.a
-	gcc -o PoopGuy main.o libgraphics.a $(GL)
+PoopGuy: main.o libform.a
+	gcc -o PoopGuy main.o libform.a $(GL)
 
 main.o: main.c
 	$(CC) -Wextra -Wall main.c
 
-libgraphics.a: FormGraphics.o
-	ar rs libgraphics.a FormGraphics.o
+libform.a: Form.o Graphics.o
+	ar rs libform.a Form.o Graphics.o
 
-FormGraphics.o: $(FD)FormGraphics.c $(FD)FormGraphics.h $(GD)Graphics.c $(GD)Graphics.h $(FD)Form.c $(FD)Form.h
-	$(CC) $(FD)FormGraphics.c $(GL)
+Form.o: $(FD)FormGraphics.c $(FD)FormGraphics.h $(FD)Form.c $(FD)Form.h
+	$(CC) $(FD)Form.c $(GL)
+
+Graphics.o: $(GD)Graphics.c $(GD)Graphics.h
+	$(CC) $(GD)Graphics.c $(GL)
 
 clean:
 	rm *.o *.a

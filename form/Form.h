@@ -4,3 +4,6 @@ typedef struct Form
 } Form;
 
 Form *makeForm(float r, float g, float b);
+
+#include "FormGraphics.h"
+#include "World.h"
