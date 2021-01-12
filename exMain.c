@@ -4,7 +4,7 @@
 
 int main() {
 	//int *arr = calloc(10, sizeof(int));
-	int *arr = makeArray(10);
+	int *arr = makeArray(12);
 	printf("my pointer arr is at location %p, and its value is %i\n", arr, *arr);
 	int num = 420;
 	int *ptr = &num;
