@@ -1,10 +1,11 @@
 CC = gcc -c -g
-GL = -lglut -lGL -lGLU
+GLW = -lglu32 -lopengl32 -lfreeglut
+GLL = -lGL -lglut -lGLU
 FD = form/
 GD = graphicsSource/
 
 PoopGuy: main.o libform.a
-	gcc -o PoopGuy main.o libform.a $(GL)
+	gcc -o PoopGuy main.o libform.a $(GLW)
 
 main.o: main.c
 	$(CC) -Wextra -Wall main.c
@@ -16,7 +17,7 @@ Form.o: $(FD)FormGraphics.c $(FD)FormGraphics.h $(FD)Form.c $(FD)Form.h
 	$(CC) $(FD)Form.c $(GL)
 
 Graphics.o: $(GD)Graphics.c $(GD)Graphics.h
-	$(CC) $(GD)Graphics.c $(GL)
+	$(CC) $(GD)Graphics.c
 
 clean:
 	rm *.o *.a
