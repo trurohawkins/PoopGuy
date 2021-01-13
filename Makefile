@@ -14,7 +14,7 @@ libform.a: Form.o Graphics.o
 	ar rs libform.a Form.o Graphics.o
 
 Form.o: $(FD)FormGraphics.c $(FD)FormGraphics.h $(FD)Form.c $(FD)Form.h $(FD)World.c $(FD)World.h
-	$(CC) $(FD)Form.c $(GL)
+	$(CC) $(FD)Form.c 
 
 Graphics.o: $(GD)Graphics.c $(GD)Graphics.h
 	$(CC) $(GD)Graphics.c
