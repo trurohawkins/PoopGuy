@@ -3,16 +3,17 @@
 World *makeWorld(int x, int y) {	
 
 	World *newWorld = (World*)calloc(1, sizeof(World));
-	TYPE **mudBall = (TYPE**) calloc( x, sizeof(TYPE*));
+	TYPE **mudBall = (TYPE**) calloc( x, sizeof(TYPE**));
 
 	for (int i = 0; i < x ; i += 1) {
-		mudBall[i] = (TYPE*) calloc( y , sizeof(TYPE));
+		mudBall[i] = (TYPE*) calloc( y , sizeof(TYPE*));
 	}
 	newWorld->map = mudBall;
 	newWorld->x = x;
 	newWorld->y = y;
 	return newWorld;
 }
+
 void deleteWorld(World *world) {
 
 	
@@ -22,6 +23,10 @@ void deleteWorld(World *world) {
 
 	free(world->map);
 	free(world);
+}
+
+void placeForm(World *world, int x, int y, TYPE *form) {
+	world->map[x][y] = *form;
 }
 /*
 int sumArr(int **array, int x, int y) {
