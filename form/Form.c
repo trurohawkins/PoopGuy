@@ -2,11 +2,7 @@
 #define STDLIB_H
 #include <stdlib.h>
 #endif
-
-typedef struct Form
-{
-	float color[3];
-} Form;
+#include "Form.h"
 
 Form *makeForm(float r, float g, float b) {
 	Form *newForm = (Form *)calloc(1, sizeof(Form));
@@ -15,5 +11,7 @@ Form *makeForm(float r, float g, float b) {
 	newForm->color[2] = b;
 	return newForm;
 }
+
+#include "World.c"
 
 #include "FormGraphics.c"

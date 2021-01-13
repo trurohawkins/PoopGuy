@@ -11,7 +11,10 @@ int main(int argc, char **argv) {
 	int worldY = 10;
 	int windowX = 500;
 	int windowY = 500;
+	//World * w = makeWorld(10, 10);
+	//deleteWorld(w);
 	initializeGLUT(argc, argv, windowX, windowY, worldX, worldY);
 	glutDisplayFunc(drawFunc);
 	glutMainLoop();
+	return 0;
 }
