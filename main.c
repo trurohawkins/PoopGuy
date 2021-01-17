@@ -8,6 +8,7 @@ void keyUp(unsigned char, int, int);
 void exitGame();
 
 int main(int argc, char **argv) {
+	srand(time(NULL));
 	initDirections();
 	int worldX = 50;
 	int worldY = 50;

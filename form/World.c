@@ -42,10 +42,17 @@ Form *removeForm(int x, int y) {
 
 void dirtFloor(int height) {
 	TYPE *d = makeDirt();
+	int maxGrow = 2;
 	for (int x = 1; x < theWorld->x - 1; x++) {
 		for(int y = 0; y < height; y++) {
 			placeForm(x, y, d);
 		}
+		int newGrow = (int)(randPercent() * maxGrow);
+		if (randPercent() > 0.5) {
+			newGrow *= -1;
+		}
+		height = clamp(height + newGrow, 1, theWorld->y - 1);
+		//printf("ng: %i, h: %i\n", newGrow, height);
 	}
 }
 

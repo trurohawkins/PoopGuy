@@ -14,3 +14,21 @@ void initDirections() {
 	dirs[3][0] = 1;
 	dirs[3][1] = 0;
 }
+
+float randPercent() {
+	return (float)rand()/(float)(RAND_MAX);
+}
+
+int clamp(int val, int min, int max) {
+	if (min < max) {
+		if (val < min) {
+			return min;
+		}	else if (val > max) {
+			return max;
+		} else {
+			return val;
+		}
+	} else {
+		return val;
+	}
+}
