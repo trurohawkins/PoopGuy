@@ -1,6 +1,6 @@
 #include "../graphicsSource/Graphics.c"
 
-#include<stdio.h>
+//#include<stdio.h>
 
 void drawForm(Form *f, int x, int y, int size) {
 	if (f != 0) {
