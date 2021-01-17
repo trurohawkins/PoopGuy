@@ -2,11 +2,14 @@ typedef struct linkedList
 {
 	void *data;
 	struct linkedList *next;
-} linkedList_t;
+	struct LinkedList *prev;
+} linkedList;
 
 #include <stdio.h>
 #include <stdlib.h>
 
-void addToList(linkedList_t *head, void *item);
+linkedList *makeList();
 
-void freeList(linkedList_t **ll);
+void addToList(linkedList *head, void *item);
+void *removeFromList(linkedList **head, void *item);
+void freeList(linkedList **ll);

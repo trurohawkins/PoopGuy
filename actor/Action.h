@@ -1,10 +1,13 @@
 typedef struct Action {
-	int active;
-	void (*fun)(void);
+	char active;
+	void *vars;
+	void (*fun)(Form*, struct Action* a);
 } Action;
 
 
 
-Action *makeAction(void (*fun)(void));
+Action *makeAction(void (*fun)(Form*, Action*), void *);
 void deleteAction(Action *action);
+//void setActVar(Action *action, int index, int val);
 void defaultAction();
+#include "acts/actList.h"
