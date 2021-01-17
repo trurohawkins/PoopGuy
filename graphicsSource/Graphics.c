@@ -1,13 +1,16 @@
 #include "GL/freeglut.h"
 #include "GL/gl.h"
 
-void initializeGLUT(int argc, char **argv, int winSX, int winSY, int worldX, int worldY) {
+int frameX=10;
+int frameY=10;
+
+void initializeGLUT(int argc, char **argv, int winSX, int winSY) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE);
 	glutInitWindowSize(winSX, winSY);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("poop guy");
-	glOrtho(0, worldX, 0, worldY, -1.0, 1.0);	
+	glOrtho(0, frameX, 0, frameY, -1.0, 1.0);	
 }
 
 void drawSquare(float *color, int x, int y, int size) {

@@ -14,6 +14,7 @@ int main(int argc, char **argv) {
 	int windowX = 500;
 	int windowY = 500;
 	makeWorld(worldX, worldY);
+	dirtFloor(3);
 	atexit(exitGame);
 	
 	Form *f = makeForm(1, 1, 1);
@@ -23,7 +24,7 @@ int main(int argc, char **argv) {
 	//setActVar(nicMove, 1, 20);
 	//setActVar(nicMove, 2, 3);
 	nicCage = makeActor(f);
-	placeForm(0, 9, nicCage->body);
+	placeForm(3, 3, nicCage->body);
 	addAction(nicCage, nicMove);
 	setMoveSpeed(nicMove->vars, 1);
 	moveVar *grav = (moveVar *)(calloc)(1, sizeof(moveVar));
@@ -36,7 +37,8 @@ int main(int argc, char **argv) {
 	deleteWorld();
 	deleteActor(nicCage);
 	*/	
-	initializeGLUT(argc, argv, windowX, windowY, worldX, worldY);
+	setCenter(nicCage->body->pos);
+	initializeGLUT(argc, argv, windowX, windowY);
 	
 	glutDisplayFunc(drawWorld);	
 	glutKeyboardFunc(keyDown);
@@ -73,6 +75,7 @@ void keyDown(unsigned char key, int mx, int my) {
 		setMoveDir(nicMove->vars, 3);
 		nicMove->active = 1;
 	}
+	//if (key 
 }
 
 void keyUp(unsigned char key, int mx, int my) {
@@ -84,6 +87,7 @@ void keyUp(unsigned char key, int mx, int my) {
 void update(int value) {
 	//(*(nicCage->act->fun))(0);
 	doActions(nicCage);
+	setCenter(nicCage->body->pos);
 	glutPostRedisplay();
 	glutTimerFunc(25, update, 0);
 }

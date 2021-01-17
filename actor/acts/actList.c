@@ -3,7 +3,7 @@ void move(Form *f, Action *a) {
 	if (mv->speedCounter == mv->speed) {
 		int mx = f->pos[0] + dirs[mv->dir][0];
 		int my = f->pos[1] + dirs[mv->dir][1];
-		if (mx >= 0 && my >= 0 && mx < theWorld->x && my < theWorld->y) {
+		if (checkCol(mx, my) == 0) {
 			removeForm(f->pos[0], f->pos[1]);
 			placeForm(mx, my, f);
 		}
@@ -23,3 +23,13 @@ void setMoveDir(void *m, int n_dir) {
 	mv->dir = n_dir;
 }
 
+Form *checkCol(int x, int y) {
+	if (x >= 0 && y >= 0 && x < theWorld->x && y < theWorld->y) {
+		return theWorld->map[x][y];
+	} else {
+		if (inert == 0) {
+			makeInert();
+		}	
+		return inert;
+	}
+}

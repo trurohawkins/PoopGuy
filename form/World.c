@@ -40,6 +40,15 @@ Form *removeForm(int x, int y) {
 	return f;
 }
 
+void dirtFloor(int height) {
+	TYPE *d = makeDirt();
+	for (int x = 1; x < theWorld->x - 1; x++) {
+		for(int y = 0; y < height; y++) {
+			placeForm(x, y, d);
+		}
+	}
+}
+
 /*
 int sumArr(int **array, int x, int y) {
 
