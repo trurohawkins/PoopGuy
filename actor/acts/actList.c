@@ -26,11 +26,11 @@ void move(Form *f, Action *a) {
 		//printf("moving %i, %i\n", mv->force[0], mv->force[1]);
 	}
 	if (mv->force[0] != 0) {
-		int speed = (mv->forceCounter[0] + mv->force[0]) / mv->mass;
-		mv->forceCounter[0] = (int)(mv->forceCounter[0] + mv->force[0]) % mv->mass;
+		int speed = (mv->forceCounter[0] + abs(mv->force[0])) / mv->mass;
+		mv->forceCounter[0] = (int)(mv->forceCounter[0] + abs(mv->force[0])) % mv->mass;
 		//mv->force[0] = 0;
 		for (int i = 0; i < speed; i++) {
-			int p = f->pos[0] + mv->dir[0];
+			int p = f->pos[0] + sign(mv->force[0]);
 			if (checkCol(p, f->pos[1]) == 0) {
 				removeForm(f->pos[0], f->pos[1]);
 				placeForm(p, f->pos[1], f);
@@ -39,11 +39,11 @@ void move(Form *f, Action *a) {
 	//	mv->dir[0] = 0;
 	}
 	if (mv->force[1] != 0) {
-		int speed = (mv->forceCounter[1] + mv->force[1]) / mv->mass;
-		mv->forceCounter[1] = (int)(mv->forceCounter[1] + mv->force[1]) % mv->mass;
+		int speed = (mv->forceCounter[1] + abs(mv->force[1])) / mv->mass;
+		mv->forceCounter[1] = (int)(mv->forceCounter[1] + abs(mv->force[1])) % mv->mass;
 	//	mv->force[1] = 0;
 		for (int i = 0; i < speed; i++) {
-			float p = f->pos[1] + mv->dir[1];
+			float p = f->pos[1] + sign(mv->force[1]);//mv->dir[1];
 			if (checkCol(f->pos[0], p) == 0) {
 				removeForm(f->pos[0], f->pos[1]);
 				placeForm(f->pos[0], p, f);
@@ -75,35 +75,13 @@ void setMoveMass(void *m, int n_mass) {
 	mv->mass = n_mass;
 }
 
-void addForce(void *m, int x, int y, int powX, int powY) {
+void addForce(void *m, int powX, int powY) {
 	moveVar *mv = (moveVar*)m;
-	if (x != 0 && powX != 0) {
-		if((mv->dir[0] <= 0 && x < 0) || (mv->dir[0] >= 0 && x > 0)) {
-			mv->force[0] += powX;
-		} else {
-			mv->force[0] -= powX;
-		}
-		/*
-		if (mv->dir[0] == 0) {
-			mv->dir[0] = x;
-		} else {
-			mv->dir[0] = (mv->dir[0] + x) / 2;
-		}
-		*/
-		if (mv->dir[0] != x) {
-			mv->dir[0] += x;
-		}
+	if (powX != 0) {
+		mv->force[0] += powX;
 	}
-	if (y != 0 && powY != 0) {
-		if((mv->dir[1] <= 0 && y < 0) || (mv->dir[1] >= 0 && y > 0)) {
-			mv->force[1] += powY;
-		} else {
-			mv->force[1] -= powY;
-		}
-		if (mv->dir[1] != y) {
-			mv->dir[1] += y;
-		}
-		printf("%i\n", mv->force[1]);
+	if (powY != 0) {
+		mv->force[1] += powY;
 	}
 
 }
@@ -129,6 +107,7 @@ Form *checkCol(int x, int y) {
 	}
 }
 #include "gravity.c"
+#include "jump.c"
 /* old move
 	if (mv->speedCounter == mv->speed) {
 		int mx = f->pos[0] + mv->dir[0];

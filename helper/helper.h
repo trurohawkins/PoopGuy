@@ -10,4 +10,6 @@ void initDirections();
 void freeDirections();
 float randPercent();
 int clamp(int, int, int);
+int sign(int);
+int abs(int);
 #endif

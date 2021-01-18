@@ -41,3 +41,21 @@ int clamp(int val, int min, int max) {
 		return val;
 	}
 }
+
+int sign(int num) {
+	if (num > 0) {
+		return 1;
+	} else if (num < 0) {
+		return -1;
+	} else {
+		return 0;
+	}
+}
+
+int abs(int num) {
+	if (num < 0) {
+		return num * -1;
+	} else {
+		return num;
+	}
+}

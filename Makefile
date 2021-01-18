@@ -3,6 +3,7 @@ GLW = -lglu32 -lopengl32 -lfreeglut
 GLL = -lGL -lglut -lGLU
 FD = form/
 AD = actor/
+ACD = $(AD)acts/
 GD = graphicsSource/
 HD = helper/
 
@@ -15,7 +16,7 @@ main.o: main.c
 libform.a: Form.o Graphics.o helper.o
 	ar rs libform.a Form.o Graphics.o helper.o
 
-Form.o: $(FD)FormGraphics.c $(FD)FormGraphics.h $(FD)Form.c $(FD)Form.h $(FD)World.c $(FD)World.h $(AD)Action.c $(AD)Action.h $(AD)Actor.c $(AD)Actor.h $(AD)/acts/actList.c $(AD)/acts/actList.h $(AD)/acts/gravity.c $(AD)/acts/gravity.h
+Form.o: $(FD)FormGraphics.c $(FD)FormGraphics.h $(FD)Form.c $(FD)Form.h $(FD)World.c $(FD)World.h $(AD)Action.c $(AD)Action.h $(AD)Actor.c $(AD)Actor.h $(ACD)actList.c $(ACD)actList.h $(ACD)gravity.c $(ACD)gravity.h $(ACD)jump.c $(ACD)jump.h
 	$(CC) $(FD)Form.c 
 
 Graphics.o: $(GD)Graphics.c $(GD)Graphics.h

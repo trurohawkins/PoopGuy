@@ -1,5 +1,3 @@
-#include "aList.h"
-
 typedef struct Actor {
 	Form *body;
 	linkedList *actionList;

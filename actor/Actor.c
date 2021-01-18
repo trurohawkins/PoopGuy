@@ -1,5 +1,3 @@
-#include "aList.c"
-
 Actor *makeActor(Form * f/*, Action *a*/) {
 	Actor *newActor = (Actor*)calloc(1, sizeof(Actor));
 	newActor->body = f;
