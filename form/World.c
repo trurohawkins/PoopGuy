@@ -14,6 +14,7 @@ void makeWorld(int x, int y) {
 	newWorld->map = mudBall;
 	newWorld->x = x;
 	newWorld->y = y;
+	newWorld->terrain = makeList();
 	theWorld = newWorld;
 }
 
@@ -21,9 +22,21 @@ void deleteWorld() {
 	for (int i = 0; i < theWorld->x ; i += 1) {
 		free(theWorld->map[i]); 
 	}
+	deleteTerrain();
 
 	free(theWorld->map);
 	free(theWorld);
+}
+
+void deleteTerrain() {
+	linkedList *t = theWorld->terrain;
+	linkedList *next;
+	while (t != NULL) {
+		next = t->next;
+		deleteForm((Form*)t->data);
+		free(t);
+		t = next;
+	}
 }
 
 void placeForm(int x, int y, TYPE *form) {
@@ -35,13 +48,14 @@ void placeForm(int x, int y, TYPE *form) {
 Form *removeForm(int x, int y) {
 	Form *f = theWorld->map[x][y];
 	theWorld->map[x][y] = 0;
-	f->pos[0] = -1;
-	f->pos[1] = -1;
+//	f->pos[0] = -1;
+//	f->pos[1] = -1; maybe add back? took out because in the middle of move we need to remember the old position
 	return f;
 }
 
 void dirtFloor(int height) {
 	TYPE *d = makeDirt();
+	addToList(theWorld->terrain, d);
 	int maxGrow = 2;
 	for (int x = 1; x < theWorld->x - 1; x++) {
 		for(int y = 0; y < height; y++) {

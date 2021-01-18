@@ -24,7 +24,7 @@ void makeInert() {
 	inert->pos[1] = -1;
 }
 
-#include "../helper.c"
+//#include "../helper/helper.c"
 #include "World.c"
 #include "../actor/Action.c"
 #include "../actor/Actor.c"

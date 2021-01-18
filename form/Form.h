@@ -1,6 +1,6 @@
 #ifndef LIB
 #define LIB
-#include "../helper.h"
+#include "../helper/helper.h"
 typedef struct Form {
 	int pos[2];
 	float color[3];
