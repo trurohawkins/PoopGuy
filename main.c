@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
 	srand(time(NULL));
 	initDirections();
 	int worldX = 50;
-	int worldY = 20;
+	int worldY = 200;
 	int windowX = 500;
 	int windowY = 500;
 	makeWorld(worldX, worldY);
@@ -21,27 +21,18 @@ int main(int argc, char **argv) {
 	Form *f = makeForm(1, 1, 1);
 //	moveVar* mv = (moveVar *)calloc(1, sizeof(moveVar));
 	nicMove = makeMove();// makeAction(&move, mv);
+	Action *grav = makeGravity();
 //	nicMove->active = 1;
 	//setActVar(nicMove, 1, 20);
 	//setActVar(nicMove, 2, 3);
 	nicCage = makeActor(f);
-	placeForm(3, 7, nicCage->body);
+	placeForm(3, 40, nicCage->body);
 	addAction(nicCage, nicMove);
-	//setMoveSpeed(nicMove->vars, 1);
+	addAction(nicCage, grav);
 	/*
-	printf("start pos: %i, %i\n", nicCage->body->pos[0], nicCage->body->pos[1]);
 	addForce(nicMove->vars, 0, 1, 0, 10);
 	addForce(nicMove->vars, 1, 0, 10, 0);
 	doActions(nicCage);
-	printf("end pos: %i, %i\n", nicCage->body->pos[0], nicCage->body->pos[1]);
-	*/
-	/*
-	moveVar *grav = (moveVar *)(calloc)(1, sizeof(moveVar));
-	setMoveSpeed(grav, 4);
-	setMoveDirY(grav, -1);
-	Action *nicGrav = makeAction(&move, grav);
-	nicGrav->active = 1;
-	addAction(nicCage, nicGrav);
 	*/
 	
 	setCenter(nicCage->body->pos);

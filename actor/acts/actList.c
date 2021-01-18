@@ -1,4 +1,11 @@
 Action *makeMove() {
+	moveVar *mv = makeMoveVar();
+	Action *a = makeAction(&move, mv);
+	a->active = 1;
+	return a;
+}
+
+moveVar *makeMoveVar() {
 	moveVar *mv = (moveVar*)calloc(1, sizeof(moveVar));
 	mv->mass = 10;
 	//mv-> forceCounter[2] = {0,0};
@@ -9,9 +16,7 @@ Action *makeMove() {
 	mv->force[1] = 0;
 	mv->dir[0] = 0;
 	mv->dir[1] = 0;
-	Action *a = makeAction(&move, mv);
-	a->active = 1;
-	return a;
+	return mv;
 }
 
 
@@ -98,8 +103,19 @@ void addForce(void *m, int x, int y, int powX, int powY) {
 		if (mv->dir[1] != y) {
 			mv->dir[1] += y;
 		}
+		printf("%i\n", mv->force[1]);
 	}
 
+}
+
+void setForce(void *m, int x, int y) {
+	moveVar *mv = (moveVar*)m;
+	if (x >= 0) {
+		mv->force[0] = x;
+	}
+	if (y >= 0) {
+		mv->force[1] = y;
+	}
 }
 
 Form *checkCol(int x, int y) {
@@ -112,6 +128,7 @@ Form *checkCol(int x, int y) {
 		return inert;
 	}
 }
+#include "gravity.c"
 /* old move
 	if (mv->speedCounter == mv->speed) {
 		int mx = f->pos[0] + mv->dir[0];
