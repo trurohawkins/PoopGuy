@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
 	nicGrav->active = 1;
 	addAction(nicCage, nicGrav);
 	*/
-/*	
+	
 	setCenter(nicCage->body->pos);
 	initializeGLUT(argc, argv, windowX, windowY);
 	glutIgnoreKeyRepeat(1);	
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
 	glutKeyboardUpFunc(keyUp);
 	glutTimerFunc(25, update, 0);
 	glutMainLoop();	
-	*/
+	
 	return 0;
 }
 
