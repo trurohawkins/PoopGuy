@@ -17,18 +17,23 @@ int main(int argc, char **argv) {
 	dirtFloor(3);
 	atexit(exitGame);
 	poopGuy = makePlayer();
-	placeForm(3, 40, poopGuy->me->body);
+	placeForm(0, 0, poopGuy->me->body);
 	setCenter(poopGuy->me->body->pos);
 
 	Actor *rock = makeActor(makeForm(0.3, 0.3, 0.3));
 	Action *move =  makeMove();
 	addAction(rock, move);
 	addAction(rock, makeGravity(move->vars));
-	placeForm(10, 40, rock->body);
+	placeForm(3, 40, rock->body);
 
 	makeActorList();
 	addActor(poopGuy->me);
 	addActor(rock);
+	
+//	stomachStuff(poopGuy->me->body, poopGuy->eatPoop);
+//	eatPooVar *ep = (eatPooVar*)(poopGuy->eatPoop->vars);
+//	ep->pooping = 1;
+
 	initializeGLUT(argc, argv, windowX, windowY);
 	glutIgnoreKeyRepeat(1);	
 	glutDisplayFunc(drawWorld);	
@@ -36,6 +41,7 @@ int main(int argc, char **argv) {
 	glutKeyboardUpFunc(keyUp);
 	glutTimerFunc(25, update, 0);
 	glutMainLoop();	
+	
 	return 0;
 }
 
@@ -59,7 +65,7 @@ void update(int value) {
 void exitGame() {
 	printf("coochy");
 	deleteWorld();
-	deleteActorList();
 	deletePlayer(poopGuy);
+	deleteActorList();
 	freeDirections();
 }

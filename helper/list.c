@@ -46,26 +46,27 @@ void *removeFromList(linkedList **head, void *item) {
 		(*head) = (*head)->next;
 		data = oh->data;
 		free(oh);
-	}
-	linkedList *tmp = (*head)->next;
-	linkedList *pre = *head;
-	while (tmp != 0) {
-		if (tmp->data == item) {
-			pre->next = tmp->next;
-			data = tmp->data;
-			free(tmp);
-			tmp = pre->next;
-		} else {
-			tmp = tmp->next;
+	} else {
+		linkedList *tmp = (*head)->next;
+		linkedList *pre = *head;
+		while (tmp != 0) {
+			if (tmp->data == item) {
+				pre->next = tmp->next;
+				data = tmp->data;
+				free(tmp);
+				tmp = pre->next;
+			} else {
+				tmp = tmp->next;
+			}
+			pre = pre->next;
 		}
-		pre = pre->next;
 	}
 	return data;
 }
 
 void freeList(linkedList **ll) {
 	linkedList *cur = *ll;
-	linkedList *next;
+	linkedList *next = 0;
 	while (cur != NULL) {
 		next = cur->next;
 		free(cur);

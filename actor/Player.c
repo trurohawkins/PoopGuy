@@ -15,6 +15,8 @@ Player *makePlayer () {
 
 void deletePlayer(Player *poopGuy) {
 	//deleteActor(poopGuy->me); //actorlist will deal with the actor
+	eatPooVar *ep = (eatPooVar*)(poopGuy->eatPoop->vars);
+	freeList(&(ep->stomach));
 	free(poopGuy);
 }
 
@@ -34,6 +36,9 @@ void keyPressPlayer(Player *poopGuy, char input) {
 			break;
 		case 115:
 			ep->dir = 2;
+			break;
+		case 112:
+			ep->pooping = 1;
 			break;
 		case 32:
 			startJump(poopGuy->jump);

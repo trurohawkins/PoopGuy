@@ -25,7 +25,7 @@ Form.o: $(FD)FormGraphics.c $(FD)FormGraphics.h $(FD)Form.c $(FD)Form.h $(FD)Wor
 Graphics.o: $(GD)Graphics.c $(GD)Graphics.h
 	$(CC) $(GD)Graphics.c
 
-helper.o: $(HD)helper.c $(HD)helper.h
+helper.o: $(HD)helper.c $(HD)helper.h $(HD)list.c $(HD)list.h
 	$(CC) $(HD)helper.c
 
 clean:
