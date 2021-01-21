@@ -16,8 +16,8 @@ void drawWorld() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	int fx = frameX/2;
 	int fy = frameY/2;
-	int cx = clamp(centerX, fx, theWorld->x - fx);
-	int cy = clamp(centerY, fy, theWorld->y - fy);
+	int cx = clamp(centerX, fx, theWorld->x - fx - 1);
+	int cy = clamp(centerY, fy, theWorld->y - fy - 1);
 	for (int i=cx-fx; i <= cx+fx ; i ++) {
 		for (int j=cy-fy; j <= cy+fy; j++){
 			if (i >= 0 && i < theWorld->x && j >= 0 && j < theWorld->y) {

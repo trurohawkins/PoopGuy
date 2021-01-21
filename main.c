@@ -1,9 +1,6 @@
 #include "form/Form.h"
 
-Actor *nicCage;
-Action *nicMove;
-Action *nicJump;
-int nicSpeed = 10;
+Player *poopGuy;
 void update(int value);
 void keyDown(unsigned char, int, int);
 void keyUp(unsigned char, int, int);
@@ -19,27 +16,20 @@ int main(int argc, char **argv) {
 	makeWorld(worldX, worldY);
 	dirtFloor(3);
 	atexit(exitGame);
-	
-	Form *f = makeForm(1, 1, 1);
-//	moveVar* mv = (moveVar *)calloc(1, sizeof(moveVar));
-	nicMove = makeMove();// makeAction(&move, mv);
-	Action *grav = makeGravity(nicMove->vars);
-	nicJump = makeJump(nicMove->vars, grav);
-//	nicMove->active = 1;
-	//setActVar(nicMove, 1, 20);
-	//setActVar(nicMove, 2, 3);
-	nicCage = makeActor(f);
-	placeForm(3, 40, nicCage->body);
-	addAction(nicCage, nicMove);
-	addAction(nicCage, grav);
-	addAction(nicCage, nicJump);
-	/*
-	addForce(nicMove->vars, 0, 1, 0, 10);
-	addForce(nicMove->vars, 1, 0, 10, 0);
-	doActions(nicCage);
-	*/
-	
-	setCenter(nicCage->body->pos);
+	poopGuy = makePlayer();
+	placeForm(3, 40, poopGuy->me->body);
+	setCenter(poopGuy->me->body->pos);
+
+	Actor *rock = makeActor(makeForm(0.3, 0.3, 0.3));
+	Action *move =  makeMove();
+	addAction(rock, move);
+	addAction(rock, makeGravity(move->vars));
+	placeForm(10, 40, rock->body);
+
+	makeActorList();
+	addActor(poopGuy->me);
+	addActor(rock);
+	actorListDo();
 	initializeGLUT(argc, argv, windowX, windowY);
 	glutIgnoreKeyRepeat(1);	
 	glutDisplayFunc(drawWorld);	
@@ -50,60 +40,27 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-unsigned char keyPressed;
-unsigned char keyReleased;
 void keyDown(unsigned char key, int mx, int my) {
 	if (key == 27) {
 		glutLeaveMainLoop();
 	}
-	if (key == 119 || key == 97 || key == 115 || key == 100) {//w
-		keyPressed = key;
-	}
-	
-	if (key == 119) {
-		addForce(nicMove->vars, 0, nicSpeed);
-	}
-	if (key == 97) { //a
-		addForce(nicMove->vars, -nicSpeed, 0);
-	}
-	if (key == 115) {//s
-		addForce(nicMove->vars, 0, -nicSpeed);
-	}
-	if (key == 100) {//d
-		addForce(nicMove->vars, nicSpeed, 0);
-	}
-	if (key == 32) {
-		startJump(nicJump);
-		//nicJump->active = 1;	
-	}
+	keyPressPlayer(poopGuy, key);
 }
 
 void keyUp(unsigned char key, int mx, int my) {
-	if (key == 119) {
-		addForce(nicMove->vars, 0, -nicSpeed);
-	}
-	if (key == 97) { //a
-		addForce(nicMove->vars, nicSpeed, 0);
-	}
-	if (key == 115) {
-		addForce(nicMove->vars, 0, nicSpeed);
-	}
-	if (key == 100) {//d
-		addForce(nicMove->vars, -nicSpeed, 0);
-	}
-	 //	|| key == 97 || key == 115 || key == 100) {//w
+	keyReleasePlayer(poopGuy, key);
 }
 
 void update(int value) {
-	doActions(nicCage);
-	setCenter(nicCage->body->pos);
+	actorListDo();
+	setCenter(poopGuy->me->body->pos);
 	glutPostRedisplay();
 	glutTimerFunc(25, update, 0);
 }
-
 void exitGame() {
 	printf("coochy");
 	deleteWorld();
-	deleteActor(nicCage);
+	deleteActorList();
+	deletePlayer(poopGuy);
 	freeDirections();
 }

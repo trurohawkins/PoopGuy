@@ -19,5 +19,5 @@ void gravity(Form *f, Action *a) {
 	} else {
 		setForce(mv, -1, 0);
 	}
-	move(f, a);
+	//move(f, a);
 }

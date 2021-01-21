@@ -9,3 +9,6 @@ void *removeAction(Actor *actor, Action *action);
 void deleteMyAction(Actor *actor, Action *action);
 void doActions(Actor *actor);
 void deleteActor(Actor *actor);
+
+#include "ActorList.h"
+#include "Player.h"

@@ -15,6 +15,7 @@ void addAction(Actor *actor, Action *action) {
 	addToList(actor->actionList, action);
 }
 
+
 void *removeAction(Actor *actor, Action *action) {
 	return removeFromList(&(actor->actionList), action);
 }
@@ -49,3 +50,5 @@ void deleteActor(Actor *actor) {
 	freeActionList(actor);
 	free(actor);
 }
+#include "ActorList.c"
+#include "Player.c"
