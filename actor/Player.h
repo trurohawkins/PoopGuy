@@ -2,6 +2,7 @@ typedef struct Player {
 	Actor *me;
 	Action *jump;
 	Action *move;
+	Action *eatPoop;
 	int speed;
 } Player;
 

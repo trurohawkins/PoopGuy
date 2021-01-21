@@ -5,9 +5,11 @@ Player *makePlayer () {
 	poopGuy->move = makeMove();
 	Action *grav = makeGravity(poopGuy->move->vars);
 	poopGuy->jump = makeJump(poopGuy->move->vars, grav);
+	poopGuy->eatPoop = makeStomach();
 	addAction(poopGuy->me, poopGuy->move);
 	addAction(poopGuy->me, grav);
 	addAction(poopGuy->me, poopGuy->jump);
+	addAction(poopGuy->me, poopGuy->eatPoop);
 	return poopGuy;
 }
 
@@ -17,12 +19,21 @@ void deletePlayer(Player *poopGuy) {
 }
 
 void keyPressPlayer(Player *poopGuy, char input) {
+	eatPooVar *ep = (eatPooVar*)(poopGuy->eatPoop->vars);
 	switch (input) {
-		case 97:
+		case 97: //a
+			ep->dir = 1;
 			addForce(poopGuy->move->vars, -poopGuy->speed, 0);
 			break;
-		case 100:
+		case 100: //d
+			ep->dir = 3;
 			addForce(poopGuy->move->vars, poopGuy->speed, 0);
+			break;
+		case 119:
+			ep->dir = 0;
+			break;
+		case 115:
+			ep->dir = 2;
 			break;
 		case 32:
 			startJump(poopGuy->jump);

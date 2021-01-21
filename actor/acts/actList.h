@@ -18,3 +18,4 @@ void addForce(void *m, int powX, int powY);
 Form *checkCol(int x, int y);
 #include "gravity.h"
 #include "jump.h"
+#include "eatPoop.h"

@@ -11,6 +11,7 @@ Form *makeForm(float r, float g, float b);
 void deleteForm(Form *f);
 void makeInert();
 Form *makeDirt();
+int comparForms(Form *f1, Form *f2);
 
 #include "../actor/Action.h"
 #include "../actor/Actor.h"

@@ -29,7 +29,6 @@ int main(int argc, char **argv) {
 	makeActorList();
 	addActor(poopGuy->me);
 	addActor(rock);
-	actorListDo();
 	initializeGLUT(argc, argv, windowX, windowY);
 	glutIgnoreKeyRepeat(1);	
 	glutDisplayFunc(drawWorld);	

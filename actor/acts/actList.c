@@ -106,8 +106,10 @@ Form *checkCol(int x, int y) {
 		return inert;
 	}
 }
+
 #include "gravity.c"
 #include "jump.c"
+#include "eatPoop.c"
 /* old move
 	if (mv->speedCounter == mv->speed) {
 		int mx = f->pos[0] + mv->dir[0];

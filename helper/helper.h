@@ -8,8 +8,10 @@
 
 void initDirections();
 void freeDirections();
+int **getDirs();
 float randPercent();
 int clamp(int, int, int);
 int sign(int);
 int abs(int);
+
 #endif

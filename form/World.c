@@ -46,8 +46,11 @@ void placeForm(int x, int y, TYPE *form) {
 }
 
 Form *removeForm(int x, int y) {
-	Form *f = theWorld->map[x][y];
-	theWorld->map[x][y] = 0;
+	Form *f = 0;
+	if (x >= 0 && y >= 0 && x < theWorld->x && y < theWorld->y) {
+		f = theWorld->map[x][y];
+		theWorld->map[x][y] = 0;
+	}
 //	f->pos[0] = -1;
 //	f->pos[1] = -1; maybe add back? took out because in the middle of move we need to remember the old position
 	return f;

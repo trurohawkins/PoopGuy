@@ -24,6 +24,10 @@ void freeDirections() {
 	free(dirs);
 }
 
+int **getDirs() {
+	return dirs;
+}
+
 float randPercent() {
 	return (float)rand()/(float)(RAND_MAX);
 }
