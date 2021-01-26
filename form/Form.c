@@ -36,4 +36,5 @@ int compareForms(Form *f1, Form *f2) {
 #include "World.c"
 #include "../actor/Action.c"
 #include "../actor/Actor.c"
+#include "../actor/acts/control.c"
 #include "FormGraphics.c"

@@ -3,7 +3,11 @@ typedef struct Player {
 	Action *jump;
 	Action *move;
 	Action *eatPoop;
+	Action *control;
 	int speed;
+	int maxForce;
+	char lastInp;
+
 } Player;
 
 Player *makePlayer();

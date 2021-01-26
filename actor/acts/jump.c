@@ -2,22 +2,25 @@ Action *makeJump(moveVar *mv, Action *n_grav) {
 	jumpVar *jv = (jumpVar*)calloc(1, sizeof(jumpVar));
 	jv->move = mv;
 	jv->grav = n_grav;
-	jv->maxJP = 10;
-	jv->jumpPow = 2;
+	jv->maxJP = 4;
+	jv->jumpPow = 3;
+	jv->jumpCount = 0;
+	jv->jumpMax = 2;
 	Action *a = makeAction(&jump, jv);
 	a->active = 0;
 	return a;
 }
 
-void startJump(Action *a) {
-	if (a->active == 0) {
-		jumpVar *jv = (jumpVar*)a->vars;
-		jv->jpGoal = jv->maxJP;
-		jv->curJP = 0;
-		setForce(jv->move, -1, 0);
-		jv->grav->active = 0;
-		a->active = 1;
-	}
+void startJump(Form *f, Action *a) {
+	jumpVar *jv = (jumpVar*)a->vars;
+		if (jv->jumpCount < jv->jumpMax) {
+			jv->jpGoal = jv->maxJP;
+			jv->curJP = 0;
+			setForce(jv->move, -1, 0);
+			jv->grav->active = 0;
+			a->active = 1;
+			jv->jumpCount++;
+		}
 }
 
 void jump(Form *f, Action *a) {
@@ -29,12 +32,15 @@ void jump(Form *f, Action *a) {
 	} else if (jv->jpGoal > 0){
 		jv->jpGoal = 0;
 	} else {
-		a->active = 0;
+		dir = 0;
 		jv->grav->active = 1;
-	//	printf("jump done %i\n", jv->move->force[1]);	
+		if (checkCol(f->pos[0], f->pos[1]-1) != 0 ||checkCol(f->pos[0]+1, f->pos[1]) != 0 
+				|| checkCol(f->pos[0]-1, f->pos[1]) != 0 ) {
+			a->active = 0;
+			jv->jumpCount = 0;
+		}
 	}
-	if (a->active != 0) {
-	//	printf("jumping in %i, at%i\n", dir, jv->move->force[1]);	
+	if (dir != 0) {
 		addForce(jv->move, 0, dir * jv->jumpPow);
 	}
 }

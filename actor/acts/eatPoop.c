@@ -2,6 +2,7 @@ Action *makeStomach() {
 	eatPooVar *ep= (eatPooVar*)calloc(1, sizeof(eatPooVar));
 	ep->stomach = makeList();
 	ep->pooping = 0;
+	ep->eating = 0;
 	Action *stom = makeAction(&stomachStuff, ep);
 	stom->active = 1;
 	return stom;
@@ -10,11 +11,13 @@ Action *makeStomach() {
 void stomachStuff(Form *f, Action *a) {
 	eatPooVar *ep = (eatPooVar*)(a->vars);
 	int **d = getDirs();
-	Form *food = removeForm(f->pos[0] + d[ep->dir][0], f->pos[1] + d[ep->dir][1]);//checkCol(f->pos[0] + 1, f->pos[1]);
+	if (ep->eating != 0) {
+		Form *food = removeForm(f->pos[0] + d[ep->dir][0], f->pos[1] + d[ep->dir][1]);//checkCol(f->pos[0] + 1, f->pos[1]);
 
-	if (food != NULL) {
-		addToStack(food, a);
-	} 
+		if (food != NULL) {
+			addToStack(food, a);
+		} 
+	}
 	if (ep->pooping != 0) {
 		Form *poo = removeFromStack(a);
 		if (poo != 0) {
@@ -34,7 +37,7 @@ void stomachStuff(Form *f, Action *a) {
 			}
 			placeForm(pooX, pooY, poo);
 		}
-		ep->pooping = 0;
+		//ep->pooping = 0;
 	}
 }
 

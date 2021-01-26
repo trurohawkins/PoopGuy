@@ -15,6 +15,7 @@ int comparForms(Form *f1, Form *f2);
 
 #include "../actor/Action.h"
 #include "../actor/Actor.h"
+#include "../actor/acts/control.h"
 #include "World.h"
 #include "FormGraphics.h"
 #endif

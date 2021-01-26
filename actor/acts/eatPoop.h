@@ -7,6 +7,7 @@ typedef struct eatPooVar {
 	linkedList *stomach;
 	int dir;
 	int pooping;
+	int eating;
 } eatPooVar;
 
 Action *makeStomach();
