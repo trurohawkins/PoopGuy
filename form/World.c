@@ -47,25 +47,6 @@ void placeForm(int x, int y, TYPE *form) {
 	}
 
 }
-// make Square fun
-// x,y are starting point of square, z is side length
-// goes clock wise 
-// STAUS: runtime error? not showing up in game world
-// no complier erros (So not syntax error?)
-//
-
-void makeSquare(int x, int y, int z) {
-	printf("making sqaure");
-	TYPE *b = makeDirt() ;
-	addToList(theWorld->terrain, b);
-	for (int i = 0; i > z ; i++) {
-		for (int j = 0; j > z ; j++) {
-			placeForm( x + i, y + j, b) ;
-			printf("%i, %i", x+i, y+j);
-		}
-	}
-
-}
 
 Form *removeForm(int x, int y) {
 	Form *f = 0;
@@ -78,6 +59,25 @@ Form *removeForm(int x, int y) {
 	return f;
 }
 
+// make Square fun
+// x,y are starting point of square, z is side length
+// goes clock wise 
+// STAUS: runtime error? not showing up in game world
+// no complier erros (So not syntax error?)
+//
+
+void makeSquare(int x, int y, int z) {
+	printf("making sqaure");
+	TYPE *b = makeDirt() ;
+//	addToList(theWorld->terrain, b);
+	for (int i = 1; i < z ; i++) {
+		for (int j = 1; j < z ; j++) {
+			placeForm( x + i, y + j, b) ;
+			printf("%i, %i", x+i, y+j);
+		}
+	}
+
+}
 void dirtFloor(int height) {
 	TYPE *d = makeDirt();
 	addToList(theWorld->terrain, d);
