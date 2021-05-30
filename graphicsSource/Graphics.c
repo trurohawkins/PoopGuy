@@ -1,8 +1,8 @@
 #include "GL/freeglut.h"
 #include "GL/gl.h"
 
-int frameX=49;
-int frameY=49;
+int frameX=350;
+int frameY=350;
 
 void initializeGLUT(int argc, char **argv, int winSX, int winSY) {
 	glutInit(&argc, argv);

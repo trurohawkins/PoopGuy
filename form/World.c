@@ -42,21 +42,51 @@ void deleteTerrain() {
 void placeForm(int x, int y, TYPE *form) {
 	form->pos[0] = x;
 	form->pos[1] = y;
-	if (x >= 0 && y >= 0 && x < theWorld->x && y < theWorld->y) {
-		theWorld->map[x][y] = form;
+	if (form->size[0] == 0 && form->size[1] == 0) {
+		if (x >= 0 && y >= 0 && x < theWorld->x && y < theWorld->y) {
+			theWorld->map[x][y] = form;
+		}
+	} else {
+		for (int i = 0; i < form->size[0]; i++) {
+			for (int j = 0; j < form->size[1]; j++) {
+				int xp = form->pos[0] + form->body[i][j][0];
+				int yp = form->pos[1] + form->body[i][j][1];
+				if (xp >= 0 && yp >= 0 && xp < theWorld->x && yp < theWorld->y) {
+					theWorld->map[xp][yp] = form;
+				}
+			}
+		}
 	}
-
 }
 
-Form *removeForm(int x, int y) {
-	Form *f = 0;
+Form *takeForm(int x, int y) {
+	Form *form = 0;
 	if (x >= 0 && y >= 0 && x < theWorld->x && y < theWorld->y) {
-		f = theWorld->map[x][y];
+		form = theWorld->map[x][y];
 		theWorld->map[x][y] = 0;
 	}
+	return form;
+}
+
+Form *removeForm(Form* form) {
+	if (form->size[0] == 0 && form->size[1] == 0) {
+		takeForm(form->pos[0], form->pos[1]);
+	} else {
+		for (int i = 0; i < form->size[0]; i++) {
+			for (int j = 0; j < form->size[1]; j++) {
+				int xp = form->pos[0] + form->body[i][j][0];
+				int yp = form->pos[1] + form->body[i][j][1];
+				if (xp >= 0 && yp >= 0 && xp < theWorld->x && yp < theWorld->y) {
+					theWorld->map[xp][yp] = 0;
+				}
+			}
+		}
+
+	}
+
 //	f->pos[0] = -1;
 //	f->pos[1] = -1; maybe add back? took out because in the middle of move we need to remember the old position
-	return f;
+	return form;
 }
 
 // make Square fun
@@ -67,13 +97,11 @@ Form *removeForm(int x, int y) {
 //
 
 void makeSquare(int x, int y, int z) {
-	printf("making sqaure");
 	TYPE *b = makeDirt() ;
 //	addToList(theWorld->terrain, b);
 	for (int i = 1; i < z ; i++) {
 		for (int j = 1; j < z ; j++) {
 			placeForm( x + i, y + j, b) ;
-			printf("%i, %i", x+i, y+j);
 		}
 	}
 

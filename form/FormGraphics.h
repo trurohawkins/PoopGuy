@@ -2,4 +2,4 @@
 void drawForm(Form * f, int x, int y, int size);
 void drawWorld();
 void setCenter(int cp[2]);
-void drawFunc();
+//void drawFunc();

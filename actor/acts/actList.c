@@ -36,8 +36,10 @@ void move(Form *f, Action *a) {
 		mv->forceCounter[0] = (int)(mv->forceCounter[0] + abs(mv->force[0])) % mv->mass;
 		for (int i = 0; i < speed; i++) {
 			int p = f->pos[0] + sign(mv->force[0]);
-			if (checkCol(p, f->pos[1]) == 0) {
-				removeForm(f->pos[0], f->pos[1]);
+			//if (checkCol(p, f->pos[1]) == 0) {
+			if (checkSide(f, sign(mv->force[0]), 0, true) == 0) {
+				//removeForm(f->pos[0], f->pos[1]);
+				removeForm(f);
 				placeForm(p, f->pos[1], f);
 				//printf("form moved at %ld\n", clock());
 			}
@@ -72,8 +74,10 @@ void move(Form *f, Action *a) {
 	//	mv->force[1] = 0;
 		for (int i = 0; i < speed; i++) {
 			int p = f->pos[1] + sign(mv->force[1]);//mv->dir[1];
-			if (checkCol(f->pos[0], p) == 0) {
-				removeForm(f->pos[0], f->pos[1]);
+			//if (checkCol(f->pos[0], p) == 0) {
+			if (checkSide(f, 0, sign(mv->force[1]), true) == 0) {
+				removeForm(f);
+				//removeForm(f->pos[0], f->pos[1]);
 				placeForm(f->pos[0], p, f);
 			}
 		}
@@ -98,7 +102,6 @@ void move(Form *f, Action *a) {
 			mv->decelCounter[1]++;
 		}
 		*/
-		printf("forceY %i\n", mv->force[1]);
 
 	}
 	decelerate(mv);

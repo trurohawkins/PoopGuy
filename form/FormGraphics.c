@@ -33,7 +33,7 @@ void setCenter(int cp[2]) {
 	centerX = cp[0];
 	centerY = cp[1];
 }
-
+/*
 void drawFunc() {
 	printf("caca\n");
 	glClearColor(0, 0, 0, 0);
@@ -46,4 +46,4 @@ void drawFunc() {
 	glutSwapBuffers();
 }
 
-
+*/

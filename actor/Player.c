@@ -1,13 +1,13 @@
-Player *makePlayer () {
+Player *makePlayer (int size) {
 	Player *poopGuy = (Player *)calloc(1, sizeof(Player));
 	poopGuy->speed = 10;
 	poopGuy->maxForce = 10;
-	poopGuy->me = makeActor(makeForm(0.2, 1, 0.2));
+	poopGuy->me = makeActor(makeForm(0.2, 1, 0.2, size, size));
 	poopGuy->move = makeMove();
 	Action *grav = makeGravity(poopGuy->move->vars);
 	setFriction(grav, 10);
 	poopGuy->jump = makeJump(poopGuy->move->vars, grav);
-	poopGuy->eatPoop = makeStomach();
+	poopGuy->eatPoop = makeStomach(size);
 	poopGuy->control = makeControl();
 	getPlayer(poopGuy->control->vars, poopGuy);
 	addAction(poopGuy->me, poopGuy->move);
@@ -27,32 +27,25 @@ void deletePlayer(Player *poopGuy) {
 void keyPressPlayer(Player *poopGuy, char input) {
 	eatPooVar *ep = (eatPooVar*)(poopGuy->eatPoop->vars);
 	moveVar *mv = (moveVar*)poopGuy->move->vars;
-	printf("%c\n", input);
+	//printf("%c\n", input);
 	controlVar *cv = (controlVar*)poopGuy->control->vars;
 	switch (input) {
 		case 97: //a
-			ep->dir = 1;
-			//if (poopGuy->lastInp == 97) {
+			changeDir(ep, 1);
 				cv->moveLeft = 1;
-			//}
 			break;
 		case 100: //d
-			ep->dir = 3;
-			//if (poopGuy->lastInp == 100) {
+			changeDir(ep, 3);
 				cv->moveRight = 1;
-				printf("time moveRight: %ld\n", clock());
-			//} else {
-			//	printf("1st press: %ld\n", clock());
-			//}
 			break;
 		case 101:
 			ep->eating = (ep->eating+1)%2;
 			break;
 		case 119:
-			ep->dir = 0;
+			changeDir(ep, 0);
 			break;
 		case 115:
-			ep->dir = 2;
+			changeDir(ep, 2);
 			break;
 		case 112:
 			ep->pooping = 1;

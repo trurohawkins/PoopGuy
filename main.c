@@ -1,5 +1,6 @@
 #include "form/Form.h"
 
+bool paused = false;
 Player *poopGuy;
 void update(int value);
 void keyDown(unsigned char, int, int);
@@ -7,28 +8,32 @@ void keyUp(unsigned char, int, int);
 void exitGame();
 
 int main(int argc, char **argv) {
+	if (argc > 1) {
+		printf("%s\n", argv[1]);
+	}
 	srand(time(NULL));
 	initDirections();
-	int worldX = 100;
-	int worldY = 50;
+	int worldX = 1000;
+	int worldY = 500;
 	int windowX = 500;
 	int windowY = 500;
 	makeWorld(worldX, worldY);
-	dirtFloor(3);
-	makeSquare(20, 15, 10);
+	dirtFloor(10);
+	makeSquare(30, 2, 50);
 	atexit(exitGame);
-	poopGuy = makePlayer();
-	placeForm(4, 49, poopGuy->me->body);
+	poopGuy = makePlayer(5);
+	placeForm(19, 19, poopGuy->me->body);
 	setCenter(poopGuy->me->body->pos);
 
-	Actor *rock = makeActor(makeForm(0.3, 0.3, 0.3));
+	/*Actor *rock = makeActor(makeForm(0.3, 0.3, 0.3));
 	Action *move =  makeMove();
 	addAction(rock, move);
 	addAction(rock, makeGravity(move->vars));
 	placeForm(13, 40, rock->body);
-
+*/
 	makeActorList();
 	addActor(poopGuy->me);
+	checkSide(poopGuy->me->body, 0, -1, false);
 	//addActor(rock);
 	
 //	stomachStuff(poopGuy->me->body, poopGuy->eatPoop);
@@ -42,13 +47,14 @@ int main(int argc, char **argv) {
 	glutKeyboardUpFunc(keyUp);
 	glutTimerFunc(25, update, 0);
 	glutMainLoop();	
-	
 	return 0;
 }
 
 void keyDown(unsigned char key, int mx, int my) {
 	if (key == 27) {
 		glutLeaveMainLoop();
+	} else if (key == 96) {
+		paused = !paused;
 	}
 	keyPressPlayer(poopGuy, key);
 }
@@ -58,13 +64,14 @@ void keyUp(unsigned char key, int mx, int my) {
 }
 
 void update(int value) {
-	actorListDo();
+	if (!paused) {
+		actorListDo();
+	}
 	setCenter(poopGuy->me->body->pos);
 	glutPostRedisplay();
 	glutTimerFunc(25, update, 0);
 }
 void exitGame() {
-	printf("coochy");
 	deleteWorld();
 	deletePlayer(poopGuy);
 	deleteActorList();

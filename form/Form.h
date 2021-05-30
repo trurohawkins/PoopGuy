@@ -4,10 +4,13 @@
 typedef struct Form {
 	int pos[2];
 	float color[3];
+	int size[2];
+	int ***body;
 } Form;
 //Form *inert;
 
-Form *makeForm(float r, float g, float b);
+Form *makeForm(float r, float g, float b, int wid, int len);
+Form *checkSide(Form *f, int xd, int yd, bool collide);
 void deleteForm(Form *f);
 void makeInert();
 Form *makeDirt();

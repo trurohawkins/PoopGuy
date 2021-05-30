@@ -30,7 +30,7 @@ void control(Form *f, Action *a) {
 	if (moveX != 0 && (cv->mrCount > 3 || cv->mlCount > 3)) {
 		moveVar *mv = (moveVar*)(cv->player->move->vars);
 		if (abs(mv->force[0] + (cv->player->speed * moveX)) <= cv->player->maxForce) {
-			printf("time force added = %ld\n", clock());
+			//printf("time force added = %ld\n", clock());
 			addForce(mv, cv->player->speed * moveX, 0);
 		}
 	} else if (cv->moveRight == 0 && cv->moveLeft == 0) {
