@@ -24,3 +24,11 @@ void drawSquare(float *color, int x, int y, int size) {
 		glVertex3f(x, y, 0);
 	glEnd();
 }
+
+void drawLine(float r, float g, float b, int x1, int y1, int x2, int y2) {
+	glColor3f(r, g, b);
+	glBegin(GL_LINES);
+		glVertex2f(x1, y1);
+		glVertex2f(x2, y2);
+	glEnd();
+}

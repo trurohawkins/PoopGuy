@@ -12,6 +12,8 @@ int main(int argc, char **argv) {
 	if (argc > 1) {
 		if (argv[1][1] == 'n') {
 			doGL = false;
+		} else if (argv[1][1] == 'g') {
+			setGrid(true);
 		}
 	}
 	srand(time(NULL));
