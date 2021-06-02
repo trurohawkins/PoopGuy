@@ -1,23 +1,24 @@
-Action *makeStomach(int bite) {
+Action *makeStomach(Form *f, float bite) {
 	eatPooVar *ep= (eatPooVar*)calloc(1, sizeof(eatPooVar));
 	ep->stomach = makeList();
 	ep->pooping = 0;
 	ep->eating = 0;
 	ep->bite[0] = 1;//smaller length for rect bite
 	ep->bite[1] =	bite;
+	changeDir(ep, f, 3);
 	Action *stom = makeAction(&stomachStuff, ep);
 	stom->active = 1;
 	return stom;
 }
 
-void changeDir(eatPooVar *ep, int dir) {
+void changeDir(eatPooVar *ep, Form* f, int dir) {
 	ep->dir = dir;
-	if (dir%2 == 0) {//assuming for directions
-		ep->xBite = ep->bite[1];
+	if (dir%2 == 0) {//assuming 4 directions
+		ep->xBite = ep->bite[1] - f->pMod[0];
 		ep->yBite = ep->bite[0];
 	} else {
 		ep->xBite = ep->bite[0];
-		ep->yBite = ep->bite[1];
+		ep->yBite = ep->bite[1] - f->pMod[1];
 	}
 }
 
@@ -26,13 +27,24 @@ void stomachStuff(Form *f, Action *a) {
 	int **d = getDirs();
 	if (ep->eating != 0) {
 		Form *food = NULL;
-		int xc = f->pos[0] + (((f->size[0]/2+1) + ep->xBite/2) * d[ep->dir][0]);
-		int yc = f->pos[1] + (((f->size[1]/2+1) + ep->yBite/2) * d[ep->dir][1]);
-		for (int i = -ep->xBite/2; i <= ep->xBite/2; i++) {
-			for (int j = -ep->yBite/2; j <= ep->yBite/2; j++) {
-				Form *tmp = takeForm(xc + i, yc + j);
+		int mpx = f->pos[0] + (f->pMod[0] * d[ep->dir][0]);
+		int mpy = f->pos[1] - (1-f->pMod[0]);
+		int xd = d[ep->dir][0];
+		int yd = 1;	
+		if (ep->dir % 2 == 0) {
+			yd = d[ep->dir][1];
+			xd = 1;
+			mpy = f->pos[1] + (f->pMod[1] * d[ep->dir][1]);
+			mpx = f->pos[0] - (1-f->pMod[1]);
+		} 
+		int xc = mpx + (((f->size[0]/2)+1) * xd);
+		int yc = mpy + (((f->size[1]/2)+1) * yd);
+		for (int x = 0; x < ep->xBite; x++) {
+			for (int y = 0; y < ep->yBite; y++) {
+				Form *tmp = takeForm(xc - x, yc - y);
 				if (tmp != NULL && food == NULL) {
-					food = tmp;
+					addToStack(tmp, a);
+					//food = tmp;
 				}
 			}
 		}
@@ -55,19 +67,34 @@ void stomachStuff(Form *f, Action *a) {
 				}
 			}
 			if (poopGood) {
-				int xc = f->pos[0] + (((f->size[0]/2+1) + ep->xBite/2) * d[buttDir][0]);
-				int yc = f->pos[1] + (((f->size[1]/2+1) + ep->yBite/2) * d[buttDir][1]);
-
-				for (int i = -ep->xBite/2; i <= ep->xBite/2; i++) {
-					for (int j = -ep->yBite/2; j <= ep->yBite/2; j++) {
-						placeForm(xc + i, yc + j, poo);
+				addToStack(poo, a);
+				int mpx = f->pos[0] + (f->pMod[0] * d[buttDir][0]);
+				int mpy = f->pos[1] - (1-f->pMod[0]);
+				int xd = d[buttDir][0];
+				int yd = 1;	
+				if (ep->dir % 2 == 0) {
+					yd = d[buttDir][1];
+					xd = 1;
+					mpy = f->pos[1] + (f->pMod[1] * d[buttDir][1]);
+					mpx = f->pos[0] - (1-f->pMod[1]);
+				} 
+				int xc = mpx + (((f->size[0]/2)+1) * xd);
+				int yc = mpy + (((f->size[1]/2)+1) * yd);
+				for (int x = 0; x < ep->xBite; x++) {
+					for (int y = 0; y < ep->yBite; y++) {
+						poo = removeFromStack(a);
+						if (poo != NULL) {
+							placeForm(xc -x, yc - y, poo);
+						}else {
+							x = 100;
+							break;
+						}
 					}
 				}
 			} else {
 				addToStack(poo, a);
 			}
 		}
-		//ep->pooping = 0;
 	}
 }
 

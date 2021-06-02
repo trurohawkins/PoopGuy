@@ -1,6 +1,7 @@
 #include "form/Form.h"
 
 bool paused = false;
+bool doGL = true;
 Player *poopGuy;
 void update(int value);
 void keyDown(unsigned char, int, int);
@@ -9,7 +10,9 @@ void exitGame();
 
 int main(int argc, char **argv) {
 	if (argc > 1) {
-		printf("%s\n", argv[1]);
+		if (argv[1][1] == 'n') {
+			doGL = false;
+		}
 	}
 	srand(time(NULL));
 	initDirections();
@@ -19,12 +22,13 @@ int main(int argc, char **argv) {
 	int windowY = 500;
 	makeWorld(worldX, worldY);
 	dirtFloor(10);
-	makeSquare(30, 2, 50);
+	makeSquare(45, 2, 100);
+	makeSquare(0, 2, 33);
 	atexit(exitGame);
-	poopGuy = makePlayer(5);
-	placeForm(19, 19, poopGuy->me->body);
+	poopGuy = makePlayer(9);
+	placeForm(44, 12, poopGuy->me->body);
 	setCenter(poopGuy->me->body->pos);
-
+	checkSide(poopGuy->me->body, 1, 0, true);
 	/*Actor *rock = makeActor(makeForm(0.3, 0.3, 0.3));
 	Action *move =  makeMove();
 	addAction(rock, move);
@@ -33,20 +37,20 @@ int main(int argc, char **argv) {
 */
 	makeActorList();
 	addActor(poopGuy->me);
-	checkSide(poopGuy->me->body, 0, -1, false);
 	//addActor(rock);
 	
 //	stomachStuff(poopGuy->me->body, poopGuy->eatPoop);
 //	eatPooVar *ep = (eatPooVar*)(poopGuy->eatPoop->vars);
 //	ep->pooping = 1;
-
-	initializeGLUT(argc, argv, windowX, windowY);
-	glutIgnoreKeyRepeat(1);	
-	glutDisplayFunc(drawWorld);	
-	glutKeyboardFunc(keyDown);
-	glutKeyboardUpFunc(keyUp);
-	glutTimerFunc(25, update, 0);
-	glutMainLoop();	
+	if (doGL) {
+		initializeGLUT(argc, argv, windowX, windowY);
+		glutIgnoreKeyRepeat(1);	
+		glutDisplayFunc(drawWorld);	
+		glutKeyboardFunc(keyDown);
+		glutKeyboardUpFunc(keyUp);
+		glutTimerFunc(25, update, 0);
+		glutMainLoop();
+	}	
 	return 0;
 }
 

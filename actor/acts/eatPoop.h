@@ -8,14 +8,15 @@ typedef struct eatPooVar {
 	int dir;
 	bool pooping;
 	bool eating;
-	int bite[2];
+	float bite[2];
 	int xBite;
 	int yBite;
+
 } eatPooVar;
 
-Action *makeStomach(int bite);
+Action *makeStomach(Form *f, float bite);
 
-void changeDir(eatPooVar *ep, int dir);
+void changeDir(eatPooVar *ep, Form* f, int dir);
 void stomachStuff(Form *f, Action *a);
 void addToStack(Form *f, Action *a);
 Form *removeFromStack();

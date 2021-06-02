@@ -2,14 +2,15 @@
 #define LIB
 #include "../helper/helper.h"
 typedef struct Form {
-	int pos[2];
+	float pos[2];
+	float pMod[2];
 	float color[3];
 	int size[2];
-	int ***body;
+	float ***body;
 } Form;
 //Form *inert;
 
-Form *makeForm(float r, float g, float b, int wid, int len);
+Form *makeForm(float r, float g, float b, float wid, float len);
 Form *checkSide(Form *f, int xd, int yd, bool collide);
 void deleteForm(Form *f);
 void makeInert();

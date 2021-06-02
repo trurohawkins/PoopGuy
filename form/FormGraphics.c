@@ -8,8 +8,8 @@ void drawForm(Form *f, int x, int y, int size) {
 			drawSquare(f->color, x, y, size);
 	}
 }
-int centerX;
-int centerY;
+float centerX;
+float centerY;
 
 void drawWorld() {
 	glClearColor(0, 0, 0, 0);
@@ -29,7 +29,7 @@ void drawWorld() {
 	glutSwapBuffers();
 }
 
-void setCenter(int cp[2]) {
+void setCenter(float cp[2]) {
 	centerX = cp[0];
 	centerY = cp[1];
 }

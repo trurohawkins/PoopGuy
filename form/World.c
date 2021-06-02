@@ -40,18 +40,30 @@ void deleteTerrain() {
 }
 
 void placeForm(int x, int y, TYPE *form) {
-	form->pos[0] = x;
-	form->pos[1] = y;
+	/*
+	int mod[2] = {0,0};
+	if (form->size[0] != 0 && form->size[1] != 0) {
+		for (int i = 0; i < 2; i++) {
+			if (form->size[i] % 2 == 0) {
+				mod[i] = -0.5;
+			}
+		}
+	}
+	*/
+	form->pos[0] = x;// + mod[0];
+	form->pos[1] = y;// + mod[1];
 	if (form->size[0] == 0 && form->size[1] == 0) {
 		if (x >= 0 && y >= 0 && x < theWorld->x && y < theWorld->y) {
 			theWorld->map[x][y] = form;
 		}
 	} else {
+		//printf("placing\n");
 		for (int i = 0; i < form->size[0]; i++) {
 			for (int j = 0; j < form->size[1]; j++) {
 				int xp = form->pos[0] + form->body[i][j][0];
 				int yp = form->pos[1] + form->body[i][j][1];
 				if (xp >= 0 && yp >= 0 && xp < theWorld->x && yp < theWorld->y) {
+					//printf("placing: %i, %i\n", xp, yp);
 					theWorld->map[xp][yp] = form;
 				}
 			}

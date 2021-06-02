@@ -7,7 +7,7 @@ Player *makePlayer (int size) {
 	Action *grav = makeGravity(poopGuy->move->vars);
 	setFriction(grav, 10);
 	poopGuy->jump = makeJump(poopGuy->move->vars, grav);
-	poopGuy->eatPoop = makeStomach(size);
+	poopGuy->eatPoop = makeStomach(poopGuy->me->body, size);
 	poopGuy->control = makeControl();
 	getPlayer(poopGuy->control->vars, poopGuy);
 	addAction(poopGuy->me, poopGuy->move);
@@ -15,6 +15,8 @@ Player *makePlayer (int size) {
 	addAction(poopGuy->me, poopGuy->jump);
 	addAction(poopGuy->me, poopGuy->eatPoop);
 	addAction(poopGuy->me, poopGuy->control);
+	//changeDir(poopGuy->eatPoop poopGuy->me->body, 3);
+	//cv->moveRight = 1;
 	return poopGuy;
 }
 
@@ -31,21 +33,21 @@ void keyPressPlayer(Player *poopGuy, char input) {
 	controlVar *cv = (controlVar*)poopGuy->control->vars;
 	switch (input) {
 		case 97: //a
-			changeDir(ep, 1);
+			changeDir(ep, poopGuy->me->body, 1);
 				cv->moveLeft = 1;
 			break;
 		case 100: //d
-			changeDir(ep, 3);
+			changeDir(ep, poopGuy->me->body, 3);
 				cv->moveRight = 1;
 			break;
 		case 101:
 			ep->eating = (ep->eating+1)%2;
 			break;
 		case 119:
-			changeDir(ep, 0);
+			changeDir(ep, poopGuy->me->body,0);
 			break;
 		case 115:
-			changeDir(ep, 2);
+			changeDir(ep, poopGuy->me->body,2);
 			break;
 		case 112:
 			ep->pooping = 1;
