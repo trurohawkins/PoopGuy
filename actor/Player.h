@@ -10,7 +10,7 @@ typedef struct Player {
 
 } Player;
 
-Player *makePlayer();
+Player *makePlayer(int sx, int sy);
 void deletePlayer(Player *);
 void keyPressPlayer(Player *, char);
 void keyReleasePlayer(Player *, char);

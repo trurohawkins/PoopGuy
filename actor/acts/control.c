@@ -30,8 +30,15 @@ void control(Form *f, Action *a) {
 	if (moveX != 0 && (cv->mrCount > 3 || cv->mlCount > 3)) {
 		moveVar *mv = (moveVar*)(cv->player->move->vars);
 		if (abs(mv->force[0] + (cv->player->speed * moveX)) <= cv->player->maxForce) {
-			//printf("time force added = %ld\n", clock());
 			addForce(mv, cv->player->speed * moveX, 0);
+		}
+		if (checkSide(f, moveX, 0, false) != 0) {
+			int xCol = getEdge(f, 0, moveX);
+			int yCol = getEdge(f, 1, -1) + 2;
+			if (checkSide(f, 0, 1, false) == NULL && checkCol(xCol, yCol) == NULL) {
+				removeForm(f);
+				placeForm(f->pos[0], f->pos[1] + 1, f);
+			}
 		}
 	} else if (cv->moveRight == 0 && cv->moveLeft == 0) {
 		// no input reset last input character. Turning based on last inp, want to change direction w/o moving{

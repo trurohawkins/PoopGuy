@@ -2,6 +2,7 @@
 #define LIB
 #include "../helper/helper.h"
 typedef struct Form {
+	int id;
 	float pos[2];
 	float pMod[2];
 	float color[3];
@@ -12,6 +13,7 @@ typedef struct Form {
 
 Form *makeForm(float r, float g, float b, float wid, float len);
 Form *checkSide(Form *f, int xd, int yd, bool collide);
+int getEdge (Form *f, int side, int d);
 void deleteForm(Form *f);
 void makeInert();
 Form *makeDirt();

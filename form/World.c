@@ -121,16 +121,18 @@ void makeSquare(int x, int y, int z) {
 void dirtFloor(int height) {
 	TYPE *d = makeDirt();
 	addToList(theWorld->terrain, d);
-	int maxGrow = 0;
+	int maxGrow = 2;
 	for (int x = 1; x < theWorld->x - 1; x++) {
 		for(int y = 0; y < height; y++) {
 			placeForm(x, y, d);
 		}
-		int newGrow = (int)(randPercent() * maxGrow);
-		if (randPercent() > 0.5) {
-			newGrow *= -1;
+		if (randPercent() > 0.75) {
+			int newGrow = (int)(randPercent() * maxGrow);
+			if (randPercent() > 0.5) {
+				newGrow *= -1;
+			}
+			height = clamp(height + newGrow, 1, theWorld->y - 1);
 		}
-		height = clamp(height + newGrow, 1, theWorld->y - 1);
 		//printf("ng: %i, h: %i\n", newGrow, height);
 	}
 }

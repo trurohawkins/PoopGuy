@@ -1,13 +1,14 @@
-Player *makePlayer (int size) {
+Player *makePlayer (int sx, int sy) {
 	Player *poopGuy = (Player *)calloc(1, sizeof(Player));
 	poopGuy->speed = 10;
 	poopGuy->maxForce = 10;
-	poopGuy->me = makeActor(makeForm(0.2, 1, 0.2, size, size));
+	poopGuy->me = makeActor(makeForm(0.2, 1, 0.2, sx, sy));
+	poopGuy->me->body->id = 69;
 	poopGuy->move = makeMove();
 	Action *grav = makeGravity(poopGuy->move->vars);
 	setFriction(grav, 10);
 	poopGuy->jump = makeJump(poopGuy->move->vars, grav);
-	poopGuy->eatPoop = makeStomach(poopGuy->me->body, size);
+	poopGuy->eatPoop = makeStomach(poopGuy->me->body, sx, sy);
 	poopGuy->control = makeControl();
 	getPlayer(poopGuy->control->vars, poopGuy);
 	addAction(poopGuy->me, poopGuy->move);

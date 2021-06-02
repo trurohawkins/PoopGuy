@@ -2,6 +2,7 @@
 Form *inert;
 Form *makeForm(float r, float g, float b, float wid, float len) {
 	Form *newForm = (Form *)calloc(1, sizeof(Form));
+	newForm->id = 0;
 	newForm->pos[0] = -1;
 	newForm->pos[1] = -1;
 	newForm->color[0] = r;
@@ -19,7 +20,6 @@ Form *makeForm(float r, float g, float b, float wid, float len) {
 	} else {
 		newForm->pMod[1] = 0;
 	}
-
 	//float wid = w;
 	//float len = l;
 	if (wid != 0 && len != 0) {
@@ -34,16 +34,24 @@ Form *makeForm(float r, float g, float b, float wid, float len) {
 				newForm->body[x][y] = (float*)calloc(2, sizeof(float));
 				newForm->body[x][y][0] = -(wid/2) + x;
 				newForm->body[x][y][1] = -(len/2) + y;
-				//float xb = -(wid/2) + x;
-				//float yb = -(len/2) + y;
+				float xb = -(wid/2) + x;
+				float yb = -(len/2) + y;
 				//printf("[%i][%i] = %f, %f\n", x, y, newForm->body[x][y][0], newForm->body[x][y][1]);
-				//prfloatf("float val = %f, %f\n", xb, yb);
+				//printf("float val = %f, %f\n", xb, yb);
 			}
 		}
 	} else {
 		newForm->body = 0;
 	}
 	return newForm;
+}
+
+int getEdge(Form *f, int side, int d) {
+	if (d > 0) {
+		return f->pos[side]+(int)(f->size[side]+f->pMod[side])/2 + 1;
+	} else {
+		return f->pos[side]-(int)(((f->size[side]-f->pMod[side])/2 + 1)); 
+	}
 }
 
 Form *checkSide(Form *f, int xd, int yd, bool collide) {
@@ -56,7 +64,6 @@ Form *checkSide(Form *f, int xd, int yd, bool collide) {
 			col = -((f->size[0]-f->pMod[0])/2 + 1);
 		}
 		int hei = f->size[1];//(f->size[1]-f->pMod[1])/2;
-		//printf("col: %i\n", col);
 		//printf("hei: %i - from %f\n", hei, f->size[1] + f->pMod[1]);
 		//if (collide) {
 		//	printf("checking side, Im at %f, %f\n", f->pos[0], f->pos[1]);
@@ -78,10 +85,8 @@ Form *checkSide(Form *f, int xd, int yd, bool collide) {
 	if (yd != 0) {
 		int row = 0;
 		if (yd > 0) {
-			row = f->size[1]/2 + 1;
 			row = (f->size[1]+f->pMod[1])/2 + 1;
 		} else if (yd < 0) {
-			row = -f->size[1]/2 - 1;
 			row = -((f->size[1]-f->pMod[1])/2 + 1);
 		}
 		int wid = f->size[0];///2;
