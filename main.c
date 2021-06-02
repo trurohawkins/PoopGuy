@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 	//makeSquare(45, 2, 100);
 	//makeSquare(0, 2, 33);
 	atexit(exitGame);
-	poopGuy = makePlayer(1, 1);
+	poopGuy = makePlayer(2, 2);
 	placeForm(44, 30, poopGuy->me->body);
 	setCenter(poopGuy->me->body->pos);
 	checkSide(poopGuy->me->body, 1, 0, true);

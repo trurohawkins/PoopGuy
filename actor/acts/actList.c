@@ -16,8 +16,8 @@ moveVar *makeMoveVar() {
 	mv->force[1] = 0;
 	mv->dir[0] = 0;
 	mv->dir[1] = 0;
-	mv->decel[0] = 2;
-	mv->decel[1] = 10;
+	mv->decel[0] = 0;
+	mv->decel[1] = 0;
 	mv->decelCounter[0] = 0;
 	mv->decelCounter[1] = 0;
 	mv->decelSpeed[0] = 10;
@@ -34,75 +34,25 @@ void move(Form *f, Action *a) {
 	if (mv->force[0] != 0) {
 		int speed = (mv->forceCounter[0] + abs(mv->force[0])) / mv->mass;
 		mv->forceCounter[0] = (int)(mv->forceCounter[0] + abs(mv->force[0])) % mv->mass;
+		//printf("moving: speed: %i\n", speed);
 		for (int i = 0; i < speed; i++) {
 			int p = f->pos[0] + sign(mv->force[0]);
-			//if (checkCol(p, f->pos[1]) == 0) {
 			if (checkSide(f, sign(mv->force[0]), 0, true) == 0) {
-				//removeForm(f->pos[0], f->pos[1]);
 				removeForm(f);
 				placeForm(p, f->pos[1], f);
-				//printf("form moved at %ld\n", clock());
 			}
 		}
-	//decel
-	/*
-		if (mv->decelCounter[0] >= mv->decel[0]) {
-			//int fx = sign(mv->force[0]) * mv->decelSpeed[0];
-			if (mv->force[0] > 0) {
-				if (mv->force[0] - mv->decelSpeed[0] > 0) {
-					mv->force[0] -= mv->decelSpeed[0];
-				} else {
-					mv->force[0] = 0;
-				}
-			} else if (mv->force[0] < 0) {
-				if (mv->force[0] + mv->decelSpeed[0] < 0) {
-					mv->force[0] += mv->decelSpeed[0];
-				} else {
-					mv->force[0] = 0;
-				}
-				
-			}
-			mv->decelCounter[0] = 0;
-		} else {
-			mv->decelCounter[0]++;
-		}
-	*/
 	}
 	if (mv->force[1] != 0) {
 		int speed = (mv->forceCounter[1] + abs(mv->force[1])) / mv->mass;
 		mv->forceCounter[1] = (int)(mv->forceCounter[1] + abs(mv->force[1])) % mv->mass;
-	//	mv->force[1] = 0;
 		for (int i = 0; i < speed; i++) {
 			int p = f->pos[1] + sign(mv->force[1]);//mv->dir[1];
-			//if (checkCol(f->pos[0], p) == 0) {
 			if (checkSide(f, 0, sign(mv->force[1]), true) == 0) {
 				removeForm(f);
-				//removeForm(f->pos[0], f->pos[1]);
 				placeForm(f->pos[0], p, f);
 			}
 		}
-		/*
-		if (mv->decelCounter[1] >= mv->decel[1]) {
-			//int fx = sign(mv->force[1]) * mv->decelSpeed[1];
-			if (mv->force[1] > 0) {
-				if (mv->force[1] - mv->decelSpeed[1] > 0) {
-					mv->force[1] -= mv->decelSpeed[1];
-				} else {
-					mv->force[1] = 0;
-				}
-			} else if (mv->force[1] < 0) {
-				if (mv->force[1] + mv->decelSpeed[1] < 0) {
-					mv->force[1] += mv->decelSpeed[1];
-				} else {
-					mv->force[1] = 0;
-				}
-			}
-			mv->decelCounter[1] = 0;
-		} else {
-			mv->decelCounter[1]++;
-		}
-		*/
-
 	}
 	decelerate(mv);
 }
@@ -120,7 +70,7 @@ void decelerate(moveVar *mv) {
 				} else if (mv->force[i] < 0) {
 					if (mv->force[i] + mv->decelSpeed[i] < 0) {
 						mv->force[i] += mv->decelSpeed[i];
-					} else {
+		 			} else {
 						mv->force[i] = 0;
 					}
 				}
@@ -147,7 +97,7 @@ void addForce(void *m, int powX, int powY) {
 	moveVar *mv = (moveVar*)m;
 	if (powX != 0) {
 		mv->force[0] += powX;
-		//printf("force %i\n" + mv->force[0]);
+		printf("force %i\n" + mv->force[0]);
 	}
 	if (powY != 0) {
 		mv->force[1] += powY;
@@ -160,8 +110,6 @@ void setForce(void *m, int x, int y) {
 	moveVar *mv = (moveVar*)m;
 	if (x >= 0) {
 		mv->force[0] = x;
-	} else {
-		mv->force[0] = 0;
 	}
 	if (y >= 0) {
 		mv->force[1] = y;

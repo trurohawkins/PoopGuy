@@ -15,7 +15,7 @@ void deleteAction(Action *action) {
 	free(action);
 }
 void defaultAction(Form *a) {
-	printf("I am acting\n");
+	printf("I(%i) am acting %i \n", a->id, a->id);
 }
 /*
 void setActVar(Action *action, int index, int val) {
