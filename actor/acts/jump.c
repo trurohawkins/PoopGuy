@@ -3,7 +3,7 @@ Action *makeJump(moveVar *mv, Action *n_grav) {
 	jv->move = mv;
 	jv->grav = n_grav;
 	jv->maxJP = 4;
-	jv->jumpPow = 3;
+	jv->jumpPow = 10;
 	jv->jumpCount = 0;
 	jv->jumpMax = 2;
 	Action *a = makeAction(&jump, jv);
@@ -34,8 +34,9 @@ void jump(Form *f, Action *a) {
 	} else {
 		dir = 0;
 		jv->grav->active = 1;
-		if (checkCol(f->pos[0], f->pos[1]-1) != 0 ||checkCol(f->pos[0]+1, f->pos[1]) != 0 
-				|| checkCol(f->pos[0]-1, f->pos[1]) != 0 ) {
+		//if (checkCol(f->pos[0], f->pos[1]-1) != 0 ||checkCol(f->pos[0]+1, f->pos[1]) != 0 
+		//		|| checkCol(f->pos[0]-1, f->pos[1]) != 0 ) {
+		if (checkSide(f, 0, -1, false) != 0 || checkSide(f, 1, 0, false) != 0 || checkSide(f, -1, 0, false)) {
 			a->active = 0;
 			jv->jumpCount = 0;
 		}

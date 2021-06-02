@@ -8,7 +8,6 @@ Form *makeForm(float r, float g, float b, float wid, float len) {
 	newForm->color[1] = g;
 	newForm->color[2] = b;
 	newForm->size[0] = wid;
-	printf("new size: %f from %f\n", newForm->size[0], wid);
 	newForm->size[1] = len;
 	if ((int)wid % 2 == 0) {
 		newForm->pMod[0] = -0.5;
@@ -37,7 +36,7 @@ Form *makeForm(float r, float g, float b, float wid, float len) {
 				newForm->body[x][y][1] = -(len/2) + y;
 				//float xb = -(wid/2) + x;
 				//float yb = -(len/2) + y;
-				printf("[%i][%i] = %f, %f\n", x, y, newForm->body[x][y][0], newForm->body[x][y][1]);
+				//printf("[%i][%i] = %f, %f\n", x, y, newForm->body[x][y][0], newForm->body[x][y][1]);
 				//prfloatf("float val = %f, %f\n", xb, yb);
 			}
 		}

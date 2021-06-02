@@ -160,6 +160,8 @@ void setForce(void *m, int x, int y) {
 	moveVar *mv = (moveVar*)m;
 	if (x >= 0) {
 		mv->force[0] = x;
+	} else {
+		mv->force[0] = 0;
 	}
 	if (y >= 0) {
 		mv->force[1] = y;
