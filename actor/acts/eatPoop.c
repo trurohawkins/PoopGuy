@@ -30,11 +30,11 @@ void stomachStuff(Form *f, Action *a) {
 	int yc;
 	if (ep->eating != 0) {
 		if (ep->dir % 2 == 0) {
-			xc = (int)(f->pos[0] - (1-f->pMod[0])) + (((f->size[0]/2)+1));
+			xc = (f->pos[0] - (1-f->pMod[0]) + ((f->size[0]/2)+1));
 			yc = getEdge(f, 1, d[ep->dir][1]);
 		} else {
 			xc = getEdge(f, 0, d[ep->dir][0]);
-			yc = (int)(f->pos[1] - (1-f->pMod[1])) + (((f->size[1]/2)+1));
+			yc = (f->pos[1] - (1-f->pMod[1]) + ((f->size[1]/2)+1));
 		}
 		for (int x = 0; x < ep->xBite; x++) {
 			for (int y = 0; y < ep->yBite; y++) {
@@ -62,11 +62,11 @@ void stomachStuff(Form *f, Action *a) {
 			if (poopGood) {
 				addToStack(poo, a);
 				if (ep->dir % 2 == 0) {
-					xc = (int)(f->pos[0] - (1-f->pMod[0])) + (((f->size[0]/2)+1));
+					xc = (f->pos[0] - (1-f->pMod[0]) + ((f->size[0]/2)+1));
 					yc = getEdge(f, 1, d[buttDir][1]);
 				} else {
 					xc = getEdge(f, 0, d[buttDir][0]);
-					yc = (int)(f->pos[1] - (1-f->pMod[1])) + (((f->size[1]/2)+1));
+					yc = (f->pos[1] - (1-f->pMod[1]) + ((f->size[1]/2)+1));
 				}
 				for (int x = 0; x < ep->xBite; x++) {
 					for (int y = 0; y < ep->yBite; y++) {
