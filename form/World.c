@@ -118,6 +118,28 @@ void makeSquare(int x, int y, int z) {
 	}
 
 }
+
+ void makeCircle(int x, int y, int r) {
+	printf("making circle ");
+	TYPE *b = makeDirt() ;
+	int sx = x - r ;
+	int sy = y - r ;
+	int test ;
+	int xd ;
+	int yd ;
+	printf(" starting at (%i, %i) ", sx, sy);
+	for (int i = sx; i < ( sx + (2*r)+1 ) ; i++) {
+		for (int j = sy; j < ( sy + (2*r)+1 ); j++) {
+		  xd = (x-i);
+		  yd = (y-j);	  
+		  if ( sqrt ( (xd * xd) + (yd *yd) )  <= r )  {
+	   	test =  (sqrt( (xd * xd) + (yd *yd) )) ;  	
+		   printf(" d=%i ", test) ;
+		    placeForm(i, j, b) ;
+		    printf(" (%i, %i) ", i, j);
+
+}}}}
+
 void dirtFloor(int height) {
 	TYPE *d = makeDirt();
 	addToList(theWorld->terrain, d);

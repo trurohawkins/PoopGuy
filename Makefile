@@ -1,6 +1,6 @@
 CC = gcc -c -g
 GLW = -lglu32 -lopengl32 -lfreeglut
-GLL = -lGL -lglut -lGLU
+GLL = -lGL -lglut -lGLU -lm
 FD = form/
 AD = actor/
 ACD = $(AD)acts/
