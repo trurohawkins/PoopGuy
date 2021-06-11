@@ -1,5 +1,6 @@
 #include "form/Form.h"
 
+int FPS = 60;
 bool paused = false;
 bool doGL = true;
 Player *poopGuy;
@@ -16,6 +17,7 @@ int main(int argc, char **argv) {
 			setGrid(true);
 		}
 	}
+
 	srand(time(NULL));
 	initDirections();
 	int worldX = 1000;
@@ -39,7 +41,6 @@ int main(int argc, char **argv) {
 	makeActorList();
 	addActor(poopGuy->me);
 	//addActor(rock);
-	
 //	stomachStuff(poopGuy->me->body, poopGuy->eatPoop);
 //	eatPooVar *ep = (eatPooVar*)(poopGuy->eatPoop->vars);
 //	ep->pooping = 1;
@@ -49,7 +50,7 @@ int main(int argc, char **argv) {
 		glutDisplayFunc(drawWorld);	
 		glutKeyboardFunc(keyDown);
 		glutKeyboardUpFunc(keyUp);
-		glutTimerFunc(25, update, 0);
+		glutTimerFunc(1000/FPS, update, 0);
 		glutMainLoop();
 	}	
 	return 0;
@@ -74,7 +75,7 @@ void update(int value) {
 	}
 	setCenter(poopGuy->me->body->pos);
 	glutPostRedisplay();
-	glutTimerFunc(25, update, 0);
+	glutTimerFunc(1000/FPS, update, 0);
 }
 void exitGame() {
 	deleteWorld();

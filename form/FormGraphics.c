@@ -11,6 +11,8 @@ void drawForm(Form *f, int x, int y, int size) {
 bool grid = false;
 float centerX;
 float centerY;
+int initialTime;
+int frameCount = 0;
 
 void drawWorld() {
 	glClearColor(0.1, 0.2, 0.75, 0);
@@ -32,15 +34,27 @@ void drawWorld() {
 				drawLine(0,0,0,0, j-(cy-fy), frameX, j-(cy-fy));
 			}
 			drawLine(0,0,0,i-(cx-fx), 0, i-(cx-fx), frameY);
+
 		}
 	}
-			
-			glutSwapBuffers();
+	frameCount++;
+	int curTime = time(NULL);
+	if (curTime - initialTime >= 1) {
+		int fps = frameCount / (curTime - initialTime);
+		//printf("FPS: %i\n", fps);
+		initialTime = curTime;
+		frameCount = 0;
+	}
+	glutSwapBuffers();
 }
 
 void setCenter(float cp[2]) {
 	centerX = cp[0];
 	centerY = cp[1];
+}
+
+void setInitTime(int newTime) {
+	initialTime = newTime;
 }
 
 void setGrid(bool on) {

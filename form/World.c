@@ -144,7 +144,7 @@ void dirtFloor(int height) {
 	TYPE *d = makeDirt();
 	addToList(theWorld->terrain, d);
 	int maxGrow = 2;
-	for (int x = 1; x < theWorld->x - 1; x++) {
+	for (int x = 0; x < theWorld->x; x++) {
 		for(int y = 0; y < height; y++) {
 			placeForm(x, y, d);
 		}

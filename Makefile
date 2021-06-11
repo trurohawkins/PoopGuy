@@ -34,3 +34,6 @@ clean:
 fclean:
 	rm *.o *.a
 	rm PoopGuy
+
+mclean:
+	rm vgcore*
