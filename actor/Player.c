@@ -35,11 +35,11 @@ void keyPressPlayer(Player *poopGuy, char input) {
 	switch (input) {
 		case 97: //a
 			changeDir(ep, poopGuy->me->body, 1);
-				cv->moveLeft = 1;
+			cv->moveLeft = 1;
 			break;
 		case 100: //d
 			changeDir(ep, poopGuy->me->body, 3);
-				cv->moveRight = 1;
+			cv->moveRight = 1;
 			break;
 		case 101:
 			ep->eating = (ep->eating+1)%2;

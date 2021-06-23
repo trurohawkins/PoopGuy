@@ -12,7 +12,7 @@ Actor *makeActor(Form * f/*, Action *a*/) {
 
 
 void addAction(Actor *actor, Action *action) {
-	addToList(actor->actionList, action);
+	addToList(&(actor->actionList), action);
 }
 
 
@@ -48,7 +48,7 @@ void freeActionList(Actor *actor) {
 void deleteActor(Actor *actor) {
 	deleteForm(actor->body);
 	freeActionList(actor);
-	free(actor);
+	//free(actor);
 }
 #include "ActorList.c"
 #include "Player.c"

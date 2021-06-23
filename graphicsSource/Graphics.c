@@ -1,5 +1,5 @@
 #include "GL/freeglut.h"
-#include "GL/gl.h"
+//#include "GL/gl.h"
 
 int frameX=75;
 int frameY=75;

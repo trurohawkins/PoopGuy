@@ -7,6 +7,7 @@ Player *poopGuy;
 void update(int value);
 void keyDown(unsigned char, int, int);
 void keyUp(unsigned char, int, int);
+void joystick(unsigned int buttonmask, int x, int y, int z);
 void exitGame();
 
 int main(int argc, char **argv) {
@@ -50,10 +51,16 @@ int main(int argc, char **argv) {
 		glutDisplayFunc(drawWorld);	
 		glutKeyboardFunc(keyDown);
 		glutKeyboardUpFunc(keyUp);
+		glutJoystickFunc(joystick, 25);
 		glutTimerFunc(1000/FPS, update, 0);
 		glutMainLoop();
 	}	
 	return 0;
+}
+
+void joystick(unsigned int buttonmask, int x, int y, int z) {
+	printf("getting joystick %i, %i, %i axis values\n", x, y, z);
+	printf("buttonmask %u\n", buttonmask);
 }
 
 void keyDown(unsigned char key, int mx, int my) {

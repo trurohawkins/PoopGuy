@@ -32,6 +32,7 @@ void control(Form *f, Action *a) {
 		if (abs(mv->force[0] + (cv->player->speed * moveX)) <= cv->player->maxForce) {
 			addForce(mv, cv->player->speed * moveX, 0);
 		}
+		//taking steps up smll walls
 		if (checkSide(f, moveX, 0, false) != 0) {
 			int xCol = getEdge(f, 0, moveX);
 			int yCol = getEdge(f, 1, -1) + 2;

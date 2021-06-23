@@ -6,15 +6,20 @@ linkedList *makeList() {
 	return nl;
 }
 
-void addToList(linkedList *head, void *item) {
-	while(head->data != 0) {
-		if (head->next == 0) {
-			head->next = makeList();
-	//	       head->->prev = head;	
+void addToList(linkedList **head, void *item) {
+	if ((*head) == 0) {
+		(*head) = makeList();
+		(*head)->data = item;
+	} else {
+		linkedList *tmp = *head;
+		while(tmp->data != 0) {
+			if (tmp->next == 0) {
+				tmp->next = makeList();
+			}
+			tmp = tmp->next;
 		}
-		head = head->next;
+	tmp->data = item;
 	}
-	head->data = item;
 }
 
 void *removeFromList(linkedList **head, void *item) {
@@ -69,7 +74,36 @@ void freeList(linkedList **ll) {
 	linkedList *next = 0;
 	while (cur != NULL) {
 		next = cur->next;
+		free(cur->data);
 		free(cur);
 		cur = next;
 	}	
+}
+
+void *removeFromListInt(linkedList **head, int item) {
+	void *data = 0;
+	if (*head == 0 || (*head)->data == 0) {
+		return data;
+	}
+	if (*(int*)((*head)->data) == item) {
+		linkedList *oh = *head;
+		(*head) = (*head)->next;
+		data = oh->data;
+		free(oh);
+	} else {
+		linkedList *tmp = (*head)->next;
+		linkedList *pre = *head;
+		while (tmp != 0) {
+			if (*((int*)(tmp->data)) == item) {
+				pre->next = tmp->next;
+				data = tmp->data;
+				free(tmp);
+				tmp = pre->next;
+			} else {
+				tmp = tmp->next;
+			}
+			pre = pre->next;
+		}
+	}
+	return data;
 }

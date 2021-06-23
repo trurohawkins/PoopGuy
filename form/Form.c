@@ -119,15 +119,6 @@ void deleteForm(Form *f) {
 	free(f);
 }
 
-Form *makeDirt() {
-	return makeForm(0.7, 0.3, 0.1, 0, 0);
-}
-
-void makeInert() {
-	inert = makeForm(0,0,0, 0, 0);
-	inert->pos[0] = -1;
-	inert->pos[1] = -1;
-}
 
 int compareForms(Form *f1, Form *f2) {
 	if (f1->color[0] == f2->color[0] && f1->color[1] == f2->color[1] && f1->color[2] == f2->color[2]) {

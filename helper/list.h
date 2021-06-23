@@ -10,6 +10,7 @@ typedef struct linkedList
 
 linkedList *makeList();
 
-void addToList(linkedList *head, void *item);
+void addToList(linkedList **head, void *item);
 void *removeFromList(linkedList **head, void *item);
+void *removeFromListInt(linkedList **head, int item);
 void freeList(linkedList **ll);

@@ -17,7 +17,7 @@ int getEdge (Form *f, int side, int d);
 void deleteForm(Form *f);
 void makeInert();
 Form *makeDirt();
-int comparForms(Form *f1, Form *f2);
+int compareForms(Form *f1, Form *f2);
 
 #include "../actor/Action.h"
 #include "../actor/Actor.h"

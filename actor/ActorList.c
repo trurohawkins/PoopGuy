@@ -5,7 +5,7 @@ void makeActorList() {
 }
 
 void addActor(Actor *a) {
-	addToList(ActorList, a);
+	addToList(&ActorList, a);
 }
 void removeActor(Actor *a) {
 	removeFromList(&ActorList, a);

@@ -100,6 +100,17 @@ Form *removeForm(Form* form) {
 //	f->pos[1] = -1; maybe add back? took out because in the middle of move we need to remember the old position
 	return form;
 }
+Form *makeDirt() {
+	Form *d = makeForm(0.7, 0.3, 0.1, 0, 0);
+	addToList(&(theWorld->terrain), d);
+	return d;//makeForm(0.7, 0.3, 0.1, 0, 0);
+}
+
+void makeInert() {
+	inert = makeForm(0,0,0, 0, 0);
+	inert->pos[0] = -1;
+	inert->pos[1] = -1;
+}
 
 // make Square fun
 // x,y are starting point of square, z is side length
@@ -110,7 +121,7 @@ Form *removeForm(Form* form) {
 
 void makeSquare(int x, int y, int z) {
 	TYPE *b = makeDirt() ;
-//	addToList(theWorld->terrain, b);
+	//addToList(&(theWorld->terrain), b);
 	for (int i = 1; i < z ; i++) {
 		for (int j = 1; j < z ; j++) {
 			placeForm( x + i, y + j, b) ;
@@ -122,6 +133,7 @@ void makeSquare(int x, int y, int z) {
  void makeCircle(int x, int y, int r) {
 	//printf("making circle ");
 	TYPE *b = makeDirt() ;
+	//addToList(&(theWorld->terrain), b);
 	int sx = x - r ;
 	int sy = y - r ;
 	int test ;
@@ -142,7 +154,7 @@ void makeSquare(int x, int y, int z) {
 
 void dirtFloor(int height) {
 	TYPE *d = makeDirt();
-	addToList(theWorld->terrain, d);
+	//addToList(&(theWorld->terrain), d);
 	int maxGrow = 2;
 	for (int x = 0; x < theWorld->x; x++) {
 		for(int y = 0; y < height; y++) {
