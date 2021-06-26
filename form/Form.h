@@ -18,10 +18,11 @@ void deleteForm(Form *f);
 void makeInert();
 Form *makeDirt();
 int compareForms(Form *f1, Form *f2);
+void exitGame();
 
 #include "../actor/Action.h"
 #include "../actor/Actor.h"
 #include "../actor/acts/control.h"
 #include "World.h"
-#include "FormGraphics.h"
+//#include "FormGraphics.h"
 #endif

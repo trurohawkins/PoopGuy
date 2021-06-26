@@ -1,7 +1,6 @@
 #define TYPE Form
-//#include "World.h"
-
-World *theWorld;
+#include "World.h"
+World* theWorld;
 
 void makeWorld(int x, int y) {	
 
@@ -16,6 +15,10 @@ void makeWorld(int x, int y) {
 	newWorld->y = y;
 	newWorld->terrain = makeList();
 	theWorld = newWorld;
+}
+
+World *getWorld() {
+	return theWorld;
 }
 
 void deleteWorld() {

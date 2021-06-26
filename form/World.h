@@ -1,3 +1,5 @@
+#ifndef WORLD
+#define WORLD
 typedef struct World
 {
 	Form ***map; 
@@ -8,6 +10,7 @@ typedef struct World
 } World;
 
 void makeWorld(int x, int y);
+World *getWorld();
 void deleteWorld();
 void deleteTerrain();
 void placeForm(int x, int y, Form *form);
@@ -16,3 +19,4 @@ Form *removeForm(Form *f);
 void dirtFloor(int height);
 void makeSquare(int x, int y, int z);
 void makeCircle(int x, int y, int r);
+#endif

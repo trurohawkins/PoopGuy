@@ -128,9 +128,16 @@ int compareForms(Form *f1, Form *f2) {
 	}
 }
 
+void exitGame() {
+	deleteWorld();
+	deletePlayer(getPlayer());
+	deleteActorList();
+	freeDirections();
+}
+
 //#include "../helper/helper.c"
 #include "World.c"
 #include "../actor/Action.c"
 #include "../actor/Actor.c"
 #include "../actor/acts/control.c"
-#include "FormGraphics.c"
+//#include "FormGraphics.c"

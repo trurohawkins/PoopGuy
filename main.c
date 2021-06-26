@@ -1,14 +1,9 @@
-#include "form/Form.h"
+//#include "form/Form.h"
+//#include "graphicsSource/Graphics.h"
+#include "FormGraphics.c"
 
-int FPS = 60;
-bool paused = false;
 bool doGL = true;
 Player *poopGuy;
-void update(int value);
-void keyDown(unsigned char, int, int);
-void keyUp(unsigned char, int, int);
-void joystick(unsigned int buttonmask, int x, int y, int z);
-void exitGame();
 
 int main(int argc, char **argv) {
 	if (argc > 1) {
@@ -47,46 +42,7 @@ int main(int argc, char **argv) {
 //	ep->pooping = 1;
 	if (doGL) {
 		initializeGLUT(argc, argv, windowX, windowY);
-		glutIgnoreKeyRepeat(1);	
-		glutDisplayFunc(drawWorld);	
-		glutKeyboardFunc(keyDown);
-		glutKeyboardUpFunc(keyUp);
-		glutJoystickFunc(joystick, 25);
-		glutTimerFunc(1000/FPS, update, 0);
-		glutMainLoop();
+		glutFunctions(drawWorld, update, keyDown, keyUp);
 	}	
 	return 0;
-}
-
-void joystick(unsigned int buttonmask, int x, int y, int z) {
-	printf("getting joystick %i, %i, %i axis values\n", x, y, z);
-	printf("buttonmask %u\n", buttonmask);
-}
-
-void keyDown(unsigned char key, int mx, int my) {
-	if (key == 27) {
-		glutLeaveMainLoop();
-	} else if (key == 96) {
-		paused = !paused;
-	}
-	keyPressPlayer(poopGuy, key);
-}
-
-void keyUp(unsigned char key, int mx, int my) {
-	keyReleasePlayer(poopGuy, key);
-}
-
-void update(int value) {
-	if (!paused) {
-		actorListDo();
-	}
-	setCenter(poopGuy->me->body->pos);
-	glutPostRedisplay();
-	glutTimerFunc(1000/FPS, update, 0);
-}
-void exitGame() {
-	deleteWorld();
-	deletePlayer(poopGuy);
-	deleteActorList();
-	freeDirections();
 }

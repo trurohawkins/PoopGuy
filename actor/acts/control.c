@@ -9,7 +9,7 @@ Action *makeControl() {
 	return a;
 }
 
-void getPlayer(void *c, Player *n_player) {
+void setPlayer(void *c, Player *n_player) {
 	controlVar *cv = (controlVar*)c;
 	cv->player = n_player;
 }

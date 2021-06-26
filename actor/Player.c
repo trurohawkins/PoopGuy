@@ -1,3 +1,5 @@
+Player *curPlayer;
+
 Player *makePlayer (int sx, int sy) {
 	Player *poopGuy = (Player *)calloc(1, sizeof(Player));
 	poopGuy->speed = 10;
@@ -10,7 +12,7 @@ Player *makePlayer (int sx, int sy) {
 	poopGuy->jump = makeJump(poopGuy->move->vars, grav);
 	poopGuy->eatPoop = makeStomach(poopGuy->me->body, sx, sy);
 	poopGuy->control = makeControl();
-	getPlayer(poopGuy->control->vars, poopGuy);
+	setPlayer(poopGuy->control->vars, poopGuy);
 	addAction(poopGuy->me, poopGuy->move);
 	addAction(poopGuy->me, grav);
 	addAction(poopGuy->me, poopGuy->jump);
@@ -18,7 +20,12 @@ Player *makePlayer (int sx, int sy) {
 	addAction(poopGuy->me, poopGuy->control);
 	//changeDir(poopGuy->eatPoop poopGuy->me->body, 3);
 	//cv->moveRight = 1;
+	curPlayer = poopGuy;
 	return poopGuy;
+}
+
+Player *getPlayer() {
+	return curPlayer;
 }
 
 void deletePlayer(Player *poopGuy) {

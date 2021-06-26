@@ -1,4 +1,6 @@
-#include "../graphicsSource/Graphics.c"
+#include "FormGraphics.h"
+//#include "Form.h"
+//#include "../graphicsSource/Graphics.h"
 
 //#include<stdio.h>
 
@@ -13,27 +15,30 @@ float centerX;
 float centerY;
 int initialTime;
 int frameCount = 0;
+bool paused;
 
 void drawWorld() {
 	glClearColor(0.1, 0.2, 0.75, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	int fx = frameX/2;
-	int fy = frameY/2;
-	int cx = clamp(centerX, fx, theWorld->x - fx - 1);
-	int cy = clamp(centerY, fy, theWorld->y - fy - 1);
+	World *w = getWorld();
+	//get dimensions of the frame
+	int fx = getFX()/2;
+	int fy = getFY()/2;
+	int cx = clamp(centerX, fx, w->x - fx - 1);
+	int cy = clamp(centerY, fy, w->y - fy - 1);
 	for (int i=cx-fx; i <= cx+fx ; i ++) {
 		for (int j=cy-fy; j <= cy+fy; j++){
-			if (i >= 0 && i < theWorld->x && j >= 0 && j < theWorld->y) {
-				drawForm( theWorld->map[i][j], i-(cx-fx), j-(cy-fy), 1);
+			if (i >= 0 && i < w->x && j >= 0 && j < w->y) {
+				drawForm(w->map[i][j], i-(cx-fx), j-(cy-fy), 1);
 			}
 		}
 	}
 	if (grid) {
 		for (int i=cx-fx; i <= cx+fx ; i ++) {
 			for (int j=cy-fy; j <= cy+fy; j++){
-				drawLine(0,0,0,0, j-(cy-fy), frameX, j-(cy-fy));
+				drawLine(0,0,0,0, j-(cy-fy), fx*2, j-(cy-fy));
 			}
-			drawLine(0,0,0,i-(cx-fx), 0, i-(cx-fx), frameY);
+			drawLine(0,0,0,i-(cx-fx), 0, i-(cx-fx), fy*2);
 
 		}
 	}
@@ -60,6 +65,29 @@ void setInitTime(int newTime) {
 void setGrid(bool on) {
 	grid = on;
 }
+
+void keyDown(unsigned char key, int mx, int my) {
+	if (key == 27) {
+		glutLeaveMainLoop();
+	} else if (key == 96) {
+		paused = !paused;
+	}
+	keyPressPlayer(getPlayer(), key);
+}
+
+void keyUp(unsigned char key, int mx, int my) {
+	keyReleasePlayer(getPlayer(), key);
+}
+
+void update(int value) {
+	if (!paused) {
+		actorListDo();
+	}
+	setCenter(getPlayer()->me->body->pos);
+	updateGlut();
+}
+
+
 /*
 void drawFunc() {
 	printf("caca\n");

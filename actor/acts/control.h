@@ -7,5 +7,5 @@ typedef struct controlVar {
 } controlVar;
 
 Action *makeControl();
-void getPlayer(void *c, Player *n_player);
+void setPlayer(void *c, Player *n_player);
 void control(Form *f, Action *a);
