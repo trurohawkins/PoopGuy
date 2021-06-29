@@ -5,10 +5,11 @@ float centerY;
 int frameX = 50;
 int frameY = 50;
 bool gridOn = false;
-
+bool paused;
 void updateLoop() {
 	//GLFWwindow *window
 	Screen *screen = getWindow();
+	glfwSetKeyCallback(screen->window, keyCallback);
 	GLuint squa = squareVao2d();
 	GLuint vLi = lineVao2d(0);
 	//GLuint hLi = lineVao2d(1);
@@ -52,8 +53,10 @@ void updateLoop() {
 			if(glfwGetKey(screen->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 				glfwSetWindowShouldClose(screen->window, 1);
 			}
-			actorListDo();
-			setCenter(getPlayer()->me->body->pos);
+			if (!paused) {
+				actorListDo();
+				setCenter(getPlayer()->me->body->pos);
+			}
 			glfwSwapBuffers(screen->window);
 		}
 	}
@@ -129,6 +132,17 @@ void drawGrid(float *mat, int tMat, int sMat, int rMat, int color, GLuint vLi) {
 		mat[7] = -1 + (y * ySize);
 		glUniformMatrix4fv(tMat, 1 ,GL_TRUE, mat);
 		glDrawArrays(GL_LINES, 0, 2);
+	}
+}
+void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+	if (action == GLFW_PRESS) {
+		//printf("key press = %i\n", key);
+		if (key == 96) {
+			paused = !paused;
+		}
+		keyPressPlayer(getPlayer(), key);
+	} else if (action == GLFW_RELEASE) {
+		keyReleasePlayer(getPlayer(), key);
 	}
 }
 

@@ -40,24 +40,24 @@ void keyPressPlayer(Player *poopGuy, char input) {
 	//printf("%c\n", input);
 	controlVar *cv = (controlVar*)poopGuy->control->vars;
 	switch (input) {
-		case 97: //a
+		case 65: //a
 			changeDir(ep, poopGuy->me->body, 1);
 			cv->moveLeft = 1;
 			break;
-		case 100: //d
+		case 68: //d
 			changeDir(ep, poopGuy->me->body, 3);
 			cv->moveRight = 1;
 			break;
-		case 101:
+		case 69:
 			ep->eating = (ep->eating+1)%2;
 			break;
-		case 119:
+		case 87://w
 			changeDir(ep, poopGuy->me->body,0);
 			break;
-		case 115:
+		case 83://s
 			changeDir(ep, poopGuy->me->body,2);
 			break;
-		case 112:
+		case 80:
 			ep->pooping = 1;
 			break;
 		case 32:
@@ -73,13 +73,13 @@ void keyReleasePlayer(Player *poopGuy, char input) {
 	eatPooVar *ep = (eatPooVar*)(poopGuy->eatPoop->vars);
 	controlVar *cv = (controlVar*)poopGuy->control->vars;
 	switch(input) {
-		case 97:
+		case 65:
 			cv->moveLeft = 0;
 			break;
-		case 100:
+		case 68:
 			cv->moveRight = 0;
 			break;
-		case 112:
+		case 80:
 			ep->pooping = 0;
 			break;
 	}	

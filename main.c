@@ -16,9 +16,10 @@ int main(int argc, char **argv) {
 	initDirections();
 	int worldX = 500;
 	int worldY = 500;
-	//int windowX = 500;
-	//int windowY = 500;
+	int windowX = 100;
+	int windowY = 100;
 	makeWorld(worldX, worldY);
+	setFrame(windowX, windowY);
 	dirtFloor(10);
 	//makeCircle(30, 50, 5);
 	atexit(exitGame);
