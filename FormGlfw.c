@@ -4,6 +4,7 @@ float centerX;
 float centerY;
 int frameX = 50;
 int frameY = 50;
+bool gridOn = false;
 
 void updateLoop() {
 	//GLFWwindow *window
@@ -42,7 +43,9 @@ void updateLoop() {
 			glClearColor(0.0, 0.4, 0.0, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			//glDrawArrays(GL_TRIANGLES, 0, 6);
-			drawGrid(matrix, tMat, sMat, rMat, drawColor, vLi);
+			if (gridOn) {
+				drawGrid(matrix, tMat, sMat, rMat, drawColor, vLi);
+			}
 			drawWorld(w, matrix, tMat, sMat, rMat, drawColor, squa);
 
 			glfwPollEvents();
@@ -137,6 +140,10 @@ void setCenter(float cp[2]) {
 void setFrame(int x, int y) {
 	frameX = x;
 	frameY = y;
+}
+
+void setGrid(bool state) {
+	gridOn = state;
 }
 
 void exitGame() {

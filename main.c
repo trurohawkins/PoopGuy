@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
 		if (argv[1][1] == 'n') {
 			doGL = false;
 		} else if (argv[1][1] == 'g') {
-			//setGrid(true);
+			setGrid(true);
 		}
 	}
 
