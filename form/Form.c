@@ -128,7 +128,7 @@ int compareForms(Form *f1, Form *f2) {
 	}
 }
 
-void exitGame() {
+void freeWorld() {
 	deleteWorld();
 	deletePlayer(getPlayer());
 	deleteActorList();

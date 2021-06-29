@@ -1,6 +1,4 @@
-//#include "form/Form.h"
-//#include "graphicsSource/Graphics.h"
-#include "FormGraphics.c"
+#include "FormGlfw.c"
 
 bool doGL = true;
 Player *poopGuy;
@@ -10,23 +8,23 @@ int main(int argc, char **argv) {
 		if (argv[1][1] == 'n') {
 			doGL = false;
 		} else if (argv[1][1] == 'g') {
-			setGrid(true);
+			//setGrid(true);
 		}
 	}
 
 	srand(time(NULL));
 	initDirections();
-	int worldX = 1000;
+	int worldX = 500;
 	int worldY = 500;
-	int windowX = 500;
-	int windowY = 500;
+	//int windowX = 500;
+	//int windowY = 500;
 	makeWorld(worldX, worldY);
 	dirtFloor(10);
-	makeCircle(30, 50, 5);
+	//makeCircle(30, 50, 5);
 	atexit(exitGame);
-	poopGuy = makePlayer(2, 2);
-	placeForm(44, 30, poopGuy->me->body);
-	setCenter(poopGuy->me->body->pos);
+	poopGuy = makePlayer(3, 3);
+	placeForm(100, 20, poopGuy->me->body);
+	//setCenter(poopGuy->me->body->pos);
 	checkSide(poopGuy->me->body, 1, 0, true);
 	/*Actor *rock = makeActor(makeForm(0.3, 0.3, 0.3));
 	Action *move =  makeMove();
@@ -41,8 +39,12 @@ int main(int argc, char **argv) {
 //	eatPooVar *ep = (eatPooVar*)(poopGuy->eatPoop->vars);
 //	ep->pooping = 1;
 	if (doGL) {
-		initializeGLUT(argc, argv, windowX, windowY);
-		glutFunctions(drawWorld, update, keyDown, keyUp);
+		initializeGLFW();
+		glfwSetJoystickCallback(joystickCallback);
+		initJoyList();
+		updateLoop();
+		//initializeGLUT(argc, argv, windowX, windowY);
+		//glutFunctions(drawWorld, update, keyDown, keyUp);
 	}	
 	return 0;
 }

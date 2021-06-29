@@ -1,3 +1,5 @@
+#ifndef LL
+#define LL
 typedef struct linkedList
 {
 	void *data;
@@ -14,3 +16,4 @@ void addToList(linkedList **head, void *item);
 void *removeFromList(linkedList **head, void *item);
 void *removeFromListInt(linkedList **head, int item);
 void freeList(linkedList **ll);
+#endif

@@ -18,7 +18,7 @@ void deleteForm(Form *f);
 void makeInert();
 Form *makeDirt();
 int compareForms(Form *f1, Form *f2);
-void exitGame();
+void freeWorld();
 
 #include "../actor/Action.h"
 #include "../actor/Actor.h"
