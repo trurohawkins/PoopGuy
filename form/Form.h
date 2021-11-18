@@ -8,6 +8,7 @@ typedef struct Form {
 	float color[3];
 	int size[2];
 	float ***body;
+	void *anim;
 } Form;
 //Form *inert;
 
@@ -18,6 +19,7 @@ void deleteForm(Form *f);
 void makeInert();
 Form *makeDirt();
 int compareForms(Form *f1, Form *f2);
+void setAnim(Form *f, void *a);
 void freeWorld();
 
 #include "../actor/Action.h"

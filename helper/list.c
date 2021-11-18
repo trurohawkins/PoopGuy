@@ -7,12 +7,15 @@ linkedList *makeList() {
 }
 
 void addToList(linkedList **head, void *item) {
+	//printf("adding to list");
 	if ((*head) == 0) {
+		//printf("adding and making new list\n");
 		(*head) = makeList();
 		(*head)->data = item;
 	} else {
 		linkedList *tmp = *head;
 		while(tmp->data != 0) {
+		//	printf("searching through list to add\n");
 			if (tmp->next == 0) {
 				tmp->next = makeList();
 			}

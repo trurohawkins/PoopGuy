@@ -7,6 +7,7 @@
 
 #include "Shaders.h"
 #include "Joystick.h"
+#include "Anim.h"
 
 typedef struct Screen {
 	GLFWwindow *window;
@@ -19,6 +20,7 @@ void glfwWindowSizeCallback(GLFWwindow *window, int width, int height);
 GLuint squareVao2d();
 GLuint lineVao2d();
 GLuint makeVao2d(float *shape, int len);
+GLuint makeSpriteVao(float sx, float sy);
 Screen *getWindow();
 GLuint getSP();
 #endif

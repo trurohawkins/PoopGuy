@@ -10,6 +10,7 @@ Form *makeForm(float r, float g, float b, float wid, float len) {
 	newForm->color[2] = b;
 	newForm->size[0] = wid;
 	newForm->size[1] = len;
+	newForm->anim = 0;
 	if ((int)wid % 2 == 0) {
 		newForm->pMod[0] = -0.5;
 	} else {
@@ -128,6 +129,10 @@ int compareForms(Form *f1, Form *f2) {
 	}
 }
 
+void setAnim(Form *f, void *a) {
+	f->anim = a;
+}
+
 void freeWorld() {
 	deleteWorld();
 	deletePlayer(getPlayer());
@@ -140,4 +145,3 @@ void freeWorld() {
 #include "../actor/Action.c"
 #include "../actor/Actor.c"
 #include "../actor/acts/control.c"
-//#include "FormGraphics.c"

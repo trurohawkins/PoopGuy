@@ -3,12 +3,11 @@
 World* theWorld;
 
 void makeWorld(int x, int y) {	
-
 	World *newWorld = (World*)calloc(1, sizeof(World));
 	TYPE ***mudBall = (TYPE***) calloc( x, sizeof(TYPE**));
 
 	for (int i = 0; i < x ; i += 1) {
-		mudBall[i] = (TYPE**) calloc( y , sizeof(TYPE*));
+		mudBall[i] = (TYPE**) calloc(y , sizeof(TYPE*));
 	}
 	newWorld->map = mudBall;
 	newWorld->x = x;

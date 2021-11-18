@@ -22,8 +22,8 @@ libform.a: Form.o helper.o
 Form.o:  $(FD)Form.c $(FD)Form.h $(FD)World.c $(FD)World.h $(AD)Action.c $(AD)Action.h $(AD)Actor.c $(AD)Actor.h $(AD)Player.h $(AD)Player.c $(AD)ActorList.h $(AD)ActorList.c $(ACD)actList.c $(ACD)actList.h $(ACD)gravity.c $(ACD)gravity.h $(ACD)jump.c $(ACD)jump.h $(ACD)eatPoop.h $(ACD)eatPoop.c $(ACD)control.c $(ACD)control.h
 	$(CC) $(FD)Form.c 
 
-libglfw.a: glfwMain.o Shaders.o Joystick.o
-	ar rs libglfw.a glfwMain.o Shaders.o Joystick.o
+libglfw.a: glfwMain.o Shaders.o Joystick.o Anim.o
+	ar rs libglfw.a glfwMain.o Shaders.o Joystick.o Anim.o
 
 glfwMain.o: $(GD)glfwMain.c $(GD)glfwMain.h
 	$(CC) $(GD)glfwMain.c
@@ -42,6 +42,9 @@ Graphics.o: $(GD)Graphics.c $(GD)Graphics.h
 
 Joystick.o: $(GD)Joystick.c $(GD)Joystick.h
 	$(CC) $(GD)Joystick.c
+
+Anim.o: $(GD)Anim.c $(GD)Anim.h
+	$(CC) $(GD)Anim.c
 
 helper.o: $(HD)helper.c $(HD)helper.h $(HD)list.c $(HD)list.h
 	$(CC) $(HD)helper.c

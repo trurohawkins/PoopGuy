@@ -3,7 +3,9 @@
 GLuint screenWidth = 800*8/5, screenHeight = 450*8/5;
 //GLFWwindow *window;
 Screen *curScreen;
-GLuint curShaderProgram;
+GLuint baseShaderProgram;
+GLuint texShaderProgram;
+
 
 int initializeGLFW() {
 	if (!glfwInit()) {
@@ -48,7 +50,14 @@ int initializeGLFW() {
 	//tell GL to only draw onto a pixel if shape is cloer to the viewer
 	glEnable(GL_DEPTH_TEST);//enable depther testing
 	glDepthFunc(GL_LESS); //depth testing interpets a smaller value as "closer"
-	curShaderProgram = makeShaderProgram("graphicsSource/matVS.glsl", "graphicsSource/simpFS.glsl");
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glEnable(GL_BLEND);
+	glFrontFace(GL_CW);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+	baseShaderProgram = makeShaderProgram("graphicsSource/matVS.glsl", "graphicsSource/simpFS.glsl");
+	texShaderProgram = makeShaderProgram("graphicsSource/texVS.glsl", "graphicsSource/texFS.glsl");
 }
 
 GLuint squareVao2d() {
@@ -89,9 +98,41 @@ GLuint makeVao2d(float *shape, int len) {
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);//points = 0 on vao
 	glEnableVertexAttribArray(0);
 	return vao;	
-
 }
 
+GLuint makeSpriteVao(float sx, float sy) {
+	float vertices[] = {
+		0.5f, 0.5f, 0.0f,   1.0f, 1.0f, 1.0f,  sx, 1,
+		0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 1.0f, sx, 1-sy,
+		-0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 1.0f, 0, 1-sy,
+		-0.5f, 0.5f, 0.0f,   1.0f, 1.0f, 1.0f, 0, 1
+	};
+	unsigned int indices[] = {
+		0, 1, 3,
+		1, 2, 3
+	};
+
+	GLuint vbo, vao, ebo;
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &ebo);
+	glBindVertexArray(vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	//points/pos
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	//color
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	//texture coordinates
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	return vao;
+}
 
 void glfwWindowSizeCallback(GLFWwindow *window, int width, int height) {
 	curScreen->width = width;
@@ -103,6 +144,10 @@ Screen *getWindow() {
 	return curScreen;
 }
 
-GLuint getSP() {
-	return curShaderProgram;
+GLuint getSP(int shader) {
+	if (shader == 0) {
+		return baseShaderProgram;
+	} else {
+		return texShaderProgram;
+	}
 }
