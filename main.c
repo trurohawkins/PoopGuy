@@ -25,7 +25,6 @@ int main(int argc, char **argv) {
 	atexit(exitGame);
 	poopGuy = makePlayer(3, 3);
 	placeForm(100, 20, poopGuy->me->body);
-	//setCenter(poopGuy->me->body->pos);
 	checkSide(poopGuy->me->body, 1, 0, true);
 	/*Actor *rock = makeActor(makeForm(0.3, 0.3, 0.3));
 	Action *move =  makeMove();
