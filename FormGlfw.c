@@ -89,7 +89,6 @@ void updateLoop() {
 		GLuint spriteVao = makeSpriteVao(1, 1);
 		animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
 		setAnim(getPlayer()->me->body, poo);
-		//changeSprite(poo,3);
 		//Anim *pol = makeAnim("resources/sploog.png", 1, 1, tcTrans, tcScale);
 		//GLuint spriteVao = makeSpriteVao(1, 1);
 		//animAddVao(poo, makeSpriteVao(poo->frameX, poo->frameY));
@@ -167,7 +166,6 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 	//make list for sprite//need to be drawn after solid blocks
 	linkedList *animList = makeList();
 	linkedList *posList = makeList();//store screen positions of sprites
-	printf("drawing world\n");
 	for (int x = 0; x < frameX; x++) {
 		mat[3] = (-1 + xSize/2) + (x * xSize);
 		for (int y = 0; y < frameY; y++) {
@@ -200,7 +198,6 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 						glUniformMatrix4fv(sTrans, 1, GL_TRUE, sMatrix);
 						drawSprite(a);
 						*/
-						printf("we found a sprite\n");
 						addToList(&animList, f);
 						int *xPos = (int*)calloc(1, sizeof(int));
 						int *yPos = (int*)calloc(1, sizeof(int));
@@ -220,7 +217,6 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 	int *yPos;
 	while (curAnim != NULL) {
 		if (curAnim->data != NULL) {
-			printf("drawing anim\n");
 			xPos = (int*)(curPos->data);
 			curPos = curPos->next;
 			if (curPos != NULL) {
@@ -232,6 +228,7 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 			Form *f = (Form*)(curAnim->data);
 			/*
 						Anim *a = (Anim*)f->anim;
+						printf("%i, %i\n", a->scale[0], a->scale[1]);
 						sMatrix[0] = xSize * a->scale[0];
 						sMatrix[5] = ySize * a->scale[1];
 						glUniformMatrix4fv(sScale, 1, GL_TRUE, sMatrix);
@@ -248,7 +245,7 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 	}
 }
 
-void drawFormSprite(Form *f, float *sMatrix, int xSize, int ySize, int xp, int yp, GLuint sScale, GLuint sTrans) {
+void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, int yp, GLuint sScale, GLuint sTrans) {
 	Anim *a = (Anim*)f->anim;
 	sMatrix[0] = xSize * a->scale[0];
 	sMatrix[5] = ySize * a->scale[1];
