@@ -98,6 +98,7 @@ bool isValid(GLuint program) {//shader program index
 
 const char *readFile(char *file) {
 	char *a;
+	printf("reading file\n");
 	int fd = open(file, O_RDONLY);
 	if (fd != -1) {
 		a = fileRec(fd, 0);

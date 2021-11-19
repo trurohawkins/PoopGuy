@@ -1,5 +1,6 @@
 #include "helper.h"
 #include "list.c"
+//#include "file.c"
 int **dirs;
 
 void initDirections() {
@@ -63,3 +64,27 @@ int abs(int num) {
 		return num;
 	}
 }
+
+char *fileToString(char *txt)
+{
+	FILE *fptr;
+	int n = 0;
+	int c;
+
+	fptr = fopen(txt, "r");
+	char *t = NULL;
+	if (fptr != NULL) {
+		fseek(fptr, 0, SEEK_END);
+		long fSize = ftell(fptr);
+		fseek(fptr, 0, SEEK_SET);
+		t = (char*)malloc(fSize * sizeof(char));
+		while ((c = fgetc(fptr)) != EOF) {
+			t[n++] = (char)c;
+		}
+		t[n] = '\0';
+		fseek(fptr, 0, SEEK_SET);
+		fclose(fptr);
+	}
+	return t;
+}
+

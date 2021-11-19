@@ -94,6 +94,11 @@ void updateLoop() {
 		//animAddVao(poo, makeSpriteVao(poo->frameX, poo->frameY));
 		//animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
 		//animAddVao(pol, spriteVao);//makeSpriteVao(1, 1));
+		//update gamepad mappings to unify them all
+		
+		const char *mappings = fileToString("gamecontrollerdb.txt");
+		glfwUpdateGamepadMappings(mappings);
+		free(mappings);
 		while(!glfwWindowShouldClose(screen->window)) {
 			glClearColor(0.1, 0.2, 0.4, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -117,6 +122,7 @@ void updateLoop() {
 			drawSprite(poo);//, tcTrans, tcScale);
 			*/
 			glfwPollEvents();
+			checkControllerInput();
 			if(glfwGetKey(screen->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 				glfwSetWindowShouldClose(screen->window, 1);
 			}

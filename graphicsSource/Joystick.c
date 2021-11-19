@@ -41,10 +41,37 @@ void readJoysticks() {
 	linkedList *head = joystickList;
 	while (head != 0) {
 		if (head->data != 0) {
-			printf("joystick# %i\n", *(int*)(head->data));
+			int jid = *(int*)(head->data);
+			printf("joystick# %i\n", jid);
 		} else {
 			printf("stick has null data\n");
 		}
 		head = head->next;
 	}
+}
+
+void checkControllerInput() {
+	linkedList *head = joystickList;
+	GLFWgamepadstate state;
+	while (head != 0) {
+		if (head->data != 0) {
+			int jid = *(int*)(head->data);
+			if (glfwGetGamepadState(jid, &state)) {
+				for (int i = 0; i < 15; i++) {
+					if (state.buttons[i]) {
+						char *s = "";
+						if (state.buttons[i] == GLFW_PRESS) {
+							s = "press";
+						}
+						printf("button[%i]:%s\n",i, s);
+					}
+					if (i < 6) {
+						//printf("axes[%i]:%f\n", i, state.axes[i]);
+					}
+				}
+			}
+		}
+		head = head->next;
+	}
+
 }

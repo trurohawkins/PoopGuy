@@ -11,4 +11,5 @@ void freeJoyList();
 void addJoystick(int j);
 void joystickCallback(int jid, int event);
 void readJoysticks();
+void checkControllerInput();
 #endif

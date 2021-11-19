@@ -7,6 +7,7 @@
 #include<stdbool.h>
 #include <math.h>
 #include "list.h"
+//#include "file.h"
 
 void initDirections();
 void freeDirections();
@@ -15,5 +16,5 @@ float randPercent();
 int clamp(int, int, int);
 int sign(int);
 int abs(int);
-
+char *fileToString(char *txt);
 #endif
