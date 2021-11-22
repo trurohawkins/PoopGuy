@@ -83,6 +83,16 @@ void freeList(linkedList **ll) {
 	}	
 }
 
+void freeListSaveObj(linkedList **ll) {
+	linkedList *cur = *ll;
+	linkedList *next = 0;
+	while (cur != NULL) {
+		next = cur->next;
+		free(cur);
+		cur = next;
+	}	
+}
+
 void *removeFromListInt(linkedList **head, int item) {
 	void *data = 0;
 	if (*head == 0 || (*head)->data == 0) {

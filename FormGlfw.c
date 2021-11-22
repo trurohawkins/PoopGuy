@@ -11,6 +11,7 @@ void updateLoop() {
 	//GLFWwindow *window
 	Screen *screen = getWindow();
 	//glfwSetKeyCallback(screen->window, keyCallback);
+	initInput();
 	GLuint squa = squareVao2d();
 	GLuint vLi = lineVao2d(0);
 	//GLuint hLi = lineVao2d(1);
@@ -95,10 +96,23 @@ void updateLoop() {
 		//animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
 		//animAddVao(pol, spriteVao);//makeSpriteVao(1, 1));
 		//update gamepad mappings to unify them all
-		
-		const char *mappings = fileToString("gamecontrollerdb.txt");
-		glfwUpdateGamepadMappings(mappings);
+		char *mappings = fileToString("gamecontrollerdb.txt");
+		const char *cMap = (const char*)mappings;
+		glfwUpdateGamepadMappings(cMap);
 		free(mappings);
+		addControl("K0A", left);
+		addControl("K0D", right);
+		addControl("K0W", up);
+		addControl("K0S", down);
+		addControl("M00", poop);
+		addControl("M01", toggleEat);
+		addControl("K0 ", jumpInp);
+		addControl("J00", jumpInp);
+		addControl("A00", xMove);
+		addControl("A01", yMove);
+		addControl("A05", poop);
+		addControl("A04", toggleEat);
+
 		while(!glfwWindowShouldClose(screen->window)) {
 			glClearColor(0.1, 0.2, 0.4, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -123,6 +137,7 @@ void updateLoop() {
 			*/
 			glfwPollEvents();
 			checkControllerInput();
+			processKeys();
 			if(glfwGetKey(screen->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 				glfwSetWindowShouldClose(screen->window, 1);
 			}
@@ -132,6 +147,7 @@ void updateLoop() {
 			}
 			glfwSwapBuffers(screen->window);
 		}
+		freeAnim(poo);
 	}
 }
 
@@ -249,6 +265,8 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 		}
 		curAnim = curAnim->next;
 	}
+	freeListSaveObj(&animList);
+	freeList(&posList);
 }
 
 void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, int yp, GLuint sScale, GLuint sTrans) {
@@ -326,7 +344,9 @@ void setGrid(bool state) {
 }
 
 void exitGame() {
+	//glfwDestroyWindow(getWindow());
 	freeWorld();
 	freeJoyList();
 	freeInput();
+	glfwTerminate();
 }

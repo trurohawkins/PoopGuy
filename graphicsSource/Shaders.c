@@ -24,6 +24,7 @@ GLuint makeShaderProgram(char *vs, char *fs) {
 		printf("couldn't open file %s\n", fs);
 		notOpened++;
 	}
+	printf("made shaders and v and f\n");
 	if (notOpened > 0) {
 		return 0;
 	}
@@ -51,6 +52,7 @@ GLuint makeShaderProgram(char *vs, char *fs) {
 	}
 	free(v);
 	free(f);
+	printf("v and f freed\n");
 	return shaderProgram;
 }
 

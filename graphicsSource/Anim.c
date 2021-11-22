@@ -47,6 +47,11 @@ Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts) {
 	return a;
 }
 
+void freeAnim(Anim *a) {
+	free(a->length);
+	free(a);
+}
+
 void setScale(Anim *a, int x, int y) {
 	a->scale[0] = x;
 	a->scale[1] = y;

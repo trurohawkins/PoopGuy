@@ -64,7 +64,15 @@ int abs(int num) {
 		return num;
 	}
 }
-
+/*
+float fabs(float num) {
+	if (num < 0) {
+		return num * -1;
+	} else {
+		return num;
+	}
+}
+*/
 char *fileToString(char *txt)
 {
 	FILE *fptr;
@@ -76,15 +84,28 @@ char *fileToString(char *txt)
 	if (fptr != NULL) {
 		fseek(fptr, 0, SEEK_END);
 		long fSize = ftell(fptr);
+		printf("file size: %i\n", fSize);
 		fseek(fptr, 0, SEEK_SET);
 		t = (char*)malloc(fSize * sizeof(char));
 		while ((c = fgetc(fptr)) != EOF) {
 			t[n++] = (char)c;
 		}
-		t[n] = '\0';
+		printf("wrote into: %i\n", n);
+		t[fSize-1] = '\0';
 		fseek(fptr, 0, SEEK_SET);
 		fclose(fptr);
 	}
 	return t;
+}
+
+bool strCompare(char *str1, char *str2) {
+	while (*str1 != '\0') {
+		if (*str1 != *str2) {
+			return false;
+		}
+		str1++;
+		str2++;
+	}
+	return true;
 }
 

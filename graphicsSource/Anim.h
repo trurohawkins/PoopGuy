@@ -25,6 +25,7 @@ typedef struct Anim {
 } Anim;
 
 Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts);
+void freeAnim(Anim *a);
 void setScale (Anim* a, int x, int y);
 void setFlipX(Anim *a, int x);
 void setFlipY(Anim *a, int y);

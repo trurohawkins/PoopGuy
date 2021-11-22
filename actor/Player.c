@@ -84,3 +84,81 @@ void keyReleasePlayer(Player *poopGuy, char input) {
 			break;
 	}	
 }
+
+void up(float val) {
+	if (val > 0) {
+		eatPooVar *ep = (eatPooVar*)(curPlayer->eatPoop->vars);
+		changeDir(ep, curPlayer->me->body,0);
+	}
+}
+
+void left(float val) {
+	controlVar *cv = (controlVar*)curPlayer->control->vars;
+	eatPooVar *ep = (eatPooVar*)(curPlayer->eatPoop->vars);
+	if (val > 0) {
+		changeDir(ep, curPlayer->me->body, 1);
+		cv->moveLeft = 1;
+	} else {
+		cv->moveLeft = 0;
+	}
+}
+
+void right(float val) {
+	controlVar *cv = (controlVar*)curPlayer->control->vars;
+	eatPooVar *ep = (eatPooVar*)(curPlayer->eatPoop->vars);
+	if (val > 0) {	
+		changeDir(ep, curPlayer->me->body, 3);
+		cv->moveRight = 1;
+	} else {
+		cv->moveRight = 0;
+	}
+}
+void down(float val) {
+	if (val > 0) {
+		eatPooVar *ep = (eatPooVar*)(curPlayer->eatPoop->vars);
+		changeDir(ep, curPlayer->me->body,2);
+	}
+}
+
+void xMove(float val) {
+	if (val > 0) {
+		right(1);
+	}  else if (val < 0) {
+		left(1);
+	} else {
+		right(0);
+		left(0);
+	}
+}
+void yMove(float val) {
+	if (val > 0) {
+		up(1);
+	}  else if (val < 0) {
+		down(1);
+	} else {
+		up(0);
+		down(0);
+	}
+}
+
+void poop(float val) {
+	eatPooVar *ep = (eatPooVar*)(curPlayer->eatPoop->vars);
+	if (val > 0) {
+		ep->pooping = 1;
+	} else {
+		ep->pooping = 0;
+	}
+}
+
+void toggleEat(float val) {
+	if (val > 0) {//only if when pressed not released
+		eatPooVar *ep = (eatPooVar*)(curPlayer->eatPoop->vars);
+		ep->eating = (ep->eating+1)%2;
+	}
+}
+
+void jumpInp(float val) {
+	if (val > 0) {
+		startJump(curPlayer->me->body, curPlayer->jump);
+	}
+}

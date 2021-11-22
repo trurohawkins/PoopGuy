@@ -16,3 +16,13 @@ Player *getPlayer();
 void deletePlayer(Player *);
 void keyPressPlayer(Player *, char);
 void keyReleasePlayer(Player *, char);
+
+void up(float val);
+void left(float val);
+void down(float val);
+void right(float val);
+void xMove(float val);
+void yMove(float val);
+void poop(float val);
+void toggleEat(float val);
+void jumpInp(float val);

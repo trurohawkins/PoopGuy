@@ -8,6 +8,7 @@
 #include "Shaders.h"
 #include "Input.h"
 #include "Anim.h"
+#include "../helper/helper.h"
 
 typedef struct Screen {
 	GLFWwindow *window;
