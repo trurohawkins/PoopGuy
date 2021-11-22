@@ -15,5 +15,6 @@ float randPercent();
 int clamp(int, int, int);
 int sign(int);
 int abs(int);
+void printArray(int**, int, int);
 
 #endif

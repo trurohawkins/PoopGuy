@@ -63,3 +63,19 @@ int abs(int num) {
 		return num;
 	}
 }
+
+void printArray(int **array, int sizeX, int sizeY) {
+	printf("\n)");
+    printf("Two Dimensional array elements:\n");
+   for( int  y=sizeY-1;y>-1;y--) {
+      for(int x=0; x<sizeX; x++) {
+         printf("%d ", array[x][y]);
+		 if( array[x][y] == 0){
+			 printf(" ");
+		 }
+         if(x==sizeX-1){
+            printf("\n");
+         }
+      }
+   }
+}
