@@ -73,5 +73,4 @@ void checkControllerInput() {
 		}
 		head = head->next;
 	}
-
 }

@@ -10,7 +10,7 @@ bool paused;
 void updateLoop() {
 	//GLFWwindow *window
 	Screen *screen = getWindow();
-	glfwSetKeyCallback(screen->window, keyCallback);
+	//glfwSetKeyCallback(screen->window, keyCallback);
 	GLuint squa = squareVao2d();
 	GLuint vLi = lineVao2d(0);
 	//GLuint hLi = lineVao2d(1);
@@ -328,4 +328,5 @@ void setGrid(bool state) {
 void exitGame() {
 	freeWorld();
 	freeJoyList();
+	freeInput();
 }

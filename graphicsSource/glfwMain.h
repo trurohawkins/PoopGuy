@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #include "Shaders.h"
-#include "Joystick.h"
+#include "Input.h"
 #include "Anim.h"
 
 typedef struct Screen {
