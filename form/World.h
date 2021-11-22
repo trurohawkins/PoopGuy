@@ -8,6 +8,7 @@ typedef struct World
 	linkedList *terrain;
 	// world state?;
 } World;
+#include "procGen.h"
 
 void makeWorld(int x, int y);
 World *getWorld();
