@@ -20,8 +20,9 @@ int main(int argc, char **argv) {
 	int windowY = 100;
 	makeWorld(worldX, worldY);
 	setFrame(windowX, windowY);
-	dirtFloor(10);
-	makeCircle(30, 50, 5);
+	int Seedstring[4] = {1,2,3,4};
+	int** map = genMap(Seedstring);
+	genWorld(map);
 	atexit(exitGame);
 	poopGuy = makePlayer(3, 3);
 	placeForm(100, 20, poopGuy->me->body);
