@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
 	makeWorld(worldX, worldY);
 	setFrame(windowX, windowY);
 	dirtFloor(10);
-	//makeCircle(30, 50, 5);
+	makeCircle(30, 50, 5);
 	atexit(exitGame);
 	poopGuy = makePlayer(3, 3);
 	placeForm(100, 20, poopGuy->me->body);

@@ -1,6 +1,7 @@
 #define TYPE Form
 #include "World.h"
 World* theWorld;
+#include "procGen.c"
 
 void makeWorld(int x, int y) {	
 	World *newWorld = (World*)calloc(1, sizeof(World));
@@ -157,7 +158,7 @@ void makeSquare(int x, int y, int z) {
 void dirtFloor(int height) {
 	TYPE *d = makeDirt();
 	//addToList(&(theWorld->terrain), d);
-	int maxGrow = 2;
+	int maxGrow = 6;
 	for (int x = 0; x < theWorld->x; x++) {
 		for(int y = 0; y < height; y++) {
 			placeForm(x, y, d);

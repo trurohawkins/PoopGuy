@@ -64,15 +64,7 @@ int abs(int num) {
 		return num;
 	}
 }
-/*
-float fabs(float num) {
-	if (num < 0) {
-		return num * -1;
-	} else {
-		return num;
-	}
-}
-*/
+
 char *fileToString(char *txt)
 {
 	FILE *fptr;
@@ -109,3 +101,18 @@ bool strCompare(char *str1, char *str2) {
 	return true;
 }
 
+void printArray(int **array, int sizeX, int sizeY) {
+	printf("\n");
+
+   for( int  y=sizeY-1;y>-1;y--) {
+      for(int x=0; x<sizeX; x++) {
+         printf("%d ", array[x][y]);
+		 if( array[x][y] == 0){
+			 printf(" ");
+		 }
+         if(x==sizeX-1){
+            printf("\n");
+         }
+      }
+   }
+}

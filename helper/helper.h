@@ -16,7 +16,8 @@ float randPercent();
 int clamp(int, int, int);
 int sign(int);
 int abs(int);
-//float fabs(float);
 char *fileToString(char *txt);
 bool strCompare(char *str1, char *str2);
+void printArray(int**, int, int);
+
 #endif
