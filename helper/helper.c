@@ -65,8 +65,8 @@ int abs(int num) {
 }
 
 void printArray(int **array, int sizeX, int sizeY) {
-	printf("\n)");
-    printf("Two Dimensional array elements:\n");
+	printf("\n");
+
    for( int  y=sizeY-1;y>-1;y--) {
       for(int x=0; x<sizeX; x++) {
          printf("%d ", array[x][y]);

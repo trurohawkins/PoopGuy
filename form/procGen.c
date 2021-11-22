@@ -3,11 +3,47 @@
 #include "../helper/helper.c"
 // #include "procGen.h"
 
+void arrayToFile(char *txt, int **array)
+{
+	FILE *fptr;
 
-int** mapGen(int *Seedstring, int WorldX, int WorldY) {
+    int sizeX = theWorld->x;
+    int sizeY = theWorld->y;
+
+	fptr = fopen(txt, "w");
+
+	if (fptr != NULL) {
+		fwrite(array, sizeof(int), sizeX*sizeY, fptr);
+	}
+		fseek(fptr, 0, SEEK_SET);
+		fclose(fptr);
+}
+
+
+int **fileToArray(char *txt) {
+	FILE *fptr;
+
+    int sizeX = theWorld->x;
+    int sizeY = theWorld->y;
+
+	int **array = (int**) calloc( sizeX, sizeof(int*));
+    for (int i = 0; i < sizeX ; i += 1) {
+			array[i] = (int*) calloc( sizeY , sizeof(int));
+	}
+
+	fptr = fopen(txt, "r");
+
+	if (fptr != NULL) {
+		fread(array, sizeof(int), sizeX*sizeY, fptr);	
+		fseek(fptr, 0, SEEK_SET);
+		fclose(fptr);
+	}
+	return array;
+}
+int** genMap(int *Seedstringd) {
     // Declare map array
-    int sizeX = WorldX;
-    int sizeY = WorldY;
+    int sizeX = theWorld->x;
+    int sizeY = theWorld->y;
     
     //int map[sizeX][sizeY];
     // int map[theWolrd->x][theWolrd->y]
@@ -40,7 +76,7 @@ int** mapGen(int *Seedstring, int WorldX, int WorldY) {
 		}
 		if (randPercent() > 0.75) {
 			int newGrow = (int)(randPercent() * maxGrow);
-			printf( "%f \n", randPercent());
+			// printf( "%f \n", randPercent());
 			if (randPercent() > 0.5) {
 				newGrow *= -1;
 			}
@@ -50,3 +86,15 @@ int** mapGen(int *Seedstring, int WorldX, int WorldY) {
 	}
 	return map;
 }
+/* 
+void genWorld(int **map) {
+	TYPE *d = makeDirt();
+
+	for (int x = 0; x < theWorld->x; x++) {
+		for(int y = 0; y < theWorld->y; y++) {
+			if ( map[x][y] > 0 ) {
+				placeForm(x, y, d);
+			} 
+		}
+	}	
+} */

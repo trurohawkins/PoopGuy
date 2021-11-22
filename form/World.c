@@ -1,8 +1,7 @@
 #define TYPE Form
 #include "World.h"
-#include "procGen.c"
-
 World* theWorld;
+#include "procGen.c"
 
 void makeWorld(int x, int y) {	
 
