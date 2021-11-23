@@ -23,6 +23,14 @@ World *getWorld() {
 
 void deleteWorld() {
 	for (int i = 0; i < theWorld->x ; i += 1) {
+		for (int j = 0; j < theWorld->y; j++) {
+			Form *f = theWorld->map[i][j];
+			if (f != NULL) {
+				if (f->id == 10) {
+					deleteForm(f);
+				}
+			}
+		}
 		free(theWorld->map[i]); 
 	}
 	deleteTerrain();
@@ -70,6 +78,12 @@ void placeForm(int x, int y, TYPE *form) {
 				int yp = form->pos[1] + form->body[i][j][1];
 				if (xp >= 0 && yp >= 0 && xp < theWorld->x && yp < theWorld->y) {
 					//printf("placing: %i, %i\n", xp, yp);
+					Form *f = theWorld->map[xp][yp];
+					if (f != NULL) {
+						if (f->id == 10) {
+							deleteForm(f);
+						}
+					}
 					theWorld->map[xp][yp] = form;
 				}
 			}
@@ -108,6 +122,7 @@ Form *removeForm(Form* form) {
 }
 Form *makeDirt() {
 	Form *d = makeForm(0.7, 0.3, 0.1, 0, 0);
+	d->id = 10;
 	//addToList(&(theWorld->terrain), d);
 	return d;//makeForm(0.7, 0.3, 0.1, 0, 0);
 }

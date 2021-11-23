@@ -105,7 +105,7 @@ int** genRain( int **map) {
 
 	for (int x =0; x < sizeX; x++) {
 		blocksum = 0;
-		for(int y= sizeY-1; y > 0 y--) {
+		for(int y= sizeY-1; y > 0; y--) {
 			blocksum = blocksum + map[x][y+1];
 			if (map[x][y] = 10) && (blocksum = 0) {
 				map[x][y] = map[x][y] + satVal;
@@ -117,9 +117,9 @@ int** genRain( int **map) {
 	}
 	return map;
 }
+
 void genWorld(int **map) {
 	float moist;
-	printf("world generated1 /n");
 	for (int x = 0; x < theWorld->x; x++) {
 		for(int y = 0; y < theWorld->y; y++) {
 			if ( map[x][y] > 0 ) {
@@ -129,5 +129,4 @@ void genWorld(int **map) {
 			} 
 		}
 	}	
-	printf("world generated2 /n");
 }

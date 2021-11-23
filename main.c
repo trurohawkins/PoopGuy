@@ -14,8 +14,8 @@ int main(int argc, char **argv) {
 
 	srand(time(NULL));
 	initDirections();
-	int worldX = 10;
-	int worldY = 10;
+	int worldX = 30;
+	int worldY = 30;
 	int windowX = 100;
 	int windowY = 100;
 	makeWorld(worldX, worldY);
@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 	freeMap(map);
 	atexit(exitGame);
 	poopGuy = makePlayer(3, 3);
-	placeForm(100, 20, poopGuy->me->body);
+	placeForm(1, 2, poopGuy->me->body);
 	checkSide(poopGuy->me->body, 1, 0, true);
 	/*Actor *rock = makeActor(makeForm(0.3, 0.3, 0.3));
 	Action *move =  makeMove();

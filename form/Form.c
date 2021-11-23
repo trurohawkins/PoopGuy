@@ -24,6 +24,7 @@ Form *makeForm(float r, float g, float b, float wid, float len) {
 	//float wid = w;
 	//float len = l;
 	if (wid != 0 && len != 0) {
+		printf("form with body\n");
 		newForm->body = (float***) calloc(wid, sizeof(float**));
 		for (int i = 0; i < wid; i++) {
 			newForm->body[i] = (float**) calloc(len, sizeof(float*));
@@ -42,6 +43,7 @@ Form *makeForm(float r, float g, float b, float wid, float len) {
 			}
 		}
 	} else {
+		//printf("no body on this form\n");
 		newForm->body = 0;
 	}
 	return newForm;
@@ -115,8 +117,8 @@ void deleteForm(Form *f) {
 		for (int i = 0; i < f->size[0]; i++) {
 			free(f->body[i]);
 		}
-		free(f->body);
 	}
+	free(f->body);
 	free(f);
 }
 
