@@ -1,3 +1,5 @@
+#ifndef FORMGLFW
+#define FORMGLFW
 #include "form/Form.h"
 #include "graphicsSource/glfwMain.h"
 //#include "helper/file.h"
@@ -12,3 +14,4 @@ void setGrid(bool state);
 void toggleGod(float);
 void exitGame();
 void setFormRoto(Form *f, int dir);
+#endif

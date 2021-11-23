@@ -375,6 +375,10 @@ void toggleGod(float poo) {
 	}
 }
 
+void setFormRoto(Form *f, int dir) {
+
+}
+
 void exitGame() {
 	//glfwDestroyWindow(getWindow());
 	freeWorld();

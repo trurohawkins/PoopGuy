@@ -1,3 +1,4 @@
+#include "Player.h"
 Player *curPlayer;
 
 Player *makePlayer (int sx, int sy) {

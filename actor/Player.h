@@ -1,3 +1,6 @@
+#ifndef PLAYER
+#define PLAYER
+
 typedef struct Player {
 	Actor *me;
 	Action *jump;
@@ -26,3 +29,4 @@ void yMove(float val);
 void poop(float val);
 void toggleEat(float val);
 void jumpInp(float val);
+#endif
