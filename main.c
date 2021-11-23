@@ -1,7 +1,7 @@
-#include "FormGlfw.c"
+#include "formglfw/FormGlfw.c"
 
 bool doGL = true;
-Player *poopGuy;
+PoopGuy *pooper;
 
 int main(int argc, char **argv) {
 	if (argc > 1) {
@@ -27,9 +27,9 @@ int main(int argc, char **argv) {
 	genWorld(map);
 	freeMap(map);
 	atexit(exitGame);
-	poopGuy = makePlayer(3, 3);
-	placeForm(1, 2, poopGuy->me->body);
-	checkSide(poopGuy->me->body, 1, 0, true);
+	pooper = makePoopGuy(3, 3);
+	placeForm(1, 2, pooper->me->body);
+	checkSide(pooper->me->body, 1, 0, true);
 	/*Actor *rock = makeActor(makeForm(0.3, 0.3, 0.3));
 	Action *move =  makeMove();
 	addAction(rock, move);
@@ -37,10 +37,10 @@ int main(int argc, char **argv) {
 	placeForm(13, 40, rock->body);
 */
 	makeActorList();
-	addActor(poopGuy->me);
+	addActor(pooper->me);
 	//addActor(rock);
-//	stomachStuff(poopGuy->me->body, poopGuy->eatPoop);
-//	eatPooVar *ep = (eatPooVar*)(poopGuy->eatPoop->vars);
+//	stomachStuff(pooper->me->body, pooper->eatPoop);
+//	eatPooVar *ep = (eatPooVar*)(pooper->eatPoop->vars);
 //	ep->pooping = 1;
 	if (doGL) {
 		initializeGLFW();

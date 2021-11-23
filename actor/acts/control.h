@@ -3,9 +3,9 @@ typedef struct controlVar {
 	int moveRight;
 	int mrCount;
 	int mlCount;
-	Player *player;
+	PoopGuy *pooper;
 } controlVar;
 
 Action *makeControl();
-void setPlayer(void *c, Player *n_player);
+void setPoopGuy(void *c, PoopGuy *n_pooper);
 void control(Form *f, Action *a);

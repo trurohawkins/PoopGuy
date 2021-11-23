@@ -91,7 +91,7 @@ void updateLoop() {
 		}
 		GLuint spriteVao = makeSpriteVao(1, 1);
 		animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
-		setAnim(getPlayer()->me->body, poo);
+		setAnim(getPoopGuy()->me->body, poo);
 		//Anim *pol = makeAnim("resources/sploog.png", 1, 1, tcTrans, tcScale);
 		//GLuint spriteVao = makeSpriteVao(1, 1);
 		//animAddVao(poo, makeSpriteVao(poo->frameX, poo->frameY));
@@ -129,7 +129,7 @@ void updateLoop() {
 			if (!paused) {
 				actorListDo();
 				if (!godMode) {
-					setCenter(getPlayer()->me->body->pos);
+					setCenter(getPoopGuy()->me->body->pos);
 				} else {
 					setCenter(godPos);
 				}
@@ -326,9 +326,9 @@ void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods
 		if (key == 96) {
 			paused = !paused;
 		}
-		keyPressPlayer(getPlayer(), key);
+		keyPressPoopGuy(getPoopGuy(), key);
 	} else if (action == GLFW_RELEASE) {
-		keyReleasePlayer(getPlayer(), key);
+		keyReleasePoopGuy(getPoopGuy(), key);
 	}
 }
 
@@ -349,7 +349,7 @@ void setGrid(bool state) {
 void toggleGod(float poo) {
 	if (poo > 0) {
 		if (godMode) {
-			setCenter(getPlayer()->me->body->pos);
+			setCenter(getPoopGuy()->me->body->pos);
 			setFrame(100, 100);
 			godMode = false;
 		} else {

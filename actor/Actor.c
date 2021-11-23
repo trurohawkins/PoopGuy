@@ -51,4 +51,4 @@ void deleteActor(Actor *actor) {
 	//free(actor);
 }
 #include "ActorList.c"
-#include "Player.c"
+#include "PoopGuy.c"

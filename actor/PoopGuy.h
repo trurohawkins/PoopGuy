@@ -1,7 +1,7 @@
-#ifndef PLAYER
-#define PLAYER
+#ifndef POOPGUY
+#define POOPGUY
 
-typedef struct Player {
+typedef struct PoopGuy {
 	Actor *me;
 	Action *jump;
 	Action *move;
@@ -11,14 +11,14 @@ typedef struct Player {
 	int maxForce;
 	char lastInp;
 
-} Player;
+} PoopGuy;
 
 
-Player *makePlayer(int sx, int sy);
-Player *getPlayer();
-void deletePlayer(Player *);
-void keyPressPlayer(Player *, char);
-void keyReleasePlayer(Player *, char);
+PoopGuy *makePoopGuy(int sx, int sy);
+PoopGuy *getPoopGuy();
+void deletePoopGuy(PoopGuy *);
+void keyPressPoopGuy(PoopGuy *, char);
+void keyReleasePoopGuy(PoopGuy *, char);
 
 void up(float val);
 void left(float val);

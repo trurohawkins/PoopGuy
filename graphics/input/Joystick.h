@@ -4,7 +4,7 @@
 #include <GL/glew.h>//loader of functions for backwards compatibility**
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
-#include "../helper/helper.h"
+#include "../../helper/helper.h"
 
 typedef struct Joypad {
 	int jid;

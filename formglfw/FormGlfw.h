@@ -1,7 +1,7 @@
 #ifndef FORMGLFW
 #define FORMGLFW
-#include "form/Form.h"
-#include "graphicsSource/glfwMain.h"
+#include "../form/Form.h"
+#include "../graphics/glfwMain.h"
 //#include "helper/file.h"
 
 void updateLoop();

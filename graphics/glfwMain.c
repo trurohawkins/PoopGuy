@@ -56,8 +56,8 @@ int initializeGLFW() {
 	glFrontFace(GL_CW);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-	baseShaderProgram = makeShaderProgram("graphicsSource/matVS.glsl", "graphicsSource/simpFS.glsl");
-	texShaderProgram = makeShaderProgram("graphicsSource/texVS.glsl", "graphicsSource/texFS.glsl");
+	baseShaderProgram = makeShaderProgram("graphics/shaders/matVS.glsl", "graphics/shaders/simpFS.glsl");
+	texShaderProgram = makeShaderProgram("graphics/shaders/texVS.glsl", "graphics/shaders/texFS.glsl");
 }
 
 GLuint squareVao2d() {

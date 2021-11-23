@@ -4,14 +4,14 @@ Action *makeControl() {
 	cv->moveRight = 0;
 	cv->mrCount = 0;
 	cv->mlCount = 0;
-	cv->player = 0;
+	cv->pooper = 0;
 	Action *a = makeAction(&control, cv);
 	return a;
 }
 
-void setPlayer(void *c, Player *n_player) {
+void setPoopGuy(void *c, PoopGuy *n_pooper) {
 	controlVar *cv = (controlVar*)c;
-	cv->player = n_player;
+	cv->pooper = n_pooper;
 }
 
 void control(Form *f, Action *a) {
@@ -28,9 +28,9 @@ void control(Form *f, Action *a) {
 		cv->mlCount = 0;
 	}
 	if (moveX != 0 && (cv->mrCount > 3 || cv->mlCount > 3)) {
-		moveVar *mv = (moveVar*)(cv->player->move->vars);
-		if (abs(mv->force[0] + (cv->player->speed * moveX)) <= cv->player->maxForce) {
-			addForce(mv, cv->player->speed * moveX, 0);
+		moveVar *mv = (moveVar*)(cv->pooper->move->vars);
+		if (abs(mv->force[0] + (cv->pooper->speed * moveX)) <= cv->pooper->maxForce) {
+			addForce(mv, cv->pooper->speed * moveX, 0);
 		}
 		//taking steps up smll walls
 		if (checkSide(f, moveX, 0, false) != 0) {
@@ -43,6 +43,6 @@ void control(Form *f, Action *a) {
 		}
 	} else if (cv->moveRight == 0 && cv->moveLeft == 0) {
 		// no input reset last input character. Turning based on last inp, want to change direction w/o moving{
-		//cv->player->lastInp = 0;
+		//cv->pooper->lastInp = 0;
 	}
 }

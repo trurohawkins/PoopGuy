@@ -1,7 +1,7 @@
 #ifndef INP
 #define INP
 #include "Joystick.h"
-#include "glfwMain.h"
+#include "../glfwMain.h"
 
 typedef struct InpMap
 {

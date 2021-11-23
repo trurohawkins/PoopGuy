@@ -11,4 +11,4 @@ void doActions(Actor *actor);
 void deleteActor(Actor *actor);
 
 #include "ActorList.h"
-#include "Player.h"
+#include "PoopGuy.h"

@@ -5,8 +5,8 @@
 #include<GL/gl.h>
 #include <stdio.h>
 
-#include "Shaders.h"
-#include "Input.h"
+#include "shaders/Shaders.h"
+#include "input/Input.h"
 #include "Anim.h"
 #include "../helper/helper.h"
 
