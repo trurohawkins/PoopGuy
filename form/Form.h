@@ -17,7 +17,6 @@ Form *checkSide(Form *f, int xd, int yd, bool collide);
 int getEdge (Form *f, int side, int d);
 void deleteForm(Form *f);
 void makeInert();
-Form *makeDirt();
 int compareForms(Form *f1, Form *f2);
 void setAnim(Form *f, void *a);
 void freeWorld();

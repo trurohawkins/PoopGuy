@@ -17,6 +17,7 @@ void deleteTerrain();
 void placeForm(int x, int y, Form *form);
 Form *takeForm(int x, int y);
 Form *removeForm(Form *f);
+Form *makeDirt();
 void dirtFloor(int height);
 void makeSquare(int x, int y, int z);
 void makeCircle(int x, int y, int r);

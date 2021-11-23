@@ -86,15 +86,18 @@ int** genMap(int *Seedstringd) {
 	}
 	return map;
 }
-/* 
-void genWorld(int **map) {
-	TYPE *d = makeDirt();
 
+void genWorld(int **map) {
+	float moist;
+	printf("world generated1 /n");
 	for (int x = 0; x < theWorld->x; x++) {
 		for(int y = 0; y < theWorld->y; y++) {
 			if ( map[x][y] > 0 ) {
+				moist = map[x][y] - 10;
+				TYPE *d = makeDirt();
 				placeForm(x, y, d);
 			} 
 		}
 	}	
-} */
+	printf("world generated2 /n");
+}
