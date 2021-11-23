@@ -6,6 +6,8 @@ int frameX = 50;
 int frameY = 50;
 bool gridOn = false;
 bool paused;
+bool godMode = false;
+float *godPos;
 
 void updateLoop() {
 	//GLFWwindow *window
@@ -112,6 +114,10 @@ void updateLoop() {
 		addControl("A01", yMove);
 		addControl("A05", poop);
 		addControl("A04", toggleEat);
+		addControl("K0G", toggleGod);
+		godPos =  (float*)calloc(2, sizeof(float));
+		godPos[0] = getWorld()->x /2;
+		godPos[1] = getWorld()->y /2;
 
 		while(!glfwWindowShouldClose(screen->window)) {
 			glClearColor(0.1, 0.2, 0.4, 1.0);
@@ -143,11 +149,16 @@ void updateLoop() {
 			}
 			if (!paused) {
 				actorListDo();
-				setCenter(getPlayer()->me->body->pos);
+				if (!godMode) {
+					setCenter(getPlayer()->me->body->pos);
+				} else {
+					setCenter(godPos);
+				}
 			}
 			glfwSwapBuffers(screen->window);
 		}
 		freeAnim(poo);
+		free(godPos);
 	}
 }
 
@@ -341,6 +352,20 @@ void setFrame(int x, int y) {
 
 void setGrid(bool state) {
 	gridOn = state;
+}
+
+void toggleGod(float poo) {
+	if (poo > 0) {
+		if (godMode) {
+			setCenter(getPlayer()->me->body->pos);
+			setFrame(100, 100);
+			godMode = false;
+		} else {
+			setCenter(godPos);
+			setFrame(getWorld()->x, getWorld()->y);
+			godMode= true;
+		}
+	}
 }
 
 void exitGame() {
