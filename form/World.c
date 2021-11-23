@@ -35,8 +35,11 @@ void deleteTerrain() {
 	linkedList *t = theWorld->terrain;
 	linkedList *next;
 	while (t != NULL) {
+		printf("deleting\n");
 		next = t->next;
-		deleteForm((Form*)t->data);
+		if (t->data != NULL) {
+			deleteForm((Form*)t->data);
+		}
 		free(t);
 		t = next;
 	}
@@ -105,7 +108,7 @@ Form *removeForm(Form* form) {
 }
 Form *makeDirt() {
 	Form *d = makeForm(0.7, 0.3, 0.1, 0, 0);
-	addToList(&(theWorld->terrain), d);
+	//addToList(&(theWorld->terrain), d);
 	return d;//makeForm(0.7, 0.3, 0.1, 0, 0);
 }
 
