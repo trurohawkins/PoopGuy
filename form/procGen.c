@@ -107,10 +107,10 @@ int** genRain( int **map) {
 		blocksum = 0;
 		for(int y= sizeY-1; y > 0; y--) {
 			blocksum = blocksum + map[x][y+1];
-			if (map[x][y] = 10) && (blocksum = 0) {
+			if ( map[x][y] == 10 && blocksum == 0 ) {
 				map[x][y] = map[x][y] + satVal;
 			} 	
-			if (map[x][y] = 10) && (map[x][y+1] > 10) {
+			if ( map[x][y] == 10 && map[x][y+1] > 10 ) {
 				map[x][y] = map[x][y] + ( map[x][y+1] - inc);
 			}
 		}
