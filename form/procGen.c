@@ -105,8 +105,9 @@ int** genRain( int **map) {
 
 	for (int x =0; x < sizeX; x++) {
 		blocksum = 0;
-		for(int y= sizeY-1; y > 0; y--) {
+		for(int y= sizeY-2; y > -1; y--) {
 			blocksum = blocksum + map[x][y+1];
+			// printf("%i \n", blocksum);
 			if ( map[x][y] == 10 && blocksum == 0 ) {
 				map[x][y] = map[x][y] + satVal;
 			} 	
@@ -122,7 +123,7 @@ void genWorld(int **map) {
 	float moist;
 	for (int x = 0; x < theWorld->x; x++) {
 		for(int y = 0; y < theWorld->y; y++) {
-			if ( map[x][y] > 0 ) {
+			if ( map[x][y] >= 0 && map[x][y] <= 19) {
 				moist = map[x][y] - 10;
 				TYPE *d = makeDirt();
 				placeForm(x, y, d);
