@@ -23,6 +23,7 @@ int main(int argc, char **argv) {
 	int Seedstring[4] = {1,2,3,4};
 	int** map = genMap(Seedstring);
 	genWorld(map);
+	freeMap(map);
 	atexit(exitGame);
 	poopGuy = makePlayer(3, 3);
 	placeForm(100, 20, poopGuy->me->body);

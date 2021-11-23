@@ -23,11 +23,11 @@ void arrayToFile(char *txt, int **array)
 int **fileToArray(char *txt) {
 	FILE *fptr;
 
-    int sizeX = theWorld->x;
-    int sizeY = theWorld->y;
+  int sizeX = theWorld->x;
+  int sizeY = theWorld->y;
 
 	int **array = (int**) calloc( sizeX, sizeof(int*));
-    for (int i = 0; i < sizeX ; i += 1) {
+  for (int i = 0; i < sizeX ; i += 1) {
 			array[i] = (int*) calloc( sizeY , sizeof(int));
 	}
 
@@ -52,7 +52,7 @@ int** genMap(int *Seedstringd) {
 
     for (int i = 0; i < sizeX ; i += 1) {
 			map[i] = (int*) calloc( sizeY , sizeof(int));
-	}
+		}
     // Variables for block flags
     int space = 0;
     int dirt = 10;
@@ -69,22 +69,30 @@ int** genMap(int *Seedstringd) {
     
     int maxGrow = sizeY/3;
     int height = sizeY/5;
-	for (int x = 0; x < sizeX; x++) {
-		for(int y = 0; y < height; y++) {
+		for (int x = 0; x < sizeX; x++) {
+			for(int y = 0; y < height; y++) {
 		// this should write flag to array
 	    	map[x][y] = dirt ;
-		}
-		if (randPercent() > 0.75) {
-			int newGrow = (int)(randPercent() * maxGrow);
-			// printf( "%f \n", randPercent());
-			if (randPercent() > 0.5) {
-				newGrow *= -1;
 			}
-			height = clamp(height + newGrow, 1, sizeY - sizeY/5);
+			if (randPercent() > 0.75) {
+				int newGrow = (int)(randPercent() * maxGrow);
+				// printf( "%f \n", randPercent());
+				if (randPercent() > 0.5) {
+					newGrow *= -1;
+				}
+				height = clamp(height + newGrow, 1, sizeY - sizeY/5);
+			}
 		}
-    
-	}
 	return map;
+}
+
+void freeMap(int **map) {
+	int sx = theWorld->x;
+	int sy = theWorld->y;
+	for (int i = 0; i < sx; i++) {
+		free(map[i]);
+	}
+	free(map);
 }
 
 void genWorld(int **map) {
