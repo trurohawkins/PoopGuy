@@ -14,14 +14,16 @@ int main(int argc, char **argv) {
 
 	srand(time(NULL));
 	initDirections();
-	int worldX = 500;
-	int worldY = 500;
+	int worldX = 10;
+	int worldY = 10;
 	int windowX = 100;
 	int windowY = 100;
 	makeWorld(worldX, worldY);
 	setFrame(windowX, windowY);
 	int Seedstring[4] = {1,2,3,4};
 	int** map = genMap(Seedstring);
+	int** Rmap = genRain(map);
+	printArray(map, worldX, worldY);
 	genWorld(map);
 	freeMap(map);
 	atexit(exitGame);

@@ -95,6 +95,28 @@ void freeMap(int **map) {
 	free(map);
 }
 
+int** genRain( int **map) {
+    int sizeX = theWorld->x;
+    int sizeY = theWorld->y;
+	int blocksum;
+
+	int satVal = 9;
+	int inc = 11;
+
+	for (int x =0; x < sizeX; x++) {
+		blocksum = 0;
+		for(int y= sizeY-1; y > 0 y--) {
+			blocksum = blocksum + map[x][y+1];
+			if (map[x][y] = 10) && (blocksum = 0) {
+				map[x][y] = map[x][y] + satVal;
+			} 	
+			if (map[x][y] = 10) && (map[x][y+1] > 10) {
+				map[x][y] = map[x][y] + ( map[x][y+1] - inc);
+			}
+		}
+	}
+	return map;
+}
 void genWorld(int **map) {
 	float moist;
 	printf("world generated1 /n");
