@@ -148,7 +148,6 @@ void makeSquare(int x, int y, int z) {
 			placeForm( x + i, y + j, b) ;
 		}
 	}
-
 }
 
  void makeCircle(int x, int y, int r) {

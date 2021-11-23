@@ -120,27 +120,6 @@ void updateLoop() {
 		godPos[1] = getWorld()->y /2;
 
 		while(!glfwWindowShouldClose(screen->window)) {
-			glClearColor(0.1, 0.2, 0.4, 1.0);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			//glDrawArrays(GL_TRIANGLES, 0, 6);
-			if (gridOn) {
-				drawGrid(matrix, tMat, sMat, rMat, drawColor, vLi);
-			}
-			//glUseProgram(baseShader);
-			drawWorld(w, tMat, sMat, rMat, drawColor, squa, spriteTrans, spriteScale);
-			/*
-			glUseProgram(texShader);
-			matrix[3] = 0.5;
-			matrix[7] = 0.2;
-			matrix[11] = 0.2;
-			glUniformMatrix4fv(spriteTrans, 1, GL_TRUE, matrix);
-			drawSprite(pol);//, tcTrans, tcScale);
-			matrix[3] = 0;
-			matrix[7] = 0;
-			matrix[11] = 0.1;
-			glUniformMatrix4fv(spriteTrans, 1, GL_TRUE, matrix);
-			drawSprite(poo);//, tcTrans, tcScale);
-			*/
 			glfwPollEvents();
 			checkControllerInput();
 			processKeys();
@@ -155,6 +134,12 @@ void updateLoop() {
 					setCenter(godPos);
 				}
 			}
+			glClearColor(0.1, 0.2, 0.4, 1.0);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			if (gridOn) {
+				drawGrid(matrix, tMat, sMat, rMat, drawColor, vLi);
+			}
+			drawWorld(w, tMat, sMat, rMat, drawColor, squa, spriteTrans, spriteScale);
 			glfwSwapBuffers(screen->window);
 		}
 		freeAnim(poo);
