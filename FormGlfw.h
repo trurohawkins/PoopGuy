@@ -11,3 +11,4 @@ void setCenter(float cp[2]);
 void setGrid(bool state);
 void toggleGod(float);
 void exitGame();
+void setFormRoto(Form *f, int dir);

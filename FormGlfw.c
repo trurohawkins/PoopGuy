@@ -212,8 +212,15 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 						glBindVertexArray(squa);
 						mat[7] = (-1 + ySize/2) + (y * ySize);	
 						glUniformMatrix4fv(tMat, 1, GL_TRUE, mat);
-						float *fCol = f->color;
+						float *fCol = (float*)calloc(3, sizeof(float));
+						if (f->id == 10) {
+							float moistMulti = min(1 - ( (f->stat / 10) - 0.3), 1);
+							for (int i = 0; i < 3; i++) {
+								fCol[i] = f->color[i] * moistMulti;
+							}
+						}
 						glUniform4f(color, fCol[0], fCol[1], fCol[2], 1.0);
+						free(fCol);
 						glDrawArrays(GL_TRIANGLES, 0, 6);
 					} else if (f->anim != NULL && (xp == f->pos[0] && yp == f->pos[1])) {
 					//	glUseProgram(texShader);

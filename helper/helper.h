@@ -14,6 +14,8 @@ void freeDirections();
 int **getDirs();
 float randPercent();
 int clamp(int, int, int);
+float max(float a, float b);
+float min(float a, float b);
 int sign(int);
 int abs(int);
 char *fileToString(char *txt);

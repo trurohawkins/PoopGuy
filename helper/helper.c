@@ -47,6 +47,22 @@ int clamp(int val, int min, int max) {
 	}
 }
 
+float max(float a, float b) {
+	if (a > b) {
+		return a;
+	} else {
+		return b;
+	}
+}
+
+float min(float a, float b) {
+	if (a < b) {
+		return a;
+	} else {
+		return b;
+	}
+}
+
 int sign(int num) {
 	if (num > 0) {
 		return 1;

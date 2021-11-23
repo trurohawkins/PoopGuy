@@ -126,6 +126,7 @@ void genWorld(int **map) {
 			if ( map[x][y] >= 10 && map[x][y] <= 19) {
 				moist = map[x][y] - 10;
 				TYPE *d = makeDirt();
+				d->stat = moist;
 				placeForm(x, y, d);
 			} 
 		}

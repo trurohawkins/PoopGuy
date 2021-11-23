@@ -9,6 +9,7 @@ typedef struct Form {
 	int size[2];
 	float ***body;
 	void *anim;
+	float stat;
 } Form;
 //Form *inert;
 
@@ -25,5 +26,4 @@ void freeWorld();
 #include "../actor/Actor.h"
 #include "../actor/acts/control.h"
 #include "World.h"
-//#include "FormGraphics.h"
 #endif
