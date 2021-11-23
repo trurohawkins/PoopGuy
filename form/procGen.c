@@ -123,7 +123,7 @@ void genWorld(int **map) {
 	float moist;
 	for (int x = 0; x < theWorld->x; x++) {
 		for(int y = 0; y < theWorld->y; y++) {
-			if ( map[x][y] >= 0 && map[x][y] <= 19) {
+			if ( map[x][y] >= 10 && map[x][y] <= 19) {
 				moist = map[x][y] - 10;
 				TYPE *d = makeDirt();
 				placeForm(x, y, d);
