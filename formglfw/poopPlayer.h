@@ -1,4 +1,5 @@
 #include "../actor/PoopGuy.h"
+#include "FormGlfw.h"
 
 void makePoopPlayer (Player *p, PoopGuy *pg);
 
