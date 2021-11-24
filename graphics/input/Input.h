@@ -17,11 +17,12 @@ typedef struct inpReceived
 } inpReceived;
 
 void initInput();
-void addControl(char *inp, void(*n_func)(float));
+linkedList *getCurInput();
+//void addControl(char *inp, void(*n_func)(float));
 void takeKeys(GLFWwindow *window, int key, int scancode, int action, int mods);
 void takeMouseButt(GLFWwindow *window, int button, int action, int mods);
 void takeScroll(GLFWwindow *window, double xoffset, double yoffset);
-void processKeys();
+void clearInput();
 void freeCurInput();
 //InpMap *makeInputMap(char *str, void (*func)(void));
 void tmpFunc(float);

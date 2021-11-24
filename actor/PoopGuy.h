@@ -20,13 +20,13 @@ void deletePoopGuy(PoopGuy *);
 void keyPressPoopGuy(PoopGuy *, char);
 void keyReleasePoopGuy(PoopGuy *, char);
 
-void up(float val);
-void left(float val);
-void down(float val);
-void right(float val);
-void xMove(float val);
-void yMove(float val);
-void poop(float val);
-void toggleEat(float val);
-void jumpInp(float val);
+void up(PoopGuy *pg, float val);
+void left(PoopGuy *pg, float val);
+void down(PoopGuy *pg, float val);
+void right(PoopGuy *pg, float val);
+void xMove(PoopGuy *pg, float val);
+void yMove(PoopGuy *pg, float val);
+void poop(PoopGuy *pg, float val);
+void toggleEat(PoopGuy *pg, float val);
+void jumpStart(PoopGuy *pg, float val);
 #endif

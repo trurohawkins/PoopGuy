@@ -1,7 +1,7 @@
 #include "formglfw/FormGlfw.c"
+#include "formglfw/Player.c"
 
 bool doGL = true;
-PoopGuy *pooper;
 
 int main(int argc, char **argv) {
 	if (argc > 1) {

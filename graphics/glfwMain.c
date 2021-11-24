@@ -50,10 +50,12 @@ int initializeGLFW() {
 	//tell GL to only draw onto a pixel if shape is cloer to the viewer
 	glEnable(GL_DEPTH_TEST);//enable depther testing
 	glDepthFunc(GL_LESS); //depth testing interpets a smaller value as "closer"
+	/*
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glEnable(GL_BLEND);
 	glFrontFace(GL_CW);
+	*/
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 	baseShaderProgram = makeShaderProgram("graphics/shaders/matVS.glsl", "graphics/shaders/simpFS.glsl");

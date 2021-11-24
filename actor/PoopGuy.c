@@ -1,5 +1,4 @@
 #include "PoopGuy.h"
-PoopGuy *curPoopGuy;
 
 PoopGuy *makePoopGuy (int sx, int sy) {
 	PoopGuy *pooper = (PoopGuy *)calloc(1, sizeof(PoopGuy));
@@ -21,13 +20,14 @@ PoopGuy *makePoopGuy (int sx, int sy) {
 	addAction(pooper->me, pooper->control);
 	//changeDir(pooper->eatPoop pooper->me->body, 3);
 	//cv->moveRight = 1;
-	curPoopGuy = pooper;
+	//pg = pooper;
 	return pooper;
 }
-
+/*
 PoopGuy *getPoopGuy() {
-	return curPoopGuy;
+	return pg;
 }
+*/
 
 void deletePoopGuy(PoopGuy *pooper) {
 	eatPooVar *ep = (eatPooVar*)(pooper->eatPoop->vars);
@@ -86,64 +86,64 @@ void keyReleasePoopGuy(PoopGuy *pooper, char input) {
 	}	
 }
 
-void up(float val) {
+void up(PoopGuy *pg, float val) {
 	if (val > 0) {
-		eatPooVar *ep = (eatPooVar*)(curPoopGuy->eatPoop->vars);
-		changeDir(ep, curPoopGuy->me->body,0);
+		eatPooVar *ep = (eatPooVar*)(pg->eatPoop->vars);
+		changeDir(ep, pg->me->body,0);
 	}
 }
 
-void left(float val) {
-	controlVar *cv = (controlVar*)curPoopGuy->control->vars;
-	eatPooVar *ep = (eatPooVar*)(curPoopGuy->eatPoop->vars);
+void left(PoopGuy *pg, float val) {
+	controlVar *cv = (controlVar*)pg->control->vars;
+	eatPooVar *ep = (eatPooVar*)(pg->eatPoop->vars);
 	if (val > 0) {
-		changeDir(ep, curPoopGuy->me->body, 1);
+		changeDir(ep, pg->me->body, 1);
 		cv->moveLeft = 1;
 	} else {
 		cv->moveLeft = 0;
 	}
 }
 
-void right(float val) {
-	controlVar *cv = (controlVar*)curPoopGuy->control->vars;
-	eatPooVar *ep = (eatPooVar*)(curPoopGuy->eatPoop->vars);
+void right(PoopGuy *pg, float val) {
+	controlVar *cv = (controlVar*)pg->control->vars;
+	eatPooVar *ep = (eatPooVar*)(pg->eatPoop->vars);
 	if (val > 0) {	
-		changeDir(ep, curPoopGuy->me->body, 3);
+		changeDir(ep, pg->me->body, 3);
 		cv->moveRight = 1;
 	} else {
 		cv->moveRight = 0;
 	}
 }
-void down(float val) {
+void down(PoopGuy *pg, float val) {
 	if (val > 0) {
-		eatPooVar *ep = (eatPooVar*)(curPoopGuy->eatPoop->vars);
-		changeDir(ep, curPoopGuy->me->body,2);
+		eatPooVar *ep = (eatPooVar*)(pg->eatPoop->vars);
+		changeDir(ep, pg->me->body,2);
 	}
 }
 
-void xMove(float val) {
+void xMove(PoopGuy *pg, float val) {
 	if (val > 0) {
-		right(1);
+		right(pg, 1);
 	}  else if (val < 0) {
-		left(1);
+		left(pg, 1);
 	} else {
-		right(0);
-		left(0);
+		right(pg, 0);
+		left(pg, 0);
 	}
 }
-void yMove(float val) {
+void yMove(PoopGuy *pg, float val) {
 	if (val > 0) {
-		up(1);
+		up(pg, 1);
 	}  else if (val < 0) {
-		down(1);
+		down(pg, 1);
 	} else {
-		up(0);
-		down(0);
+		up(pg, 0);
+		down(pg, 0);
 	}
 }
 
-void poop(float val) {
-	eatPooVar *ep = (eatPooVar*)(curPoopGuy->eatPoop->vars);
+void poop(PoopGuy *pg, float val) {
+	eatPooVar *ep = (eatPooVar*)(pg->eatPoop->vars);
 	if (val > 0) {
 		ep->pooping = 1;
 	} else {
@@ -151,15 +151,15 @@ void poop(float val) {
 	}
 }
 
-void toggleEat(float val) {
+void toggleEat(PoopGuy *pg, float val) {
 	if (val > 0) {//only if when pressed not released
-		eatPooVar *ep = (eatPooVar*)(curPoopGuy->eatPoop->vars);
+		eatPooVar *ep = (eatPooVar*)(pg->eatPoop->vars);
 		ep->eating = (ep->eating+1)%2;
 	}
 }
 
-void jumpInp(float val) {
+void jumpStart(PoopGuy *pg, float val) {
 	if (val > 0) {
-		startJump(curPoopGuy->me->body, curPoopGuy->jump);
+		startJump(pg->me->body, pg->jump);
 	}
 }

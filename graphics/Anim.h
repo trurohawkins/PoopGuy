@@ -18,6 +18,7 @@ typedef struct Anim {
 	int *length;
 	int scale[2];
 	int flip[2];
+	int roto;
 	GLuint texCoords;
 	GLuint texScale;
 	unsigned int texture;
@@ -25,15 +26,18 @@ typedef struct Anim {
 } Anim;
 
 Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts);
+float rotoToRadian(int d);
 void freeAnim(Anim *a);
 void setScale (Anim* a, int x, int y);
 void setFlipX(Anim *a, int x);
 void setFlipY(Anim *a, int y);
+void setRoto(Anim *a, int d);
 void addSprite(Anim *a, int index, int len);
 void animAddVao(Anim *a, GLuint vao);
 void animate(Anim *a);
 float getCoordX(Anim *a);
 float getCoordY(Anim *a);
+void setSpriteTexture(Anim *a);
 void drawSprite(Anim *a);
 
 #endif

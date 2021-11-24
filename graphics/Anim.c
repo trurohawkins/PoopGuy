@@ -41,10 +41,20 @@ Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts) {
 	a->scale[1] = 1;
 	a->flip[0] = 1;
 	a->flip[1] = 1;
+	a->roto = 3;
 	a->vao = -1;
 	a->texCoords = tc;
 	a->texScale = ts;
 	return a;
+}
+
+float rotoToRadian(int d) {
+	if (d == 0) {
+		return 1.5708;
+	} else if (d == 2) {
+		return 4.71239;
+	}
+	return 0;
 }
 
 void freeAnim(Anim *a) {
@@ -63,6 +73,10 @@ void setFlipX(Anim *a, int x) {
 
 void setFlipY(Anim *a, int y) {
 	a->flip[1] = y;
+}
+
+void setRoto(Anim *a, int d) {
+	a->roto = d;
 }
 
 void addSprite(Anim *a, int index, int len) {
@@ -85,9 +99,8 @@ void animate(Anim *a) {
 }
 
 void changeSprite(Anim *a, int index) {
-	if (index >= 0 && index < a->spriteNum) {
+	if (index >= 0 && index < a->spriteNum && a->sprite != index) {
 		if (a->length[index] != -1) {
-			printf("anim now using sprite %i\n", index);
 			a->sprite = index;
 			a->frame = 0;
 		}
@@ -100,11 +113,11 @@ float getCoordX(Anim *a) {
 }
 
 float getCoordY(Anim *a) {
-	float cy = ((a->spriteNum-1) - a->sprite) * a->frameY;
+	float cy = ((a->spriteNum-1) - a->sprite) * a->frameY + 1;
 	return cy;//((a->sprite) * -a->frameY);
 }
 
-void drawSprite(Anim *a) {
+void setSpriteTexture(Anim *a) {
 	float tMat [] = {
 		1.0, 0.0, getCoordX(a),
 		0.0, 1.0, getCoordY(a),
@@ -115,10 +128,13 @@ void drawSprite(Anim *a) {
 		0.0, a->frameY, 0.0,
 		0.0, 0.0, 1.0,
 	};
-	//mat[0]
-	//glUniform2f(texCoords, getCoordX(a), getCoordY(a));
 	glUniformMatrix3fv(a->texCoords, 1, GL_TRUE, tMat);
 	glUniformMatrix3fv(a->texScale, 1, GL_TRUE, sMat);
+
+}
+
+void drawSprite(Anim *a) {
+	glUniform2f(a->texCoords, getCoordX(a), getCoordY(a));
 
 	glBindTexture(GL_TEXTURE_2D, a->texture);
 	glBindVertexArray(a->vao);

@@ -1,4 +1,6 @@
 #include "FormGlfw.h"
+#include "Player.h"
+#include "poopPlayer.c"
 
 float centerX;
 float centerY;
@@ -7,6 +9,7 @@ int frameY = 50;
 bool gridOn = false;
 bool paused;
 bool godMode = false;
+PoopGuy *pooper;
 float *godPos;
 
 void updateLoop() {
@@ -43,13 +46,14 @@ void updateLoop() {
 		}
 		*/
 		int spriteTrans = glGetUniformLocation(texShader, "tMat");
-		if (tMat == -1) {
+		if (spriteTrans == -1) {
 			printf("vert doesnt have a var tMat\n");
 		}
 		int spriteScale = glGetUniformLocation(texShader, "sMat");
-		if (sMat == -1) {
+		if (spriteScale == -1) {
 			printf("vert doesnt have a var sMat\n");
 		}
+		int spriteRot = glGetUniformLocation(texShader, "rMat");
 		int tcScale = glGetUniformLocation(texShader, "tcScale");
 		int tcTrans = glGetUniformLocation(texShader, "tcTrans");
 		float tscMat [] = {
@@ -91,30 +95,14 @@ void updateLoop() {
 		}
 		GLuint spriteVao = makeSpriteVao(1, 1);
 		animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
-		setAnim(getPoopGuy()->me->body, poo);
-		//Anim *pol = makeAnim("resources/sploog.png", 1, 1, tcTrans, tcScale);
-		//GLuint spriteVao = makeSpriteVao(1, 1);
-		//animAddVao(poo, makeSpriteVao(poo->frameX, poo->frameY));
-		//animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
-		//animAddVao(pol, spriteVao);//makeSpriteVao(1, 1));
-		//update gamepad mappings to unify them all
+		setAnim(pooper->me->body, poo);
+		Player *pPlayer = makePlayer(pooper->me, poo);
+		makePoopPlayer(pPlayer, pooper);
 		char *mappings = fileToString("gamecontrollerdb.txt");
 		const char *cMap = (const char*)mappings;
 		glfwUpdateGamepadMappings(cMap);
 		free(mappings);
-		addControl("K0A", left);
-		addControl("K0D", right);
-		addControl("K0W", up);
-		addControl("K0S", down);
-		addControl("M00", poop);
-		addControl("M01", toggleEat);
-		addControl("K0 ", jumpInp);
-		addControl("J00", jumpInp);
-		addControl("A00", xMove);
-		addControl("A01", yMove);
-		addControl("A05", poop);
-		addControl("A04", toggleEat);
-		addControl("K0G", toggleGod);
+		addControl(pPlayer,"K0G", toggleGod);
 		godPos =  (float*)calloc(2, sizeof(float));
 		godPos[0] = getWorld()->x /2;
 		godPos[1] = getWorld()->y /2;
@@ -122,14 +110,15 @@ void updateLoop() {
 		while(!glfwWindowShouldClose(screen->window)) {
 			glfwPollEvents();
 			checkControllerInput();
-			processKeys();
+			processKeys(pPlayer);
 			if(glfwGetKey(screen->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 				glfwSetWindowShouldClose(screen->window, 1);
 			}
 			if (!paused) {
+				animate(poo);
 				actorListDo();
 				if (!godMode) {
-					setCenter(getPoopGuy()->me->body->pos);
+					setCenter(pooper->me->body->pos);
 				} else {
 					setCenter(godPos);
 				}
@@ -139,15 +128,16 @@ void updateLoop() {
 			if (gridOn) {
 				drawGrid(matrix, tMat, sMat, rMat, drawColor, vLi);
 			}
-			drawWorld(w, tMat, sMat, rMat, drawColor, squa, spriteTrans, spriteScale);
+			drawWorld(w, tMat, sMat, rMat, drawColor, squa, spriteTrans, spriteScale, spriteRot);
 			glfwSwapBuffers(screen->window);
 		}
+		freePlayer(pPlayer);
 		freeAnim(poo);
 		free(godPos);
 	}
 }
 
-void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, int sTrans, int sScale) {
+void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, int sTrans, int sScale, int sRot) {
 		float mat[] = {
 			1.0, 0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0, 0.0,
@@ -208,21 +198,6 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 						free(fCol);
 						glDrawArrays(GL_TRIANGLES, 0, 6);
 					} else if (f->anim != NULL && (xp == f->pos[0] && yp == f->pos[1])) {
-					//	glUseProgram(texShader);
-					//	drawFormSprite(f, sMatrix, xSize, ySize, x, y, sScale, sTrans);
-					/*	
-						Anim *a = (Anim*)f->anim;
-						glUseProgram(texShader);
-						sMatrix[0] = xSize * a->scale[0];
-						sMatrix[5] = ySize * a->scale[1];
-						glUniformMatrix4fv(sScale, 1, GL_TRUE, sMatrix);
-						sMatrix[0] = a->flip[0];
-						sMatrix[5] = a->flip[1];
-						sMatrix[3] = (-1 + xSize/2) + (x * xSize);
-						sMatrix[7] = (-1 + ySize/2) + (y * ySize);	
-						glUniformMatrix4fv(sTrans, 1, GL_TRUE, sMatrix);
-						drawSprite(a);
-						*/
 						addToList(&animList, f);
 						int *xPos = (int*)calloc(1, sizeof(int));
 						int *yPos = (int*)calloc(1, sizeof(int));
@@ -251,20 +226,7 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 			}
 			curPos = curPos->next;
 			Form *f = (Form*)(curAnim->data);
-			/*
-						Anim *a = (Anim*)f->anim;
-						printf("%i, %i\n", a->scale[0], a->scale[1]);
-						sMatrix[0] = xSize * a->scale[0];
-						sMatrix[5] = ySize * a->scale[1];
-						glUniformMatrix4fv(sScale, 1, GL_TRUE, sMatrix);
-						sMatrix[0] = a->flip[0];
-						sMatrix[5] = a->flip[1];
-						sMatrix[3] = (-1 + xSize/2) + (*xPos * xSize);
-						sMatrix[7] = (-1 + ySize/2) + (*yPos * ySize);	
-						glUniformMatrix4fv(sTrans, 1, GL_TRUE, sMatrix);
-						drawSprite(a);
-						*/
-			drawFormSprite(f, sMatrix, xSize, ySize, *xPos, *yPos, sScale, sTrans);
+			drawFormSprite(f, sMatrix, xSize, ySize, *xPos, *yPos, sScale, sTrans, sRot);
 		}
 		curAnim = curAnim->next;
 	}
@@ -272,16 +234,27 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 	freeList(&posList);
 }
 
-void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, int yp, GLuint sScale, GLuint sTrans) {
+void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, int yp, GLuint sScale, GLuint sTrans, GLuint sRot) {
 	Anim *a = (Anim*)f->anim;
-	sMatrix[0] = xSize * a->scale[0];
-	sMatrix[5] = ySize * a->scale[1];
+	//sMatrix[3] = (-1 + xSize/2) + (xp * xSize);
+	//sMatrix[7] = (-1 + ySize/2) + (yp * ySize);	
+	sMatrix[0] = xSize * a->scale[0] * a->flip[0];
+	sMatrix[5] = ySize * a->scale[1] * a->flip[1];
 	glUniformMatrix4fv(sScale, 1, GL_TRUE, sMatrix);
-	sMatrix[0] = a->flip[0];
-	sMatrix[5] = a->flip[1];
-	sMatrix[3] = (-1 + xSize/2) + (xp * xSize);
-	sMatrix[7] = (-1 + ySize/2) + (yp * ySize);	
+	setSpriteTexture(a);
+	sMatrix[3] = (-1 + xSize/2) + (xp * xSize);// + -a->flip[0] * 0.01f;
+	sMatrix[7] = (-1 + ySize/2) + (yp * ySize);// + 0.01f;	
+	sMatrix[0] = 1;//xSize * a->scale[0] * a->flip[0];
+	sMatrix[5] = 1;//ySize * a->scale[1] * a->flip[1];
 	glUniformMatrix4fv(sTrans, 1, GL_TRUE, sMatrix);
+	float rad = rotoToRadian(a->roto);
+	float rMatrix[] = {
+		cos(rad), -sin(rad), 0.0, 0.0,
+		sin(rad), cos(rad), 0.0, 0.0,
+		0.0, 0.0, 1.0 ,0.0,
+		0.0, 0.0, 0.0, 1.0
+	};
+	glUniformMatrix4fv(sRot, 1, GL_TRUE, rMatrix);
 	drawSprite(a);
 }
 
@@ -320,6 +293,7 @@ void drawGrid(float *mat, int tMat, int sMat, int rMat, int color, GLuint vLi) {
 		glDrawArrays(GL_LINES, 0, 2);
 	}
 }
+/*
 void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
 	if (action == GLFW_PRESS) {
 		//printf("key press = %i\n", key);
@@ -331,7 +305,7 @@ void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods
 		keyReleasePoopGuy(getPoopGuy(), key);
 	}
 }
-
+*/
 void setCenter(float cp[2]) {
 	centerX = cp[0];
 	centerY = cp[1];
@@ -349,7 +323,7 @@ void setGrid(bool state) {
 void toggleGod(float poo) {
 	if (poo > 0) {
 		if (godMode) {
-			setCenter(getPoopGuy()->me->body->pos);
+			setCenter(pooper->me->body->pos);
 			setFrame(100, 100);
 			godMode = false;
 		} else {
@@ -360,12 +334,8 @@ void toggleGod(float poo) {
 	}
 }
 
-void setFormRoto(Form *f, int dir) {
-
-}
-
 void exitGame() {
-	//glfwDestroyWindow(getWindow());
+	deletePoopGuy(pooper);
 	freeWorld();
 	freeJoyList();
 	freeInput();

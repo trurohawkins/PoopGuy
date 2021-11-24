@@ -1,4 +1,4 @@
-#include "Joystick.h"
+#include "Input.h"
 
 linkedList *joystickList = 0;
 
@@ -118,7 +118,8 @@ char *joyButtString(int jid, int butt, int onoff) {
 	ir->input = buttString;
 	ir->val = onoff;
 	//printf("button:%s\n", buttString);
-	addToList(&curInput, ir);
+	linkedList *ci = getCurInput();
+	addToList(&ci, ir);
 	return buttString;
 }
 
@@ -135,8 +136,8 @@ void joyAxeString(int jid, int axes, float val) {
 		val *= -1;
 	}
 	ir->val = val;
-	//printf("button:%s val:%f\n", axeString, val);
-	addToList(&curInput, ir);
+	linkedList *ci = getCurInput();
+	addToList(&ci, ir);
 }
 
 Joypad *getJoypad(int jid) {

@@ -137,7 +137,6 @@ void setAnim(Form *f, void *a) {
 
 void freeWorld() {
 	deleteWorld();
-	deletePoopGuy(getPoopGuy());
 	deleteActorList();
 	freeDirections();
 }

@@ -16,7 +16,7 @@ PoopGuy: main.o libform.a libglfw.a
 windows: main.o libform.a libglut.a
 	gcc -o PoopGuy main.o libform.a libglut.a $(GLW)
 
-main.o: main.c $(GF)FormGlfw.c $(GF)FormGlfw.h
+main.o: main.c $(GF)FormGlfw.c $(GF)FormGlfw.h $(GF)Player.c $(GF)Player.h $(GF)poopPlayer.c $(GF)poopPlayer.h
 	$(CC) -Wextra -Wall main.c
 
 libform.a: Form.o helper.o
