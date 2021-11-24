@@ -2,6 +2,7 @@
 #include "World.h"
 World* theWorld;
 #include "procGen.c"
+#include "../actor/Eco.c"
 
 void makeWorld(int x, int y) {	
 	World *newWorld = (World*)calloc(1, sizeof(World));
@@ -120,11 +121,13 @@ Form *removeForm(Form* form) {
 //	f->pos[1] = -1; maybe add back? took out because in the middle of move we need to remember the old position
 	return form;
 }
-Form *makeDirt() {
+Form *makeDirt(float moist) {
 	Form *d = makeForm(0.7, 0.3, 0.1, 0, 0);
 	d->id = 10;
+	d->stat = moist*0.1 + 0.000001;
+	// printf("\n %f \n", d->stat);
 	//addToList(&(theWorld->terrain), d);
-	return d;//makeForm(0.7, 0.3, 0.1, 0, 0);
+	return d; //makeForm(0.7, 0.3, 0.1, 0, 0);
 }
 
 void makeInert() {
@@ -141,7 +144,8 @@ void makeInert() {
 //
 
 void makeSquare(int x, int y, int z) {
-	TYPE *b = makeDirt() ;
+	float moist = 0;
+	TYPE *b = makeDirt(moist) ;
 	//addToList(&(theWorld->terrain), b);
 	for (int i = 1; i < z ; i++) {
 		for (int j = 1; j < z ; j++) {
@@ -152,7 +156,8 @@ void makeSquare(int x, int y, int z) {
 
  void makeCircle(int x, int y, int r) {
 	//printf("making circle ");
-	TYPE *b = makeDirt() ;
+	float moist = 0;
+	TYPE *b = makeDirt(moist) ;
 	//addToList(&(theWorld->terrain), b);
 	int sx = x - r ;
 	int sy = y - r ;
@@ -173,7 +178,8 @@ void makeSquare(int x, int y, int z) {
 }}}}
 
 void dirtFloor(int height) {
-	TYPE *d = makeDirt();
+	float moist = 0;
+	TYPE *d = makeDirt(moist);
 	//addToList(&(theWorld->terrain), d);
 	int maxGrow = 6;
 	for (int x = 0; x < theWorld->x; x++) {

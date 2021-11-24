@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "../helper/helper.c"
-// #include "procGen.h"
+#include "../form/procGen.h"
 
 void arrayToFile(char *txt, int **array)
 {
@@ -107,7 +107,7 @@ int** genRain( int **map) {
 		blocksum = 0;
 		for(int y= sizeY-2; y > -1; y--) {
 			blocksum = blocksum + map[x][y+1];
-			// printf("%i \n", blocksum);
+			// printf("%i \n", blocksqum);
 			if ( map[x][y] == 10 && blocksum == 0 ) {
 				map[x][y] = map[x][y] + satVal;
 			} 	
@@ -125,8 +125,7 @@ void genWorld(int **map) {
 		for(int y = 0; y < theWorld->y; y++) {
 			if ( map[x][y] >= 10 && map[x][y] <= 19) {
 				moist = map[x][y] - 10;
-				TYPE *d = makeDirt();
-				d->stat = moist;
+				TYPE *d = makeDirt(moist);
 				placeForm(x, y, d);
 			} 
 		}
