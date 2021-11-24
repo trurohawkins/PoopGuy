@@ -95,7 +95,9 @@ void eVap(int x, int y){
 			}
 		}
 
-		if (theWorld->map[x][y - depth]->stat >= sTake) { 
+		if ( theWorld->map[x][y - depth] == NULL){
+			return;
+		}else if(theWorld->map[x][y - depth]->stat >= sTake) { 
 			// ensures no negative values
 			theWorld->map[x][y - depth]->stat -= sTake;
 			// takes moisture from the lowest block
