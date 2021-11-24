@@ -9,6 +9,7 @@ typedef struct World
 	// world state?;
 } World;
 #include "procGen.h"
+#include "../actor/Eco.h"
 
 void makeWorld(int x, int y);
 World *getWorld();
@@ -17,7 +18,7 @@ void deleteTerrain();
 void placeForm(int x, int y, Form *form);
 Form *takeForm(int x, int y);
 Form *removeForm(Form *f);
-Form *makeDirt();
+Form *makeDirt(float);
 void dirtFloor(int height);
 void makeSquare(int x, int y, int z);
 void makeCircle(int x, int y, int r);

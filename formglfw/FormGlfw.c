@@ -102,7 +102,8 @@ void updateLoop() {
 		const char *cMap = (const char*)mappings;
 		glfwUpdateGamepadMappings(cMap);
 		free(mappings);
-		addControl(pPlayer,"K0G", toggleGod);
+		addControl(pPlayer, "K0G", toggleGod);
+		addControl(pPlayer, "K0P", togglePause);
 		godPos =  (float*)calloc(2, sizeof(float));
 		godPos[0] = getWorld()->x /2;
 		godPos[1] = getWorld()->y /2;
@@ -117,6 +118,7 @@ void updateLoop() {
 			if (!paused) {
 				animate(poo);
 				actorListDo();
+				groundWater();
 				if (!godMode) {
 					setCenter(pooper->me->body->pos);
 				} else {
@@ -189,7 +191,7 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 						glUniformMatrix4fv(tMat, 1, GL_TRUE, mat);
 						float *fCol = (float*)calloc(3, sizeof(float));
 						if (f->id == 10) {
-							float moistMulti = min(1 - ( (f->stat / 10) - 0.3), 1);
+							float moistMulti = 1 - min(f->stat, 0.9);// min(1 - ( (f->stat) - 0.1), 1);
 							for (int i = 0; i < 3; i++) {
 								fCol[i] = f->color[i] * moistMulti;
 							}
@@ -318,6 +320,12 @@ void setFrame(int x, int y) {
 
 void setGrid(bool state) {
 	gridOn = state;
+}
+
+void togglePause(float poo) {
+	if (poo > 0) {
+		paused = !paused;
+	}
 }
 
 void toggleGod(float poo) {
