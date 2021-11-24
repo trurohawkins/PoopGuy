@@ -178,7 +178,7 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 		mat[3] = (-1 + xSize/2) + (x * xSize);
 		for (int y = 0; y < frameY; y++) {
 			int xp = x + (cx-fx);
-			int yp = y + (cy-cy);
+			int yp = y + (cy-fy);
 			if (xp >= 0 && xp < w->x && yp >= 0 && yp < w->y) {
 				Form *f = w->map[xp][yp];
 				if (f != NULL) {

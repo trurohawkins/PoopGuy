@@ -52,10 +52,28 @@ void rightInp(float val) {
 }
 
 void xmInp(float val) {
+	Anim *a = myPlayer->sprite;
 	xMove(myPooper, val);
+	if (val > 0) {
+		setRoto(a, 3);
+		setFlipX(a, 1);
+	} else if (val < 0) {
+		setRoto(a, 1);
+		setFlipX(a, -1);
+	}
+	setSprite(a);
 }
 void ymInp(float val) {
+	Anim *a = myPlayer->sprite;
 	yMove(myPooper, val);
+	if (val > 0) {
+		setRoto(a, 0);
+		setFlipX(a, 1);
+	} else if (val < 0) {
+		setRoto(a, 2);
+		setFlipX(a, 1);
+	}
+	setSprite(a);
 }
 void poopInp(float val) {
 	poop(myPooper, val);
@@ -71,8 +89,6 @@ void jumpInp(float val) {
 
 void setSprite(Anim *a) {
 	eatPooVar *ep = (eatPooVar*)(myPooper->eatPoop->vars);
-	//moveVar *mv = (moveVar*)(myPooper->move->vars);
-	//bool walking = mv->force[0] > 0 || mv->force[1] > 0;
 	controlVar *cv = (controlVar*)(myPooper->control->vars);
 	bool walking = cv->moveLeft > 0 || cv->moveRight > 0;
 	if (walking) {
