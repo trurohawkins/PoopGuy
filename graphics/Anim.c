@@ -30,7 +30,7 @@ Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts) {
 	a->frameY = 1.0f/rows;
 	a->frame = 0;
 	a->sprite = 0;
-	a->speed = 25;
+	a->speed = 5;
 	a->spriteNum = rows;
 	a->length = (int*)calloc(sizeof(int), col);
 	a->length[0] = 1;

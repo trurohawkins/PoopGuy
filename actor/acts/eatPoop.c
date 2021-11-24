@@ -6,6 +6,8 @@ Action *makeStomach(Form *f, float biteX, float biteY) {
 	ep->bite[0] = biteX;
 	//smaller length for rect, use 1
 	ep->bite[1] =	biteY;
+	ep->biteCounter = 0;
+	ep->biteInterval = 1;
 	changeDir(ep, f, 3);
 	Action *stom = makeAction(&stomachStuff, ep);
 	stom->active = 1;
@@ -29,21 +31,28 @@ void stomachStuff(Form *f, Action *a) {
 	int xc;
 	int yc;
 	if (ep->eating != 0) {
-		if (ep->dir % 2 == 0) {
-			xc = (f->pos[0] - (1-f->pMod[0]) + ((f->size[0]/2)+1));
-			yc = getEdge(f, 1, d[ep->dir][1]);
-		} else {
-			xc = getEdge(f, 0, d[ep->dir][0]);
-			yc = (f->pos[1] - (1-f->pMod[1]) + ((f->size[1]/2)+1));
-		}
-		for (int x = 0; x < ep->xBite; x++) {
-			for (int y = 0; y < ep->yBite; y++) {
-				Form *food = takeForm(xc - x, yc - y);
-				if (food != NULL) {
-					addToStack(food, a);
+		if (ep->biteCounter > ep->biteInterval) {
+			if (ep->dir % 2 == 0) {
+				xc = (f->pos[0] - (1-f->pMod[0]) + ((f->size[0]/2)+1));
+				yc = getEdge(f, 1, d[ep->dir][1]);
+			} else {
+				xc = getEdge(f, 0, d[ep->dir][0]);
+				yc = (f->pos[1] - (1-f->pMod[1]) + ((f->size[1]/2)+1));
+			}
+			for (int x = 0; x < ep->xBite; x++) {
+				for (int y = 0; y < ep->yBite; y++) {
+					Form *food = takeForm(xc - x, yc - y);
+					if (food != NULL) {
+						addToStack(food, a);
+					}
 				}
 			}
+			ep->biteCounter = 0;
+		} else {
+			ep->biteCounter++;
 		}
+	} else if (ep->biteCounter != 0) {
+		ep->biteCounter = 0;
 	}
 	if (ep->pooping != 0) {
 		Form *poo = removeFromStack(a);
@@ -91,8 +100,12 @@ void addToStack(Form *f, Action *a) {
 	linkedList *cur = ep->stomach;
 	while (cur->data != NULL) {
 		formStack *fs = (formStack*)(cur->data);
-		if (compareForms(f, fs->type) == 1) { //we have a match
+		//if (compareForms(f, fs->type) == 1) { //we have a match
+		if (f->id == fs->type) {
 			fs->count++;
+			if (f->id == 10) {
+				deleteForm(f);
+			}
 			f = 0;
 			break;
 		}
@@ -103,19 +116,23 @@ void addToStack(Form *f, Action *a) {
 	}
 	if (f != 0) {
 		formStack *fs  = (formStack*)calloc(1, sizeof(formStack));
-		fs->type = f;
+		fs->type = f->id;
 		fs->count = 1;
 		cur->data = fs;
+		if (f->id == 10) {
+			deleteForm(f);
+		}
 	}
 }
 
 Form *removeFromStack(Action *a) {
 	eatPooVar *ep = (eatPooVar*)(a->vars);
-	Form *poop = 0;
+	//Form *poop = 0;
+	int poopType;
 	if (ep->stomach != 0 && ep->stomach->data != 0) {
 		formStack *fs = (formStack*)(ep->stomach->data);
 		fs->count--;
-		poop = fs->type;
+		poopType = fs->type;
 		if (fs->count == 0) {
 			linkedList *oh = ep->stomach;
 			ep->stomach = ep->stomach->next;
@@ -125,6 +142,10 @@ Form *removeFromStack(Action *a) {
 				ep->stomach = makeList();
 			}
 		}
+	}
+	Form *poop;
+	if (poopType == 10) {
+		poop = makeDirt(5);
 	}
 	return poop;
 }

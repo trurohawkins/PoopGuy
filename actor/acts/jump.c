@@ -3,7 +3,7 @@ Action *makeJump(moveVar *mv, Action *n_grav) {
 	jv->move = mv;
 	jv->grav = n_grav;
 	jv->maxJP = 4;
-	jv->jumpPow = 10;
+	jv->jumpPow = 5;
 	jv->jumpCount = 0;
 	jv->jumpMax = 2;
 	Action *a = makeAction(&jump, jv);

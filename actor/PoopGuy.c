@@ -8,7 +8,6 @@ PoopGuy *makePoopGuy (int sx, int sy) {
 	pooper->me->body->id = 69;
 	pooper->move = makeMove();
 	Action *grav = makeGravity(pooper->move->vars);
-	setFriction(grav, 10);
 	pooper->jump = makeJump(pooper->move->vars, grav);
 	pooper->eatPoop = makeStomach(pooper->me->body, sx, sy);
 	pooper->control = makeControl();

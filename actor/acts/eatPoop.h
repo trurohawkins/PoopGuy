@@ -1,5 +1,6 @@
 typedef struct formStack {
-	Form *type;
+	//Form *type;
+	int type;
 	int count;
 } formStack;
 
@@ -11,7 +12,8 @@ typedef struct eatPooVar {
 	float bite[2];
 	int xBite;
 	int yBite;
-
+	int biteCounter;
+	int biteInterval;
 } eatPooVar;
 
 Action *makeStomach(Form *f, float biteX, float biteY);

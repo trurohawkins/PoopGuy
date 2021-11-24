@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 	freeMap(map);
 	atexit(exitGame);
 	pooper = makePoopGuy(3, 3);
-	placeForm(1, 2, pooper->me->body);
+	placeForm(1, worldY - 3, pooper->me->body);
 	checkSide(pooper->me->body, 1, 0, true);
 	/*Actor *rock = makeActor(makeForm(0.3, 0.3, 0.3));
 	Action *move =  makeMove();

@@ -1,5 +1,5 @@
 int terminalVelocity = -10;
-int gravForce = 5;
+int gravForce = 1;
 int side = 1;
 Action *makeGravity(moveVar *mv) {
 	gravVar *gv = (gravVar*)calloc(1, sizeof(gravVar));
