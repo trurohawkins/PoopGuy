@@ -35,6 +35,7 @@ void setRoto(Anim *a, int d);
 void addSprite(Anim *a, int index, int len);
 void animAddVao(Anim *a, GLuint vao);
 void animate(Anim *a);
+void changeSprite(Anim *a, int index);
 float getCoordX(Anim *a);
 float getCoordY(Anim *a);
 void setSpriteTexture(Anim *a);
