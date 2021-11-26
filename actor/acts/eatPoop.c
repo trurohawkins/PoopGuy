@@ -128,7 +128,7 @@ void addToStack(Form *f, Action *a) {
 Form *removeFromStack(Action *a) {
 	eatPooVar *ep = (eatPooVar*)(a->vars);
 	//Form *poop = 0;
-	int poopType;
+	int poopType = -1;
 	if (ep->stomach != 0 && ep->stomach->data != 0) {
 		formStack *fs = (formStack*)(ep->stomach->data);
 		fs->count--;
@@ -143,7 +143,7 @@ Form *removeFromStack(Action *a) {
 			}
 		}
 	}
-	Form *poop;
+	Form *poop = 0;
 	if (poopType == 10) {
 		poop = makeDirt(5);
 	}

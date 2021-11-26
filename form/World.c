@@ -124,7 +124,7 @@ Form *removeForm(Form* form) {
 Form *makeDirt(float moist) {
 	Form *d = makeForm(0.7, 0.3, 0.1, 0, 0);
 	d->id = 10;
-	d->stat = moist*0.1 + 0.000001;
+	d->stat = moist*0.1 + 0.100001;
 	// printf("\n %f \n", d->stat);
 	//addToList(&(theWorld->terrain), d);
 	return d; //makeForm(0.7, 0.3, 0.1, 0, 0);

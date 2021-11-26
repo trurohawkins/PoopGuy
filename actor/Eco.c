@@ -74,10 +74,12 @@ int chSky(int x, int y) {
 }
 
 void rain(int x, int y) {
-	int skyy = chSky(x,y);
-	if (skyy == 1) {
-		theWorld->map[x][y]->stat = sat;
-		// fills surface blocks to max moisture value
+	if (theWorld->map[x][y] != NULL) {
+		int skyy = chSky(x,y);
+		if (skyy == 1) {
+			theWorld->map[x][y]->stat = sat;
+			// fills surface blocks to max moisture value
+		}
 	}
 }
 
@@ -104,7 +106,7 @@ void eVap(int x, int y){
 			// printf(" x:%i,y:%i, d:%i, mStat:%f  \n",x,y,depth,theWorld->map[x][y-depth]->stat);
 		} else {
 			// ensures block moistures dosn't get stuck at a value of sTake
-			theWorld->map[x][y - depth]->stat = 0;
+			theWorld->map[x][y - depth]->stat = 0.1;
 			//dessication!
 		} 
 
@@ -112,6 +114,9 @@ void eVap(int x, int y){
 }
 
 void gravPull(int x, int y){
+	if (theWorld->map[x][y] == NULL) {
+		return;
+	}
 // if block is at bottom of world, water drops outs into the ether
 	if (y == 0 ){
 		if (theWorld->map[x][y]->stat - gPull >= tHoldU) {
