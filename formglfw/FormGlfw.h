@@ -1,7 +1,9 @@
 #ifndef FORMGLFW
 #define FORMGLFW
 #include "../form/Form.h"
+#include "../helper/helper.h"
 #include "../graphics/glfwMain.h"
+#include "Player.h"
 //#include "helper/file.h"
 
 void updateLoop();
@@ -11,7 +13,7 @@ void drawGrid(float *mat, int tMat, int sMat,  int rMat, int color, GLuint vLi);
 //void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 void setCenter(float cp[2]);
 void setGrid(bool state);
-void togglePause(float val);
-void toggleGod(float);
+void togglePause(void *,float val);
+void toggleGod(void *,float);
 void exitGame();
 #endif

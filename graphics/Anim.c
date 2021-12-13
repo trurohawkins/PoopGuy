@@ -75,7 +75,7 @@ void setFlipY(Anim *a, int y) {
 	a->flip[1] = y;
 }
 
-void setRoto(Anim *a, int d) {
+void setRotation(Anim *a, int d) {
 	a->roto = d;
 }
 

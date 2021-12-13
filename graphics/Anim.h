@@ -31,7 +31,7 @@ void freeAnim(Anim *a);
 void setScale (Anim* a, int x, int y);
 void setFlipX(Anim *a, int x);
 void setFlipY(Anim *a, int y);
-void setRoto(Anim *a, int d);
+void setRotation(Anim *a, int d);
 void addSprite(Anim *a, int index, int len);
 void animAddVao(Anim *a, GLuint vao);
 void animate(Anim *a);

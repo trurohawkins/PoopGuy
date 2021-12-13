@@ -1,15 +1,15 @@
 #include "FormGlfw.h"
-#include "Player.h"
-#include "poopPlayer.c"
+#include "Player.c"
 
 float centerX;
 float centerY;
 int frameX = 50;
 int frameY = 50;
+PoopGuy *pooper;
+PoopGuy *pooper2;
 bool gridOn = false;
 bool paused;
 bool godMode = false;
-PoopGuy *pooper;
 float *godPos;
 
 void updateLoop() {
@@ -88,16 +88,40 @@ void updateLoop() {
 		glUniformMatrix4fv(spriteTrans, 1, GL_TRUE, matrix);
 		glUniformMatrix4fv(spriteScale, 1, GL_TRUE, matrix);
 		World *w = getWorld();
+		makePlayerManager();
+		pooper = makePoopGuy(3, 3);
+		placeForm(1, w->y - 3, pooper->me->body);
+		checkSide(pooper->me->body, 1, 0, true);
+		pooper2 = makePoopGuy(3, 3);
+		placeForm(5, w->y - 3, pooper2->me->body);
+		checkSide(pooper2->me->body, 1, 0, true);
+		makeActorList();
+		addActor(pooper->me);
+		addActor(pooper2->me);
+
 		Anim *poo = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tcTrans, tcScale);
 		setScale(poo, 4, 4);
 		for (int i = 1; i < 4; i++) {
 			addSprite(poo, i, 6);
 		}
+		Anim *poo2 = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tcTrans, tcScale);
+		setScale(poo2, 4, 4);
+		for (int i = 1; i < 4; i++) {
+			addSprite(poo2, i, 6);
+		}
 		GLuint spriteVao = makeSpriteVao(1, 1);
 		animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
 		setAnim(pooper->me->body, poo);
-		Player *pPlayer = makePlayer(pooper->me, poo);
+
+		Player *pPlayer = makePlayer(pooper, 0);
 		makePoopPlayer(pPlayer, pooper);
+		
+		Player *pPlayer1 = makePlayer(pooper2, 1);
+		makePoopPlayer(pPlayer1, pooper2);
+		GLuint spriteVao2 = makeSpriteVao(1, 1);
+		animAddVao(poo2, spriteVao2);//makeSpriteVao(1, 1));
+		setAnim(pooper2->me->body, poo2);
+
 		char *mappings = fileToString("gamecontrollerdb.txt");
 		const char *cMap = (const char*)mappings;
 		glfwUpdateGamepadMappings(cMap);
@@ -111,7 +135,7 @@ void updateLoop() {
 		while(!glfwWindowShouldClose(screen->window)) {
 			glfwPollEvents();
 			checkControllerInput();
-			processKeys(pPlayer);
+			processKeys();
 			if(glfwGetKey(screen->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 				glfwSetWindowShouldClose(screen->window, 1);
 			}
@@ -133,7 +157,7 @@ void updateLoop() {
 			drawWorld(w, tMat, sMat, rMat, drawColor, squa, spriteTrans, spriteScale, spriteRot);
 			glfwSwapBuffers(screen->window);
 		}
-		freePlayer(pPlayer);
+		freePlayerManager();
 		freeAnim(poo);
 		free(godPos);
 	}
@@ -236,12 +260,23 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 	freeList(&posList);
 }
 
+int convertInvert(bool inv) {
+	if (inv) {
+		return -1;
+	} else {
+		return 1;
+	}
+}
+
 void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, int yp, GLuint sScale, GLuint sTrans, GLuint sRot) {
 	Anim *a = (Anim*)f->anim;
+	if (a->sprite != (int)f->stat) {
+		changeSprite(a, (int)f->stat);
+	}
 	//sMatrix[3] = (-1 + xSize/2) + (xp * xSize);
 	//sMatrix[7] = (-1 + ySize/2) + (yp * ySize);	
-	sMatrix[0] = xSize * a->scale[0] * a->flip[0];
-	sMatrix[5] = ySize * a->scale[1] * a->flip[1];
+	sMatrix[0] = xSize * a->scale[0] * convertInvert(f->invert[0]);//a->flip[0];
+	sMatrix[5] = ySize * a->scale[1] * convertInvert(f->invert[1]);//a->flip[1];
 	glUniformMatrix4fv(sScale, 1, GL_TRUE, sMatrix);
 	setSpriteTexture(a);
 	sMatrix[3] = (-1 + xSize/2) + (xp * xSize);// + -a->flip[0] * 0.01f;
@@ -249,7 +284,7 @@ void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, i
 	sMatrix[0] = 1;//xSize * a->scale[0] * a->flip[0];
 	sMatrix[5] = 1;//ySize * a->scale[1] * a->flip[1];
 	glUniformMatrix4fv(sTrans, 1, GL_TRUE, sMatrix);
-	float rad = rotoToRadian(a->roto);
+	float rad = rotoToRadian(f->roto);
 	float rMatrix[] = {
 		cos(rad), -sin(rad), 0.0, 0.0,
 		sin(rad), cos(rad), 0.0, 0.0,
@@ -322,13 +357,13 @@ void setGrid(bool state) {
 	gridOn = state;
 }
 
-void togglePause(float poo) {
+void togglePause(void *, float poo) {
 	if (poo > 0) {
 		paused = !paused;
 	}
 }
 
-void toggleGod(float poo) {
+void toggleGod(void *, float poo) {
 	if (poo > 0) {
 		if (godMode) {
 			setCenter(pooper->me->body->pos);

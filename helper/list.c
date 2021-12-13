@@ -77,7 +77,9 @@ void freeList(linkedList **ll) {
 	linkedList *next = 0;
 	while (cur != NULL) {
 		next = cur->next;
-		free(cur->data);
+		if (cur->data) {
+			free(cur->data);
+		}
 		free(cur);
 		cur = next;
 	}	

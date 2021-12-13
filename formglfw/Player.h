@@ -1,18 +1,17 @@
 #ifndef PLAYER
 #define PLAYER
-#include "FormGlfw.h"
-
 typedef struct Player {
-	Actor *self;
+	void *self;
 	linkedList *controls;
-	Anim *sprite;
+	//Anim *sprite;
 	int num;
 	Joypad *joy;
 } Player;
+#include "PlayerManager.h"
+#include "poopPlayer.h"
 
-Player *makePlayer(Actor *character, Anim *sprite);
-void addControl(Player *player, char *inp, void (*n_func)(float));
-void processKeys(Player *p);
+Player *makePlayer(void *character, /*Anim *sprite,*/ int num);
+void addControl(Player *player, char *inp, void (*n_func)(void*,float));
 void freePlayer(Player *p);
 
 #endif

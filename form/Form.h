@@ -7,6 +7,8 @@ typedef struct Form {
 	float pMod[2];
 	float color[3];
 	int size[2];
+	int roto;
+	bool invert[2];
 	float ***body;
 	void *anim;
 	float stat;
@@ -19,6 +21,9 @@ int getEdge (Form *f, int side, int d);
 void deleteForm(Form *f);
 void makeInert();
 int compareForms(Form *f1, Form *f2);
+void setRoto(Form *f, int degree);
+void setInvert(Form *f, int axis, bool flipped);
+void setStat(Form *f, float stat);
 void setAnim(Form *f, void *a);
 void freeWorld();
 

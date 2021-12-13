@@ -63,7 +63,7 @@ void freeCurInput() {
 	}
 }	
 
-void tmpFunc(float val) {
+void tmpFunc(void *, float val) {
 	printf("poopydoopy %f\n", val);
 }
 

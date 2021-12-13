@@ -7,7 +7,7 @@ typedef struct InpMap
 {
 	char *input;
 	float val;
-	void (*func)(float);
+	void (*func)(void*, float);
 } InpMap;
 
 typedef struct inpReceived
@@ -25,7 +25,7 @@ void takeScroll(GLFWwindow *window, double xoffset, double yoffset);
 void clearInput();
 void freeCurInput();
 //InpMap *makeInputMap(char *str, void (*func)(void));
-void tmpFunc(float);
+void tmpFunc(void*, float);
 
 void freeInput();
 

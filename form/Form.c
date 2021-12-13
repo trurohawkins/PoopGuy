@@ -11,6 +11,9 @@ Form *makeForm(float r, float g, float b, float wid, float len) {
 	newForm->size[0] = wid;
 	newForm->size[1] = len;
 	newForm->anim = 0;
+	newForm->roto = 0;
+	newForm->invert[0] = false;
+	newForm->invert[1] = false;
 	if ((int)wid % 2 == 0) {
 		newForm->pMod[0] = -0.5;
 	} else {
@@ -129,6 +132,18 @@ int compareForms(Form *f1, Form *f2) {
 	} else {
 		return 0;
 	}
+}
+
+void setRoto(Form *f, int degree) {
+	f->roto = degree;
+}
+
+void setInvert(Form *f, int axis, bool flipped) {
+	f->invert[axis] = flipped;
+}
+
+void setStat(Form *f, float stat) {
+	f->stat = stat;
 }
 
 void setAnim(Form *f, void *a) {

@@ -10,14 +10,20 @@ ID = $(GD)input/
 SHD = $(GD)shaders/
 HD = helper/
 
-PoopGuy: main.o libform.a libglfw.a
-	gcc -o PoopGuy main.o libform.a libglfw.a $(GLL)
+PoopGuy: main.o libFormGlfw.a
+	gcc -o PoopGuy main.o libFormGlfw.a $(GLL)
 
 windows: main.o libform.a libglut.a
 	gcc -o PoopGuy main.o libform.a libglut.a $(GLW)
 
-main.o: main.c $(GF)FormGlfw.c $(GF)FormGlfw.h $(GF)Player.c $(GF)Player.h $(GF)poopPlayer.c $(GF)poopPlayer.h
+main.o: main.c
 	$(CC) -Wextra -Wall main.c
+
+libFormGlfw.a: FormGlfw.o Form.o helper.o glfwMain.o Shaders.o Input.o Anim.o
+	ar rs libFormGlfw.a FormGlfw.o Form.o helper.o glfwMain.o Shaders.o Input.o Anim.o 
+
+FormGlfw.o: $(GF)FormGlfw.c $(GF)FormGlfw.h $(GF)Player.c $(GF)Player.h $(GF)poopPlayer.c $(GF)poopPlayer.h $(GF)PlayerManager.h $(GF)PlayerManager.c
+	$(CC) $(GF)FormGlfw.c
 
 libform.a: Form.o helper.o
 	ar rs libform.a Form.o helper.o
