@@ -24,7 +24,6 @@ int compareForms(Form *f1, Form *f2);
 void setRoto(Form *f, int degree);
 void setInvert(Form *f, int axis, bool flipped);
 void setStat(Form *f, float stat);
-void setAnim(Form *f, void *a);
 void freeWorld();
 
 #include "../actor/Action.h"

@@ -71,9 +71,9 @@ Form *checkSide(Form *f, int xd, int yd, bool collide) {
 		}
 		int hei = f->size[1];//(f->size[1]-f->pMod[1])/2;
 		//printf("hei: %i - from %f\n", hei, f->size[1] + f->pMod[1]);
-		//if (collide) {
-		//	printf("checking side, Im at %f, %f\n", f->pos[0], f->pos[1]);
-		//}
+		if (collide) {
+			//printf("checking side, Im at %f, %f\n", f->pos[0], f->pos[1]);
+		}
 		for (int i = 0; i < hei; i++) {
 			//if (collide) {
 			//	printf("p: %f, %f\n", f->pos[0] + col, (f->pos[1] - f->size[1]/2) + i);
@@ -144,10 +144,6 @@ void setInvert(Form *f, int axis, bool flipped) {
 
 void setStat(Form *f, float stat) {
 	f->stat = stat;
-}
-
-void setAnim(Form *f, void *a) {
-	f->anim = a;
 }
 
 void freeWorld() {

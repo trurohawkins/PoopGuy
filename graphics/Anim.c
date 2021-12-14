@@ -4,6 +4,8 @@
 /*
 	GLuint tc, ts: tc = uniform locations for matrices that determine where in the sprite sheet we are drawing from
 */
+#include "AnimList.c"
+
 Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts) { 
 	Anim *a = (Anim*)calloc(sizeof(Anim), 1);
 	glGenTextures(1, &(a->texture));
@@ -130,7 +132,6 @@ void setSpriteTexture(Anim *a) {
 	};
 	glUniformMatrix3fv(a->texCoords, 1, GL_TRUE, tMat);
 	glUniformMatrix3fv(a->texScale, 1, GL_TRUE, sMat);
-
 }
 
 void drawSprite(Anim *a) {

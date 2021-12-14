@@ -9,7 +9,7 @@ PoopGuy *pooper;
 PoopGuy *pooper2;
 bool gridOn = false;
 bool paused;
-bool godMode = false;
+bool godMode = true;
 float *godPos;
 
 void updateLoop() {
@@ -90,24 +90,16 @@ void updateLoop() {
 		World *w = getWorld();
 		makePlayerManager();
 		pooper = makePoopGuy(3, 3);
-		placeForm(1, w->y - 3, pooper->me->body);
+		placeForm(1, 3, pooper->me->body);
 		checkSide(pooper->me->body, 1, 0, true);
-		pooper2 = makePoopGuy(3, 3);
-		placeForm(5, w->y - 3, pooper2->me->body);
-		checkSide(pooper2->me->body, 1, 0, true);
 		makeActorList();
+		makeAnimList();
 		addActor(pooper->me);
-		addActor(pooper2->me);
 
 		Anim *poo = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tcTrans, tcScale);
 		setScale(poo, 4, 4);
 		for (int i = 1; i < 4; i++) {
 			addSprite(poo, i, 6);
-		}
-		Anim *poo2 = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tcTrans, tcScale);
-		setScale(poo2, 4, 4);
-		for (int i = 1; i < 4; i++) {
-			addSprite(poo2, i, 6);
 		}
 		GLuint spriteVao = makeSpriteVao(1, 1);
 		animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
@@ -115,13 +107,22 @@ void updateLoop() {
 
 		Player *pPlayer = makePlayer(pooper, 0);
 		makePoopPlayer(pPlayer, pooper);
-		
+
+		pooper2 = makePoopGuy(3, 3);
+		placeForm(5, 3, pooper2->me->body);
+		checkSide(pooper2->me->body, 1, 0, true);
+		addActor(pooper2->me);
+		Anim *poo2 = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tcTrans, tcScale);
+		setScale(poo2, 4, 4);
+		for (int i = 1; i < 4; i++) {
+			addSprite(poo2, i, 6);
+		}
 		Player *pPlayer1 = makePlayer(pooper2, 1);
 		makePoopPlayer(pPlayer1, pooper2);
 		GLuint spriteVao2 = makeSpriteVao(1, 1);
 		animAddVao(poo2, spriteVao2);//makeSpriteVao(1, 1));
 		setAnim(pooper2->me->body, poo2);
-
+		
 		char *mappings = fileToString("gamecontrollerdb.txt");
 		const char *cMap = (const char*)mappings;
 		glfwUpdateGamepadMappings(cMap);
@@ -140,7 +141,7 @@ void updateLoop() {
 				glfwSetWindowShouldClose(screen->window, 1);
 			}
 			if (!paused) {
-				animate(poo);
+				AnimListAnimate();
 				actorListDo();
 				groundWater();
 				if (!godMode) {
@@ -158,7 +159,7 @@ void updateLoop() {
 			glfwSwapBuffers(screen->window);
 		}
 		freePlayerManager();
-		freeAnim(poo);
+		deleteAnimList();
 		free(godPos);
 	}
 }
@@ -273,8 +274,8 @@ void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, i
 	if (a->sprite != (int)f->stat) {
 		changeSprite(a, (int)f->stat);
 	}
-	//sMatrix[3] = (-1 + xSize/2) + (xp * xSize);
-	//sMatrix[7] = (-1 + ySize/2) + (yp * ySize);	
+	sMatrix[3] = 0;
+	sMatrix[7] = 0;
 	sMatrix[0] = xSize * a->scale[0] * convertInvert(f->invert[0]);//a->flip[0];
 	sMatrix[5] = ySize * a->scale[1] * convertInvert(f->invert[1]);//a->flip[1];
 	glUniformMatrix4fv(sScale, 1, GL_TRUE, sMatrix);
@@ -330,19 +331,7 @@ void drawGrid(float *mat, int tMat, int sMat, int rMat, int color, GLuint vLi) {
 		glDrawArrays(GL_LINES, 0, 2);
 	}
 }
-/*
-void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-	if (action == GLFW_PRESS) {
-		//printf("key press = %i\n", key);
-		if (key == 96) {
-			paused = !paused;
-		}
-		keyPressPoopGuy(getPoopGuy(), key);
-	} else if (action == GLFW_RELEASE) {
-		keyReleasePoopGuy(getPoopGuy(), key);
-	}
-}
-*/
+
 void setCenter(float cp[2]) {
 	centerX = cp[0];
 	centerY = cp[1];
@@ -351,6 +340,11 @@ void setCenter(float cp[2]) {
 void setFrame(int x, int y) {
 	frameX = x;
 	frameY = y;
+}
+
+void setAnim(Form *f, Anim *a) {
+	f->anim = a;
+	addAnim(a);
 }
 
 void setGrid(bool state) {
@@ -379,6 +373,7 @@ void toggleGod(void *, float poo) {
 
 void exitGame() {
 	deletePoopGuy(pooper);
+	deletePoopGuy(pooper2);
 	freeWorld();
 	freeJoyList();
 	freeInput();

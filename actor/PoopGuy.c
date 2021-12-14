@@ -92,8 +92,8 @@ void up(void *pg, float val) {
 		setRoto(p->me->body, 0);
 		eatPooVar *ep = (eatPooVar*)(p->eatPoop->vars);
 		changeDir(ep, p->me->body,0);
+		setAnimSprite(p);
 	}
-	setAnimSprite(p);
 }
 
 void left(void *pg, float val) {
@@ -118,12 +118,12 @@ void down(void *pg, float val) {
 		setRoto(p->me->body, 2);
 		eatPooVar *ep = (eatPooVar*)(p->eatPoop->vars);
 		changeDir(ep, p->me->body,2);
+		setAnimSprite(p);
 	}
-	setAnimSprite(p);
 }
 
 void right(void *pg, float val) {
-	printf("%p is going right\n", pg);
+	//printf("%p is going right\n", pg);
 	PoopGuy *p = (PoopGuy*)pg;	
 	controlVar *cv = (controlVar*)p->control->vars;
 	eatPooVar *ep = (eatPooVar*)(p->eatPoop->vars);

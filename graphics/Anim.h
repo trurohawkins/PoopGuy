@@ -6,6 +6,8 @@
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
 #include <stdbool.h>
+#include "../helper/helper.h"
+
 
 typedef struct Anim {
 	int speed;
@@ -24,6 +26,8 @@ typedef struct Anim {
 	unsigned int texture;
 	unsigned int vao;
 } Anim;
+
+#include "AnimList.h"
 
 Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts);
 float rotoToRadian(int d);

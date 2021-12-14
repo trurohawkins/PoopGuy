@@ -20,9 +20,9 @@ void makePoopPlayer(Player *p, PoopGuy *pg) {
 		addControl(p, "K0J", left);
 		addControl(p, "K0K", down);
 		addControl(p, "K0L", right);
-		addControl(p, "M01", toggleEat);
-		addControl(p, "M00", poop);
-		addControl(p, "K0 ", jumpStart);
+		addControl(p, "K0O", toggleEat);
+		addControl(p, "K0U", poop);
+		addControl(p, "K0M", jumpStart);
 	}
 
 	/*

@@ -43,7 +43,7 @@ Shaders.o: $(SHD)Shaders.c $(SHD)Shaders.h
 Graphics.o: $(GD)Graphics.c $(GD)Graphics.h
 	$(CC) $(GD)Graphics.c
 
-Anim.o: $(GD)Anim.c $(GD)Anim.h
+Anim.o: $(GD)Anim.c $(GD)Anim.h $(GD)AnimList.c $(GD)AnimList.h
 	$(CC) $(GD)Anim.c
 
 Input.o: $(ID)Input.c $(ID)Input.h $(ID)Joystick.c $(ID)Joystick.h

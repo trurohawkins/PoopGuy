@@ -97,6 +97,7 @@ void addForce(void *m, int powX, int powY) {
 	moveVar *mv = (moveVar*)m;
 	if (powX != 0) {
 		mv->force[0] += powX;
+		//printf("adding force = %i\n", mv->force[0]);
 	}
 	if (powY != 0) {
 		mv->force[1] += powY;

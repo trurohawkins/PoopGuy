@@ -12,6 +12,7 @@ void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, i
 void drawGrid(float *mat, int tMat, int sMat,  int rMat, int color, GLuint vLi);
 //void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 void setCenter(float cp[2]);
+void setAnim(Form *f, Anim *a);
 void setGrid(bool state);
 void togglePause(void *,float val);
 void toggleGod(void *,float);
