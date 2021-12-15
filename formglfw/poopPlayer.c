@@ -1,11 +1,23 @@
 #include "poopPlayer.h"
 
-PoopGuy *myPooper;
-Player *myPlayer;
 
-void makePoopPlayer(Player *p, PoopGuy *pg) {
-	myPooper = pg;
-	myPlayer = p;
+PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
+		PoopGuy *pooper = makePoopGuy(3, 3);
+		placeForm(xp, yp, pooper->me->body);
+		checkSide(pooper->me->body, 1, 0, true);
+		addActor(pooper->me);
+
+		Anim *poo = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tc, ts);
+		setScale(poo, 4, 4);
+		for (int i = 1; i < 4; i++) {
+			addSprite(poo, i, 6);
+		}
+		GLuint spriteVao = makeSpriteVao(1, 1);
+		animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
+		setAnim(pooper->me->body, poo);
+
+		Player *p = makePlayer(pooper, pNum, deletePoopGuy);
+	
 	//key mouse ocntrols
 	if (p->num == 0) {
 		addControl(p, "K0W", up);
@@ -33,4 +45,5 @@ void makePoopPlayer(Player *p, PoopGuy *pg) {
 	addControl(p, "A04", eatInp);
 	addControl(p, "J00", jumpInp);
 	*/
+	return pooper;
 }

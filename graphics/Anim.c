@@ -35,7 +35,7 @@ Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts) {
 	a->speed = 5;
 	a->spriteNum = rows;
 	a->length = (int*)calloc(sizeof(int), col);
-	a->length[0] = 1;
+	a->length[0] = 0;
 	for (int i = 1; i < col; i++) {
 		a->length[i] = -1;
 	}
@@ -92,11 +92,14 @@ void animAddVao(Anim *a, unsigned int vao) {
 }
 
 void animate(Anim *a) {
-	if (a->speedCounter > a->speed) {
-		a->frame = (a->frame + 1) % a->length[a->sprite];
-		a->speedCounter = 0;
-	} else {
-		a->speedCounter++;
+	//printf("cur sprite: %i\n", a->sprite);
+	if (a->length[a->sprite] > 0) {
+		if (a->speedCounter > a->speed) {
+			a->frame = (a->frame + 1) % a->length[a->sprite];
+			a->speedCounter = 0;
+		} else {
+			a->speedCounter++;
+		}
 	}
 }
 

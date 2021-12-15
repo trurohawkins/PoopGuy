@@ -143,6 +143,7 @@ void setInvert(Form *f, int axis, bool flipped) {
 }
 
 void setStat(Form *f, float stat) {
+	//printf("setting stat %f\n", stat);
 	f->stat = stat;
 }
 

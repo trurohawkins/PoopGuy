@@ -16,7 +16,7 @@ typedef struct PoopGuy {
 
 PoopGuy *makePoopGuy(int sx, int sy);
 PoopGuy *getPoopGuy();
-void deletePoopGuy(PoopGuy *);
+void deletePoopGuy(void *);
 void keyPressPoopGuy(PoopGuy *, char);
 void keyReleasePoopGuy(PoopGuy *, char);
 

@@ -1,3 +1,3 @@
 #include "../actor/PoopGuy.h"
 
-void makePoopPlayer (Player *p, PoopGuy *pg);
+PoopGuy *makePoopPlayer (int xp, int yp, int pNum, GLuint tc, GLuint ts);

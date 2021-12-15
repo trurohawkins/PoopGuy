@@ -2,12 +2,12 @@
 #include "PlayerManager.c"
 #include "poopPlayer.c"
 
-Player *makePlayer(void *character, /*Anim *sprite, */int num) {
+Player *makePlayer(void *character, int num, void (*deleteFunc)(void*)) {
 	Player *p = (Player *)calloc(1, sizeof(Player));
 	p->num = num;
 	p->self = character;
-	//p->sprite = sprite;
 	p->controls = makeList();
+	p->delFunc = deleteFunc;
 	addPlayer(p);
 	return p;
 }
@@ -22,5 +22,8 @@ void addControl(Player *player, char *inp, void (*n_func)(void*,float)) {
 
 void freePlayer(Player *p) {
 	freeList(&p->controls);
+	if (p->delFunc != NULL) {
+		p->delFunc(p->self);
+	}
 	free(p);
 }

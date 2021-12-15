@@ -6,10 +6,10 @@ float centerY;
 int frameX = 50;
 int frameY = 50;
 PoopGuy *pooper;
-PoopGuy *pooper2;
+int numPlayers = 1;
 bool gridOn = false;
-bool paused;
-bool godMode = true;
+bool paused = false;
+bool godMode = false;
 float *godPos;
 
 void updateLoop() {
@@ -89,11 +89,18 @@ void updateLoop() {
 		glUniformMatrix4fv(spriteScale, 1, GL_TRUE, matrix);
 		World *w = getWorld();
 		makePlayerManager();
+		makeActorList();
+		makeAnimList();
+		for (int i = 0; i < numPlayers; i++) {
+			PoopGuy* tmp = makePoopPlayer(1 + (i*4), 2, i, tcTrans, tcScale);
+			if (i == 0) {
+				pooper = tmp;
+			}
+		}
+/*		
 		pooper = makePoopGuy(3, 3);
 		placeForm(1, 3, pooper->me->body);
 		checkSide(pooper->me->body, 1, 0, true);
-		makeActorList();
-		makeAnimList();
 		addActor(pooper->me);
 
 		Anim *poo = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tcTrans, tcScale);
@@ -105,7 +112,7 @@ void updateLoop() {
 		animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
 		setAnim(pooper->me->body, poo);
 
-		Player *pPlayer = makePlayer(pooper, 0);
+		Player *pPlayer = makePlayer(pooper, 0, deletePoopGuy);
 		makePoopPlayer(pPlayer, pooper);
 
 		pooper2 = makePoopGuy(3, 3);
@@ -117,18 +124,19 @@ void updateLoop() {
 		for (int i = 1; i < 4; i++) {
 			addSprite(poo2, i, 6);
 		}
-		Player *pPlayer1 = makePlayer(pooper2, 1);
+		Player *pPlayer1 = makePlayer(pooper2, 1, deletePoopGuy);
 		makePoopPlayer(pPlayer1, pooper2);
 		GLuint spriteVao2 = makeSpriteVao(1, 1);
 		animAddVao(poo2, spriteVao2);//makeSpriteVao(1, 1));
 		setAnim(pooper2->me->body, poo2);
-		
+	*/	
 		char *mappings = fileToString("gamecontrollerdb.txt");
 		const char *cMap = (const char*)mappings;
 		glfwUpdateGamepadMappings(cMap);
 		free(mappings);
-		addControl(pPlayer, "K0G", toggleGod);
-		addControl(pPlayer, "K0P", togglePause);
+		Player *nullPlayer = makePlayer(NULL, -1, NULL);
+		addControl(nullPlayer, "K0G", toggleGod);
+		addControl(nullPlayer, "K0P", togglePause);
 		godPos =  (float*)calloc(2, sizeof(float));
 		godPos[0] = getWorld()->x /2;
 		godPos[1] = getWorld()->y /2;
@@ -272,6 +280,7 @@ int convertInvert(bool inv) {
 void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, int yp, GLuint sScale, GLuint sTrans, GLuint sRot) {
 	Anim *a = (Anim*)f->anim;
 	if (a->sprite != (int)f->stat) {
+		printf("changing sprite from %i to %i\n", a->sprite, (int)f->stat);
 		changeSprite(a, (int)f->stat);
 	}
 	sMatrix[3] = 0;
@@ -372,8 +381,6 @@ void toggleGod(void *, float poo) {
 }
 
 void exitGame() {
-	deletePoopGuy(pooper);
-	deletePoopGuy(pooper2);
 	freeWorld();
 	freeJoyList();
 	freeInput();

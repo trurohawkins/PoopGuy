@@ -28,7 +28,8 @@ PoopGuy *getPoopGuy() {
 }
 */
 
-void deletePoopGuy(PoopGuy *pooper) {
+void deletePoopGuy(void *poop) {
+	PoopGuy *pooper = (PoopGuy*)poop;
 	eatPooVar *ep = (eatPooVar*)(pooper->eatPoop->vars);
 	freeList(&(ep->stomach));
 	free(pooper);

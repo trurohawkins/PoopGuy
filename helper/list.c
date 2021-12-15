@@ -94,6 +94,18 @@ void freeListSaveObj(linkedList **ll) {
 		cur = next;
 	}	
 }
+void deleteList(linkedList **ll, void (*deleteFunc)(void*)) {
+	linkedList *cur = *ll;
+	linkedList *next = 0;
+	while (cur != NULL) {
+		next = cur->next;
+		if (cur->data) {
+			deleteFunc(cur->data);
+		}
+		free(cur);
+		cur = next;
+	}	
+}
 
 void *removeFromListInt(linkedList **head, int item) {
 	void *data = 0;
