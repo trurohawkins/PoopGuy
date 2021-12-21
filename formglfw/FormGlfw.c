@@ -279,10 +279,12 @@ int convertInvert(bool inv) {
 
 void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, int yp, GLuint sScale, GLuint sTrans, GLuint sRot) {
 	Anim *a = (Anim*)f->anim;
-	if (a->sprite != (int)f->stat) {
-		printf("changing sprite from %i to %i\n", a->sprite, (int)f->stat);
-		changeSprite(a, (int)f->stat);
-	}
+	float *anim = getStat(f, "anim");
+	if (anim != NULL) {
+		if (a->sprite != (int)(*anim)) {
+			changeSprite(a, (int)*anim);
+		} 
+	} 
 	sMatrix[3] = 0;
 	sMatrix[7] = 0;
 	sMatrix[0] = xSize * a->scale[0] * convertInvert(f->invert[0]);//a->flip[0];

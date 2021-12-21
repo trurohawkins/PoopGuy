@@ -6,6 +6,7 @@ PoopGuy *makePoopGuy (int sx, int sy) {
 	pooper->maxForce = 10;
 	pooper->me = makeActor(makeForm(0.2, 1, 0.2, sx, sy));
 	pooper->me->body->id = 69;
+	addStat(pooper->me->body, "anim", 0);
 	pooper->move = makeMove();
 	Action *grav = makeGravity(pooper->move->vars);
 	pooper->jump = makeJump(pooper->move->vars, grav);
@@ -193,15 +194,19 @@ void setAnimSprite(PoopGuy *pg) {
 	bool walking = cv->moveLeft > 0 || cv->moveRight > 0;
 	if (walking) {
 		if (ep->eating) {
-			setStat(pg->me->body, 3);
+			//setStat(pg->me->body, 3);
+			setStat(pg->me->body, "anim", 3);
 		} else {
-			setStat(pg->me->body, 2);	
+			setStat(pg->me->body, "anim", 2);
+			//setStat(pg->me->body, 2);	
 		}
 	} else {
 		if (ep->eating) {
-			setStat(pg->me->body, 1);
+			//setStat(pg->me->body, 1);
+			setStat(pg->me->body, "anim", 1);
 		} else {
-			setStat(pg->me->body, 0);	
+			//setStat(pg->me->body, 0);	
+			setStat(pg->me->body, "anim", 0);
 		}
 	}
 }

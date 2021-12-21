@@ -121,6 +121,9 @@ void deleteForm(Form *f) {
 			free(f->body[i]);
 		}
 	}
+	if (f->stats != NULL) {
+		deleteList((linkedList**)&f->stats, freeValue);
+	}
 	free(f->body);
 	free(f);
 }
@@ -142,10 +145,12 @@ void setInvert(Form *f, int axis, bool flipped) {
 	f->invert[axis] = flipped;
 }
 
+/*
 void setStat(Form *f, float stat) {
 	//printf("setting stat %f\n", stat);
 	f->stat = stat;
 }
+*/
 
 void freeWorld() {
 	deleteWorld();
@@ -155,6 +160,7 @@ void freeWorld() {
 
 //#include "../helper/helper.c"
 #include "World.c"
+#include "Value.c"
 #include "../actor/Action.c"
 #include "../actor/Actor.c"
 #include "../actor/acts/control.c"
