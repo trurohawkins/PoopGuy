@@ -151,6 +151,7 @@ void xMove(void *pg, float val) {
 	}
 }
 void yMove(void *pg, float val) {
+	printf("y move val: %f\n", val);
 	if (val > 0) {
 		up(pg, 1);
 	}  else if (val < 0) {

@@ -21,6 +21,8 @@ void readJoysticks();
 void checkControllerInput();
 char *joyButtString(int jid, int butt, int onoff);
 void joyAxeString(int jid, int axes, float val);
+char *getJoyButtString(int jid, char butt);
+char *getJoyAxeString(int jid, char axe);
 Joypad *getJoypad(int jid);
 void removeJoypad(linkedList **cur, int jid);
 void freeJoypad(Joypad *jp);

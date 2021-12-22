@@ -100,6 +100,35 @@ void checkControllerInput() {
 						}
 					} 
 				}
+			} else if (glfwJoystickPresent(jid)) {
+				int count = 0;
+				const unsigned char* buttons = glfwGetJoystickButtons(jid, &count);
+				for (int i = 0; i < count; i++) {
+					if (buttons[i]) {
+						if (buttons[i] == GLFW_PRESS && jp->buttState[i] == false) {
+							joyButtString(jid, i, 1);
+							jp->buttState[i] = true;
+						} 
+					} else if (jp->buttState[i] == true) {
+							joyButtString(jid, i, 0);
+							jp->buttState[i] = 0;
+
+					}
+				}
+				const float* axes = glfwGetJoystickAxes(jid, &count);
+				for (int i = 0; i < count; i++) {
+						if ((i < 4 && fabs(axes[i]) > 0.0001) || (i >=4 && axes[i] > -1)) {
+							if (axes[i] != jp->axeState[i]) {
+								//printf("axes[%i]:%f\n", i, axes[i]);
+								joyAxeString(jid, i, axes[i]);
+								jp->axeState[i] = axes[i];
+							}
+						} else if (axes[i] != jp->axeState[i]) {
+							joyAxeString(jid, i, 0);
+							jp->axeState[i] = axes[i];
+						}
+
+				}
 			}
 		}
 		head = head->next;
@@ -117,11 +146,13 @@ char *joyButtString(int jid, int butt, int onoff) {
 	buttString[3] = '\0';
 	ir->input = buttString;
 	ir->val = onoff;
-	//printf("button:%s\n", buttString);
+	printf("button:%s\n", buttString);
 	linkedList *ci = getCurInput();
 	addToList(&ci, ir);
 	return buttString;
 }
+
+float axeDeadZone = 0.2;
 
 void joyAxeString(int jid, int axes, float val) {
 	inpReceived *ir = (inpReceived*)malloc(1 * sizeof(inpReceived));
@@ -131,13 +162,35 @@ void joyAxeString(int jid, int axes, float val) {
 	axeString[2] = axes + 48;
 	//axeString[3] = onoff + 48;
 	axeString[3] = '\0';
+	//printf("%s\n", axeString);
 	ir->input = axeString;
 	if (axes % 2 == 1 && axes < 4) {//invert y axis but not for triggers
 		val *= -1;
 	}
+	if (fabs(val) < axeDeadZone) {
+		val = 0;
+	}
 	ir->val = val;
 	linkedList *ci = getCurInput();
 	addToList(&ci, ir);
+}
+
+char *getJoyButtString(int jid, char butt) {
+	char *buttString = (char *)malloc(4 * sizeof(char));
+	buttString[0] = 'J';
+	buttString[1] = jid + 48;
+	buttString[2] = butt;
+	buttString[3] = '\0';
+	return buttString;
+}
+
+char *getJoyAxeString(int jid, char axe) {
+	char *axeString = (char *)malloc(4 * sizeof(char));
+	axeString[0] = 'A';
+	axeString[1] = jid + 48;
+	axeString[2] = axe;
+	axeString[3] = '\0';
+	return axeString;
 }
 
 Joypad *getJoypad(int jid) {

@@ -97,39 +97,6 @@ void updateLoop() {
 				pooper = tmp;
 			}
 		}
-/*		
-		pooper = makePoopGuy(3, 3);
-		placeForm(1, 3, pooper->me->body);
-		checkSide(pooper->me->body, 1, 0, true);
-		addActor(pooper->me);
-
-		Anim *poo = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tcTrans, tcScale);
-		setScale(poo, 4, 4);
-		for (int i = 1; i < 4; i++) {
-			addSprite(poo, i, 6);
-		}
-		GLuint spriteVao = makeSpriteVao(1, 1);
-		animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
-		setAnim(pooper->me->body, poo);
-
-		Player *pPlayer = makePlayer(pooper, 0, deletePoopGuy);
-		makePoopPlayer(pPlayer, pooper);
-
-		pooper2 = makePoopGuy(3, 3);
-		placeForm(5, 3, pooper2->me->body);
-		checkSide(pooper2->me->body, 1, 0, true);
-		addActor(pooper2->me);
-		Anim *poo2 = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tcTrans, tcScale);
-		setScale(poo2, 4, 4);
-		for (int i = 1; i < 4; i++) {
-			addSprite(poo2, i, 6);
-		}
-		Player *pPlayer1 = makePlayer(pooper2, 1, deletePoopGuy);
-		makePoopPlayer(pPlayer1, pooper2);
-		GLuint spriteVao2 = makeSpriteVao(1, 1);
-		animAddVao(poo2, spriteVao2);//makeSpriteVao(1, 1));
-		setAnim(pooper2->me->body, poo2);
-	*/	
 		char *mappings = fileToString("gamecontrollerdb.txt");
 		const char *cMap = (const char*)mappings;
 		glfwUpdateGamepadMappings(cMap);

@@ -2,21 +2,21 @@
 
 
 PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
-		PoopGuy *pooper = makePoopGuy(3, 3);
-		placeForm(xp, yp, pooper->me->body);
-		checkSide(pooper->me->body, 1, 0, true);
-		addActor(pooper->me);
+	PoopGuy *pooper = makePoopGuy(3, 3);
+	placeForm(xp, yp, pooper->me->body);
+	checkSide(pooper->me->body, 1, 0, true);
+	addActor(pooper->me);
 
-		Anim *poo = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tc, ts);
-		setScale(poo, 4, 4);
-		for (int i = 1; i < 4; i++) {
-			addSprite(poo, i, 6);
-		}
-		GLuint spriteVao = makeSpriteVao(1, 1);
-		animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
-		setAnim(pooper->me->body, poo);
+	Anim *poo = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tc, ts);
+	setScale(poo, 4, 4);
+	for (int i = 1; i < 4; i++) {
+		addSprite(poo, i, 6);
+	}
+	GLuint spriteVao = makeSpriteVao(1, 1);
+	animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
+	setAnim(pooper->me->body, poo);
 
-		Player *p = makePlayer(pooper, pNum, deletePoopGuy);
+	Player *p = makePlayer(pooper, pNum, deletePoopGuy);
 	
 	//key mouse ocntrols
 	if (p->num == 0) {
@@ -36,14 +36,14 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
 		addControl(p, "K0U", poop);
 		addControl(p, "K0M", jumpStart);
 	}
-
-	/*
-	//gamepad controls
-	addControl(p, "A00", xmInp);
-	addControl(p, "A01", ymInp);
-	addControl(p, "A05", poopInp);
-	addControl(p, "A04", eatInp);
-	addControl(p, "J00", jumpInp);
-	*/
+	makeJoyButtControl(p, ';', up);
+	makeJoyButtControl(p, '>', left);
+	makeJoyButtControl(p, '=', down);
+	makeJoyButtControl(p, '<', right);
+	makeJoyButtControl(p, '0', jumpStart);
+	makeJoyAxeControl(p, '5', poop);
+	makeJoyAxeControl(p, '2', toggleEat);
+	makeJoyAxeControl(p, '0', xMove);
+	makeJoyAxeControl(p, '1', yMove);
 	return pooper;
 }

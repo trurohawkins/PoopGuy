@@ -13,6 +13,8 @@ typedef struct Player {
 
 Player *makePlayer(void *character, int num, void (*deleteFunc)(void*));
 void addControl(Player *player, char *inp, void (*n_func)(void*,float));
+void makeJoyButtControl(Player *player, char butt, void (*n_func)(void*,float));
+void makeJoyAxeControl(Player *player, char butt, void (*n_func)(void*,float));
 void freePlayer(Player *p);
 
 #endif

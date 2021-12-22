@@ -16,6 +16,8 @@ typedef struct inpReceived
 	float val;
 } inpReceived;
 
+InpMap *makeInp(char *inp, void (*n_func)(void*,float));
+void freeInp(void *im);
 void initInput();
 linkedList *getCurInput();
 //void addControl(char *inp, void(*n_func)(float));

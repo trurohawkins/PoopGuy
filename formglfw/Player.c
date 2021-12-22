@@ -13,15 +13,24 @@ Player *makePlayer(void *character, int num, void (*deleteFunc)(void*)) {
 }
 
 void addControl(Player *player, char *inp, void (*n_func)(void*,float)) {
-	InpMap *im = (InpMap*)calloc(1, sizeof(InpMap));
-	im->input = inp;
-	im->func = n_func;
+	InpMap *im = makeInp(inp, n_func);
 	addToList(&(player->controls),im);
 }
 
+void makeJoyButtControl(Player *player, char butt, void (*n_func)(void*,float)) {
+	char *c = getJoyButtString(player->num, butt);
+	addControl(player, c, n_func);
+	free(c);
+}
+
+void makeJoyAxeControl(Player *player, char butt, void (*n_func)(void*,float)) {
+	char *c = getJoyAxeString(player->num, butt);
+	addControl(player, c, n_func);
+	free(c);
+}
 
 void freePlayer(Player *p) {
-	freeList(&p->controls);
+	deleteList(&p->controls, freeInp);
 	if (p->delFunc != NULL) {
 		p->delFunc(p->self);
 	}
