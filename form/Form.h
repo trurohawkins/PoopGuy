@@ -11,8 +11,9 @@ typedef struct Form {
 	bool invert[2];
 	float ***body;
 	void *anim;
-	float stat;
 	void *stats;
+	// float stat; // Used to store moisture
+	// float stat2; // Used to store hydralic conductivity
 } Form;
 //Form *inert;
 

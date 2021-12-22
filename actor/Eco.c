@@ -27,7 +27,7 @@
 // 
 //-------------------------------------------------- 
 float tHoldU = 0.5;
-float tHoldL = 0.01;
+float tHoldL = 0.00;
 float sat = 1.0;
 float sTake = 0.02;
 float gPull = 0.10;
@@ -77,7 +77,7 @@ void rain(int x, int y) {
 	if (theWorld->map[x][y] != NULL) {
 		int skyy = chSky(x,y);
 		if (skyy == 1) {
-			theWorld->map[x][y]->stat = sat;
+			setStat(theWorld->map[x][y], "moisture",  sat);
 			// fills surface blocks to max moisture value
 		}
 	}
@@ -87,28 +87,37 @@ void rain(int x, int y) {
 void eVap(int x, int y){
 	int sky = chSky(x,y);
  	if (sky == 1) {
+
 	//block is uncovered
 		int depth = 0; // measures depth of water coloumn
 
 		for (int yi = y-1; yi >= 0; yi--) {
-			if ( theWorld->map[x][yi] != NULL && theWorld->map[x][yi]->stat > 0.01) {
-				// if block is there and has water increased depth counter
-				depth += 1;
+			if ( theWorld->map[x][yi] != NULL){
+				float *stat = getStat(theWorld->map[x][yi], "moisture");
+
+				if ( stat != NULL && *stat > 0.01 ) {
+					// if block is there and has water increased depth counter
+					depth += 1;
+				}
 			}
 		}
-
 		if ( theWorld->map[x][y - depth] == NULL){
 			return;
-		}else if(theWorld->map[x][y - depth]->stat >= sTake) { 
+		}
+
+		float *stat = getStat(theWorld->map[x][y-depth], "moisture");
+		if(stat != NULL){ 
+			if (*stat >= sTake) { 
 			// ensures no negative values
-			theWorld->map[x][y - depth]->stat -= sTake;
+				*stat -= sTake;
 			// takes moisture from the lowest block
 			// printf(" x:%i,y:%i, d:%i, mStat:%f  \n",x,y,depth,theWorld->map[x][y-depth]->stat);
-		} else {
+			} else {
 			// ensures block moistures dosn't get stuck at a value of sTake
-			theWorld->map[x][y - depth]->stat = 0.1;
+				*stat = 0.1;
 			//dessication!
-		} 
+			} 
+		}
 
 	}
 }
@@ -117,34 +126,50 @@ void gravPull(int x, int y){
 	if (theWorld->map[x][y] == NULL) {
 		return;
 	}
+
+float *moisture = getStat(theWorld->map[x][y], "moisture");
+float *k = getStat(theWorld->map[x][y], "hydroK");
+
+if ( moisture == NULL || k == NULL){return;}
+
 // if block is at bottom of world, water drops outs into the ether
 	if (y == 0 ){
-		if (theWorld->map[x][y]->stat - gPull >= tHoldU) {
+		if (*moisture - *k * gPull >= tHoldU) {
 			//ensures indexing dosn't leave bounds of array
-				theWorld->map[x][y]->stat -= gPull;
+				*moisture -= *k * gPull;
 		}
 		return;
 	}
+	
+	if (theWorld->map[x][y-1] ==NULL) {return;} 
+
+	float *test = getStat(theWorld->map[x][y-1], "moisture");
+	if (test == NULL)return;
 // if block is above tHoldU and above a block that is above tHoldL
-	if ( theWorld->map[x][y]->stat > tHoldU && theWorld->map[x][y-1] !=NULL && theWorld->map[x][y-1]->stat >= tHoldL) {
+
+	if ( *moisture > tHoldU && *test >= tHoldL) {
+
+	float *moisture2 = getStat(theWorld->map[x][y-1], "moisture");
+	float *k2 = getStat(theWorld->map[x][y-1], "hydroK");
 		// so ugly....
 		// checks that block has enought moisture to pass on, so abobe upper threshold
 		// checks if there is a block below it
 		// checks block below for dessication
 	// printf(" x:%i,y:%i, mStat:%f  \n",x,y,theWorld->map[x][y]->stat);
-		if ( theWorld->map[x][y]->stat - gPull >= tHoldU) {
+		if ( *moisture - *k * gPull >= tHoldU) {
 			// ensures no negatives
-			theWorld->map[x][y]->stat -= gPull;
+			*moisture -= *k * gPull;
 		} else {
-			theWorld->map[x][y]->stat = tHoldU;
+			*moisture = tHoldU;
 		}
 
-		if (theWorld->map[x][y-1]->stat + gPull <= 1) { 
+		if (*moisture2 + *k2 * gPull <= 1) { 
 			// caps moisture gain at 1
-			theWorld->map[x][y-1]->stat += gPull; // add to below block
+			*moisture2 += *k2 * gPull; // add to below block
 		} else {
-			theWorld->map[x][y-1]->stat = 1; // add to below block
+			*moisture2 = 1; // add to below block
 		}
+
 	}
 }
 

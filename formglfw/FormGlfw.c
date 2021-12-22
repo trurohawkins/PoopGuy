@@ -224,9 +224,12 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 						glUniformMatrix4fv(tMat, 1, GL_TRUE, mat);
 						float *fCol = (float*)calloc(3, sizeof(float));
 						if (f->id == 10) {
-							float moistMulti = 1 - min(f->stat, 0.9);// min(1 - ( (f->stat) - 0.1), 1);
-							for (int i = 0; i < 3; i++) {
-								fCol[i] = f->color[i] * moistMulti;
+							float *m = getStat(f, "moisture");
+							if (m != NULL) {
+								float moistMulti = 1 - min(*m, 0.9);// min(1 - ( (f->stat) - 0.1), 1);
+								for (int i = 0; i < 3; i++) {
+									fCol[i] = f->color[i] * moistMulti;
+								}
 							}
 						}
 						glUniform4f(color, fCol[0], fCol[1], fCol[2], 1.0);
