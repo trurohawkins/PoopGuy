@@ -60,7 +60,13 @@ void readJoysticks() {
 			//int jid = *(int*)(head->data);
 			Joypad *jp = (Joypad*)(head->data);
 			int jid = jp->jid;
-			printf("joystick# %i\n", jid);
+			printf("joystick# %i", jid);
+			if (glfwJoystickIsGamepad(jid)) {
+				printf("is a gamepad\n");
+			} else if (glfwJoystickPresent(jid)) {
+				printf("is a joystick\n");
+			}
+
 		} else {
 			printf("stick has null data\n");
 		}
@@ -76,9 +82,11 @@ void checkControllerInput() {
 			Joypad *jp = (Joypad *)head->data;
 			int jid = jp->jid;
 			if (glfwGetGamepadState(jid, &state)) {
+				///printf("we got a gamepad\n");
 				for (int i = 0; i < 15; i++) {
 					if (state.buttons[i]) {
 						if (state.buttons[i] == GLFW_PRESS && jp->buttState[i] == false) {
+							printf("button %i was pressed\n");
 							joyButtString(jid, i, 1);
 							jp->buttState[i] = true;
 						} 
@@ -103,12 +111,21 @@ void checkControllerInput() {
 			} else if (glfwJoystickPresent(jid)) {
 				int count = 0;
 				const unsigned char* buttons = glfwGetJoystickButtons(jid, &count);
+				//printf("we got a joystick, with %i buttons\n", count);
+				//printf("%c\n", GLFW_PRESS);
+				//printf("%s\n", buttons);
 				for (int i = 0; i < count; i++) {
 					if (buttons[i]) {
+						//printf("has button %i\n", i);
+						if (buttons[i] == GLFW_PRESS) {
+							printf("butt %i was presed\n", i);
+						} else if (buttons[i] == GLFW_RELEASE) {
+							printf("butt %i was released\n", i);
+						}
 						if (buttons[i] == GLFW_PRESS && jp->buttState[i] == false) {
 							joyButtString(jid, i, 1);
 							jp->buttState[i] = true;
-						} 
+						}
 					} else if (jp->buttState[i] == true) {
 							joyButtString(jid, i, 0);
 							jp->buttState[i] = 0;

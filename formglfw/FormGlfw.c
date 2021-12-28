@@ -6,7 +6,7 @@ float centerY;
 int frameX = 50;
 int frameY = 50;
 PoopGuy *pooper;
-int numPlayers = 1;
+int numPlayers = 2;
 bool gridOn = false;
 bool paused = false;
 bool godMode = false;
@@ -99,7 +99,7 @@ void updateLoop() {
 		}
 		char *mappings = fileToString("gamecontrollerdb.txt");
 		const char *cMap = (const char*)mappings;
-		glfwUpdateGamepadMappings(cMap);
+		printf("%i\n", glfwUpdateGamepadMappings(cMap));
 		free(mappings);
 		Player *nullPlayer = makePlayer(NULL, -1, NULL);
 		addControl(nullPlayer, "K0G", toggleGod);

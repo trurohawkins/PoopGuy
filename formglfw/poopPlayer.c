@@ -43,6 +43,8 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
 	makeJoyButtControl(p, '0', jumpStart);
 	makeJoyAxeControl(p, '5', poop);
 	makeJoyAxeControl(p, '2', toggleEat);
+	makeJoyAxeControl(p, '3', poop);
+	makeJoyAxeControl(p, '4', toggleEat);
 	makeJoyAxeControl(p, '0', xMove);
 	makeJoyAxeControl(p, '1', yMove);
 	return pooper;
