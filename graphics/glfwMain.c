@@ -35,14 +35,16 @@ int initializeGLFW() {
 		curScreen->height = screenHeight;
 	}
 	glfwMakeContextCurrent(window);
+	gladLoadGL();
 	//start glew extension handle
+	/*
 	glewExperimental = GL_TRUE;// I think it must be under the make context current!
 	GLenum err = glewInit();
 	if (err != GLEW_OK) {
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 		return 1;
 	}
-
+	*/
 	int major, minor, rev;
 	glfwGetVersion(&major, &minor, &rev);
 	printf("OpenGL - %i.%i.%i\n", major, minor, rev);

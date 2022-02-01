@@ -1,12 +1,11 @@
 #ifndef SHAD
 #define SHAD
-
 #include<unistd.h>
 #include <fcntl.h>
 #include<stdlib.h>
-#include<GL/glew.h>
 #include<stdbool.h>
 #include <stdio.h>
+#include "../glfwMain.h"
 #endif
 
 GLuint makeShaderProgram(char *vs, char *fs);

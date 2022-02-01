@@ -1,6 +1,8 @@
 CC = gcc -c -g
-GLW = -lglu32 -lopengl32 -lfreeglut
-GLL = -lglfw -lGL -lGLEW -lglut -lm
+LC = gcc -c -g 
+WC = x86_64-w64-mingw32-gcc -c -g
+GLL = -lglfw -lGL  -lm -ldl
+GLW = -lglfw3 -lopengl32 -lgdi32
 GF = formglfw/
 FD = form/
 AD = actor/
@@ -10,11 +12,11 @@ ID = $(GD)input/
 SHD = $(GD)shaders/
 HD = helper/
 
-PoopGuy: main.o libFormGlfw.a
-	gcc -o PoopGuy main.o libFormGlfw.a $(GLL)
+PoopGuy: main.o libFormGlfw.a glad.o
+	gcc -o PoopGuy main.o glad.o libFormGlfw.a $(GLL)
 
-windows: main.o libform.a libglut.a
-	gcc -o PoopGuy main.o libform.a libglut.a $(GLW)
+windows: main.o libFormGlfw.a glad.o
+	x86_64-w64-mingw32-gcc -o PoopGuy main.o glad.o libFormGlfw.a $(GLW)
 
 main.o: main.c
 	$(CC) -Wextra -Wall main.c
@@ -48,6 +50,9 @@ Anim.o: $(GD)Anim.c $(GD)Anim.h $(GD)AnimList.c $(GD)AnimList.h
 
 Input.o: $(ID)Input.c $(ID)Input.h $(ID)Joystick.c $(ID)Joystick.h
 	${CC} ${ID}Input.c
+
+glad.o: $(GD)glad.c $(GD)glad.h $(GD)khrplatform.h
+	$(CC) $(GD)glad.c -ldl
 
 helper.o: $(HD)helper.c $(HD)helper.h $(HD)list.c $(HD)list.h
 	$(CC) $(HD)helper.c

@@ -1,10 +1,10 @@
 #ifndef ANIM
 #define ANIM
-
-#include <stdio.h>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <GL/gl.h>
+#include "glfwMain.h"
+//#include <stdio.h>
+//#include <GL/glew.h>
+//#include <GLFW/glfw3.h>
+//#include <GL/gl.h>
 #include <stdbool.h>
 #include "../helper/helper.h"
 

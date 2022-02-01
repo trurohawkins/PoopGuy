@@ -1,9 +1,10 @@
 #ifndef JOY
 #define JOY
-#include <stdio.h>
-#include <GL/glew.h>//loader of functions for backwards compatibility**
-#include <GLFW/glfw3.h>
-#include <GL/gl.h>
+#include "../glfwMain.h"
+//#include <stdio.h>
+//#include <GL/glew.h>//loader of functions for backwards compatibility**
+//#include <GLFW/glfw3.h>
+//#include <GL/gl.h>
 #include "../../helper/helper.h"
 
 typedef struct Joypad {

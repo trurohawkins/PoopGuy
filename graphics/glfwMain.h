@@ -1,8 +1,10 @@
 #ifndef GLFWgra
 #define GLFWgra
-#include <GL/glew.h>
+#include "glad.h"
+//#include <GL/glew.h>
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#include<GL/gl.h>
+//#include<GL/gl.h>
 #include <stdio.h>
 
 #include "shaders/Shaders.h"
