@@ -1,8 +1,8 @@
 CC = gcc -c -g
 LC = gcc -c -g 
 WC = x86_64-w64-mingw32-gcc -c -g
-GLL = -lglfw -lGL  -lm -ldl
-GLW = -lglfw3 -lopengl32 -lgdi32
+GLL = -lglfw -lGL -lm -ldl
+GLW = -lglfw3 -lopengl32 -lgdi32 
 GF = formglfw/
 FD = form/
 AD = actor/
@@ -16,7 +16,7 @@ PoopGuy: main.o libFormGlfw.a glad.o
 	gcc -o PoopGuy main.o glad.o libFormGlfw.a $(GLL)
 
 windows: main.o libFormGlfw.a glad.o
-	x86_64-w64-mingw32-gcc -o PoopGuy main.o glad.o libFormGlfw.a $(GLW)
+	x86_64-w64-mingw32-gcc -static main.o glad.o libFormGlfw.a $(GLW)
 
 main.o: main.c
 	$(CC) -Wextra -Wall main.c
@@ -62,7 +62,7 @@ clean:
 
 fclean:
 	rm *.o *.a
-	rm PoopGuy
+	rm PoopGuy*
 
 mclean:
 	rm vgcore*
