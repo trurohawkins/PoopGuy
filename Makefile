@@ -1,7 +1,8 @@
 CC = gcc -c -g
 LC = gcc -c -g 
 WC = x86_64-w64-mingw32-gcc -c -g
-GLL = -lglfw -lGL -lm -ldl
+RELEASELIBS = -l:libglfw3.a -lm -ldl -lpthread
+DEVLIBS = -lglfw -lGL -lm -ldl
 GLW = -lglfw3 -lopengl32 -lgdi32 
 GF = formglfw/
 FD = form/
@@ -13,10 +14,16 @@ SHD = $(GD)shaders/
 HD = helper/
 
 PoopGuy: main.o libFormGlfw.a glad.o
-	gcc -o PoopGuy main.o glad.o libFormGlfw.a $(GLL)
+	gcc -o PoopGuy main.o glad.o libFormGlfw.a $(DEVLIBS)
 
-windows: main.o libFormGlfw.a glad.o
-	x86_64-w64-mingw32-gcc -static main.o glad.o libFormGlfw.a $(GLW)
+standalone: main.o libFormGlfw.a glad.o
+	gcc -o PoopGuy main.o glad.o libFormGlfw.a $(RELEASELIBS)
+
+windows: setWindows main.o libFormGlfw.a glad.o
+	x86_64-w64-mingw32-gcc -o PoopGuy -static main.o glad.o libFormGlfw.a $(GLW)
+
+setWindows:
+	$(eval CC := $(WC))
 
 main.o: main.c
 	$(CC) -Wextra -Wall main.c
