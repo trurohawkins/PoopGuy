@@ -8,7 +8,8 @@
 #include "../glfwMain.h"
 #endif
 
-GLuint makeShaderProgram(char *vs, char *fs);
+GLuint makeShaderProgramFile(char *vs, char *fs);
+GLuint makeShaderProgram(const char *vertShade, const char *fragShade);
 bool compileShader(GLuint shader);
 void printShaderLog(GLuint shader);
 void printProgramInfoLog(GLuint program);

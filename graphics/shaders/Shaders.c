@@ -1,6 +1,6 @@
 #include "Shaders.h"
 
-GLuint makeShaderProgram(char *vs, char *fs) {
+GLuint makeShaderProgramFile(char *vs, char *fs) {
 	const char *vertShade = NULL;
 	const char *fragShade = NULL;
 	int notOpened = 0;
@@ -25,9 +25,17 @@ GLuint makeShaderProgram(char *vs, char *fs) {
 		notOpened++;
 	}
 	printf("made shaders and v and f\n");
-	if (notOpened > 0) {
-		return 0;
+	GLuint program = 0;
+	if (notOpened == 0) {
+		program =  makeShaderProgram(vertShade, fragShade);
 	}
+	free(v);
+	free(f);
+	printf("v and f freed\n");
+	return program;
+}
+
+GLuint makeShaderProgram(const char *vertShade, const char *fragShade) {
 	GLuint shaderProgram = 0;
 	// compile vertex and fragment shaders
 	GLuint vert = glCreateShader(GL_VERTEX_SHADER);
@@ -50,9 +58,6 @@ GLuint makeShaderProgram(char *vs, char *fs) {
 			return 0;
 		}
 	}
-	free(v);
-	free(f);
-	printf("v and f freed\n");
 	return shaderProgram;
 }
 

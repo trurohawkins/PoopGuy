@@ -1,4 +1,5 @@
 #include "glfwMain.h"
+#include "shaders/glslLib.c"
 
 GLuint screenWidth = 800*8/5, screenHeight = 450*8/5;
 //GLFWwindow *window;
@@ -60,8 +61,13 @@ int initializeGLFW() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-	baseShaderProgram = makeShaderProgram("graphics/shaders/matVS.glsl", "graphics/shaders/simpFS.glsl");
-	texShaderProgram = makeShaderProgram("graphics/shaders/texVS.glsl", "graphics/shaders/texFS.glsl");
+	/*
+	baseShaderProgram = makeShaderProgramFile("graphics/shaders/matVS.glsl", "graphics/shaders/simpFS.glsl");
+	texShaderProgram = makeShaderProgramFile("graphics/shaders/texVS.glsl", "graphics/shaders/texFS.glsl");
+	*/
+	baseShaderProgram = makeShaderProgram(matVS, matFS);
+	texShaderProgram = makeShaderProgram(texVS, texFS);
+
 }
 
 GLuint squareVao2d() {
