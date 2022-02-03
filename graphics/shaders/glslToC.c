@@ -16,10 +16,12 @@ int fileSize = 0;
 int main(int argc, char **argv) {
 	if (argc > 2) {
 		FILE* fptr = fopen(argv[1], "w");
-		fprintf(fptr, "#ifndef GLSLLIB\n#define GLSLLIB\n");
+		fprintf(fptr, "#ifndef CONTROLLERDB\n#define CONTROLLERDB\n");
+		//fprintf(fptr, "#ifndef GLSLLIB\n#define GLSLLIB\n");
 		fclose(fptr);
 		for (int i = 2; i < argc; i++) {
-			char *file = readFile(argv[i]);
+			//char *file = readFile(argv[i]);
+			char *file = fileToString(argv[i]);
 			if (file != NULL) {
 				char *name = getFileName(argv[i]);
 				int nameSize = strlen(name);
@@ -87,6 +89,45 @@ char *fileRec(int fd, int cCount) {
 		tmp[cCount] = '\0';
 		return tmp;
 	}
+}
+
+char *fileToString(char *txt)
+{
+	FILE *fptr;
+	int n = 0;
+	int c;
+
+	fptr = fopen(txt, "r");
+	char *t = NULL;
+	if (fptr != NULL) {
+		fseek(fptr, 0, SEEK_END);
+		long fSize = ftell(fptr);
+		//printf("file size: %i\n", fSize);
+		printf("first size %i\n", fSize);
+		fseek(fptr, 0, SEEK_SET);
+		while ((c = fgetc(fptr)) != EOF) {
+			if (c == '\n') {
+				fSize++;
+			}
+		}
+		fileSize = fSize;
+		printf("2nd size %i\n", fSize);
+		fseek(fptr, 0, SEEK_SET);
+		t = (char*)malloc((fSize+1) * sizeof(char));
+		while ((c = fgetc(fptr)) != EOF) {
+			if (c != '\n') {
+				t[n++] = (char)c;
+			} else {
+				t[n++] = 92;
+				t[n++] = 110;
+			}
+		}
+		//printf("wrote into: %i\n", n);
+		t[fSize] = '\0';
+		fseek(fptr, 0, SEEK_SET);
+		fclose(fptr);
+	}
+	return t;
 }
 
 char *getFileName(char *str) {

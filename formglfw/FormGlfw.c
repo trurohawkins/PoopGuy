@@ -1,5 +1,6 @@
 #include "FormGlfw.h"
 #include "Player.c"
+#include "../controllerDB.c"
 
 float centerX;
 float centerY;
@@ -97,10 +98,10 @@ void updateLoop() {
 				pooper = tmp;
 			}
 		}
-		char *mappings = fileToString("gamecontrollerdb.txt");
-		const char *cMap = (const char*)mappings;
-		printf("%i\n", glfwUpdateGamepadMappings(cMap));
-		free(mappings);
+		//char *mappings = fileToString("gamecontrollerdb.txt");
+		//const char *cMap = (const char*)mappings;
+		printf("%i\n", glfwUpdateGamepadMappings(gamecontrollerdb));
+		//free(mappings);
 		Player *nullPlayer = makePlayer(NULL, -1, NULL);
 		addControl(nullPlayer, "K0G", toggleGod);
 		addControl(nullPlayer, "K0P", togglePause);
