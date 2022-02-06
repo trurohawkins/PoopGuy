@@ -12,6 +12,7 @@ bool gridOn = false;
 bool paused = false;
 bool godMode = false;
 float *godPos;
+int texColor;
 
 void updateLoop() {
 	//GLFWwindow *window
@@ -57,6 +58,11 @@ void updateLoop() {
 		int spriteRot = glGetUniformLocation(texShader, "rMat");
 		int tcScale = glGetUniformLocation(texShader, "tcScale");
 		int tcTrans = glGetUniformLocation(texShader, "tcTrans");
+		texColor = glGetUniformLocation(texShader, "colorShift");
+		if (texColor == -1) {
+			printf("frag doesnt have a var colorShift\n");
+		}
+		glUniform3f(texColor, 255, 255, 255);
 		float tscMat [] = {
 			//1.0f/6, 0.0, 0.0,
 			//0.0, 1.0f/4, 0.0,
@@ -277,6 +283,8 @@ void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, i
 		0.0, 0.0, 0.0, 1.0
 	};
 	glUniformMatrix4fv(sRot, 1, GL_TRUE, rMatrix);
+	glUniform3f(texColor, 1, 1, 1);
+
 	drawSprite(a);
 }
 

@@ -7,14 +7,12 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
 	checkSide(pooper->me->body, 1, 0, true);
 	addActor(pooper->me);
 
-	//Anim *poo = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tc, ts);
-	Anim *poo = makeAnim("resources/Untitled.png", 1, 1, tc, ts);
+	Anim *poo = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tc, ts);
+	//Anim *poo = makeAnim("resources/Heart.png", 1, 1, tc, ts);
 	setScale(poo, 4, 4);
-	/*
 	for (int i = 1; i < 4; i++) {
 		addSprite(poo, i, 6);
 	}
-	*/
 	GLuint spriteVao = makeSpriteVao(1, 1);
 	animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
 	setAnim(pooper->me->body, poo);
