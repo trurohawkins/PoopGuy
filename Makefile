@@ -46,7 +46,7 @@ libglfw.a: glfwMain.o Shaders.o Input.o Anim.o
 glfwMain.o: $(GD)glfwMain.c $(GD)glfwMain.h
 	$(CC) $(GD)glfwMain.c
 
-Shaders.o: $(SHD)Shaders.c $(SHD)Shaders.h
+Shaders.o: $(SHD)Shaders.c $(SHD)Shaders.h $(SHD)glslLib.c
 	$(CC) $(SHD)Shaders.c
 
 Graphics.o: $(GD)Graphics.c $(GD)Graphics.h
