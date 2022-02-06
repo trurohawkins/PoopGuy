@@ -92,6 +92,7 @@ void updateLoop() {
 		makePlayerManager();
 		makeActorList();
 		makeAnimList();
+		makeTextureManager();
 		for (int i = 0; i < numPlayers; i++) {
 			PoopGuy* tmp = makePoopPlayer(1 + (i*4), 2, i, tcTrans, tcScale);
 			if (i == 0) {
@@ -136,6 +137,7 @@ void updateLoop() {
 		}
 		freePlayerManager();
 		deleteAnimList();
+		deleteTextureManager();
 		free(godPos);
 	}
 }

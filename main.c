@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 	int Seedstring[4] = {1,2,3,4};
 	int** map = genMap(Seedstring);
 	int** Rmap = genRain(map);
-	printArray(map, worldX, worldY);
+	//printArray(map, worldX, worldY);
 	genWorld(map);
 	freeMap(map);
 	atexit(exitGame);

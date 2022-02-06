@@ -5,11 +5,16 @@
 	GLuint tc, ts: tc = uniform locations for matrices that determine where in the sprite sheet we are drawing from
 */
 #include "AnimList.c"
+#include "TextureManager.c"
 
 Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts) { 
 	Anim *a = (Anim*)calloc(sizeof(Anim), 1);
-	glGenTextures(1, &(a->texture));
-	glBindTexture(GL_TEXTURE_2D, a->texture);
+	/*
+	unsigned int tex;
+//	glGenTextures(1, &(a->texture));
+	//glBindTexture(GL_TEXTURE_2D, a->texture);
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -21,6 +26,11 @@ Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts) {
 
 	int width, height, nrChannels;
 	unsigned char *data = stbi_load(sheet, &width, &height, &nrChannels, 0);
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width * nrChannels + 1000; j++) {
+			printf("%u ", data[(i*width)+ j]);	
+		}
+	}
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -28,6 +38,13 @@ Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts) {
 		printf("failed to load texture from file %s\n", sheet);
 	}
 	stbi_image_free(data);
+	a->texture = tex;
+	a->frameX = 1.0f/col;
+	a->frameY = 1.0f/rows;
+	rows-height-y
+	cols-width-x
+	*/
+	a->texture = getTexture(sheet);
 	a->frameX = 1.0f/col;
 	a->frameY = 1.0f/rows;
 	a->frame = 0;
@@ -36,7 +53,7 @@ Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts) {
 	a->spriteNum = rows;
 	a->length = (int*)calloc(sizeof(int), col);
 	a->length[0] = 0;
-	for (int i = 1; i < col; i++) {
+	for (int i = 1; i <  col; i++) {
 		a->length[i] = -1;
 	}
 	a->scale[0] = 1;
@@ -140,7 +157,7 @@ void setSpriteTexture(Anim *a) {
 void drawSprite(Anim *a) {
 	glUniform2f(a->texCoords, getCoordX(a), getCoordY(a));
 
-	glBindTexture(GL_TEXTURE_2D, a->texture);
+	glBindTexture(GL_TEXTURE_2D, a->texture->tex);
 	glBindVertexArray(a->vao);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }

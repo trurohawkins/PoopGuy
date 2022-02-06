@@ -7,6 +7,7 @@
 //#include <GL/gl.h>
 #include <stdbool.h>
 #include "../helper/helper.h"
+#include "TextureManager.h"
 
 
 typedef struct Anim {
@@ -23,13 +24,14 @@ typedef struct Anim {
 	int roto;
 	GLuint texCoords;
 	GLuint texScale;
-	unsigned int texture;
+	textureSource *texture;
 	unsigned int vao;
 } Anim;
 
 #include "AnimList.h"
 
 Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts);
+unsigned int makeSpriteTexture(char *sheet, int rows, int col);
 float rotoToRadian(int d);
 void freeAnim(Anim *a);
 void setScale (Anim* a, int x, int y);
