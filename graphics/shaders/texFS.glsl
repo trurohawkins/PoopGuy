@@ -10,6 +10,6 @@ uniform vec2 TexCoordShift;
 void main()
 {
 vec4 texColor = texture(ourTexture, TexCoord);
-//vec4 newColor = vec4(1.0, 0.0, 1.0, texColor.z);
-FragColor = texColor;
+vec4 newColor = vec4(1.0, 0.0, 1.0, texColor.z);
+FragColor = newColor;
 }
