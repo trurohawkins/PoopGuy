@@ -25,6 +25,7 @@ typedef struct Anim {
 	GLuint texCoords;
 	GLuint texScale;
 	textureSource *texture;
+	float *palette;
 	unsigned int vao;
 } Anim;
 
@@ -45,6 +46,7 @@ void changeSprite(Anim *a, int index);
 float getCoordX(Anim *a);
 float getCoordY(Anim *a);
 void setSpriteTexture(Anim *a);
-void drawSprite(Anim *a);
+void drawSprite(Anim *a, GLuint texColor);
+void loadPalette(Anim *a, float *palette);
 
 #endif

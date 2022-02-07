@@ -132,3 +132,17 @@ void printArray(int **array, int sizeX, int sizeY) {
       }
    }
 }
+
+bool compareColor(void *c1, void *c2) {
+	unsigned char *col1 = (unsigned char*)c1;
+	unsigned char *col2 = (unsigned char*)c2;
+	if (col1[0] == col2[0]) {
+		if (col1[1] == col2[1]) {
+			if (col1[2] == col2[2]) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+

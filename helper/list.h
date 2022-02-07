@@ -13,6 +13,7 @@ typedef struct linkedList
 linkedList *makeList();
 
 void addToList(linkedList **head, void *item);
+bool checkList(linkedList **head, void *item, bool (*cmp)(void*, void*));
 void *removeFromList(linkedList **head, void *item);
 void *removeFromListInt(linkedList **head, int item);
 void freeList(linkedList **ll);

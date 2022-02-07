@@ -22,5 +22,5 @@ int abs(int);
 char *fileToString(char *txt);
 bool strCompare(char *str1, char *str2);
 void printArray(int**, int, int);
-
+bool compareColor(void *c1, void *c2);
 #endif

@@ -105,6 +105,15 @@ void updateLoop() {
 				pooper = tmp;
 			}
 		}
+		/*
+		Form *f = makeForm(1,1,1,1,1);
+		placeForm(10, 10, f);
+		Anim *h = makeAnim("resources/Heart.png", 1, 1, tcTrans, tcScale);
+		setScale(h, 10, 10);
+		GLuint sv = makeSpriteVao(1,1);
+		animAddVao(h, sv);
+		setAnim(f, h);
+		*/
 		//char *mappings = fileToString("gamecontrollerdb.txt");
 		//const char *cMap = (const char*)mappings;
 		printf("%i\n", glfwUpdateGamepadMappings(gamecontrollerdb));
@@ -127,7 +136,7 @@ void updateLoop() {
 				AnimListAnimate();
 				actorListDo();
 				groundWater();
-				if (!godMode) {
+				if (!godMode && pooper != NULL) {
 					setCenter(pooper->me->body->pos);
 				} else {
 					setCenter(godPos);
@@ -135,6 +144,7 @@ void updateLoop() {
 			}
 			glClearColor(0.1, 0.2, 0.4, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			//drawSprite(h);
 			if (gridOn) {
 				drawGrid(matrix, tMat, sMat, rMat, drawColor, vLi);
 			}
@@ -283,9 +293,9 @@ void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, i
 		0.0, 0.0, 0.0, 1.0
 	};
 	glUniformMatrix4fv(sRot, 1, GL_TRUE, rMatrix);
-	glUniform3f(texColor, 1, 1, 1);
+	//glUniform3f(texColor, 1, 1, 1);
 
-	drawSprite(a);
+	drawSprite(a, texColor);
 }
 
 void drawGrid(float *mat, int tMat, int sMat, int rMat, int color, GLuint vLi) {

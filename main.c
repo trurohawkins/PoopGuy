@@ -23,9 +23,6 @@ int main(int argc, char **argv) {
 	int** map = genMap(Seedstring);
 	int** Rmap = genRain(map);
 	//printArray(map, worldX, worldY);
-	genWorld(map);
-	freeMap(map);
-	atexit(exitGame);
 	//addActor(rock);
 //	stomachStuff(pooper->me->body, pooper->eatPoop);
 //	eatPooVar *ep = (eatPooVar*)(pooper->eatPoop->vars);

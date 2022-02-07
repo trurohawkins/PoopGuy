@@ -37,34 +37,16 @@ int initializeGLFW() {
 	}
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
-	//start glew extension handle
-	/*
-	glewExperimental = GL_TRUE;// I think it must be under the make context current!
-	GLenum err = glewInit();
-	if (err != GLEW_OK) {
-		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-		return 1;
-	}
-	*/
 	int major, minor, rev;
 	glfwGetVersion(&major, &minor, &rev);
 	printf("OpenGL - %i.%i.%i\n", major, minor, rev);
 
 	//tell GL to only draw onto a pixel if shape is cloer to the viewer
-	glEnable(GL_DEPTH_TEST);//enable depther testing
-	glDepthFunc(GL_LESS); //depth testing interpets a smaller value as "closer"
-	/*
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CW);
-	*/
+	// I turned it off because the sprites are all the same distance from camera
+	//glEnable(GL_DEPTH_TEST);//enable depther testing
+	//glDepthFunc(GL_LESS); //depth testing interpets a smaller value as "closer"
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-	/*
-	baseShaderProgram = makeShaderProgramFile("graphics/shaders/matVS.glsl", "graphics/shaders/simpFS.glsl");
-	texShaderProgram = makeShaderProgramFile("graphics/shaders/texVS.glsl", "graphics/shaders/texFS.glsl");
-	*/
 	baseShaderProgram = makeShaderProgram(matVS, matFS);
 	texShaderProgram = makeShaderProgram(texVS, texFS);
 

@@ -25,6 +25,19 @@ void addToList(linkedList **head, void *item) {
 	}
 }
 
+bool checkList(linkedList **head, void *item, bool (*cmp)(void*, void*)) {
+	linkedList *cur = *head;
+	while (cur != NULL) {
+		if (cur->data != NULL) {
+			if (cmp(cur->data,item) == true) {
+				return true;
+			}
+		}
+		cur = cur->next;
+	}
+	return false;
+}
+
 void *removeFromList(linkedList **head, void *item) {
 /*
 	linkedList *pre = 0;
@@ -77,7 +90,7 @@ void freeList(linkedList **ll) {
 	linkedList *next = 0;
 	while (cur != NULL) {
 		next = cur->next;
-		if (cur->data) {
+		if (cur->data != NULL) {
 			free(cur->data);
 		}
 		free(cur);
