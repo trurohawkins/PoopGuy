@@ -31,7 +31,7 @@ typedef struct Anim {
 
 #include "AnimList.h"
 
-Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts);
+Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col, GLuint tc, GLuint ts);
 unsigned int makeSpriteTexture(char *sheet, int rows, int col);
 float rotoToRadian(int d);
 void freeAnim(Anim *a);

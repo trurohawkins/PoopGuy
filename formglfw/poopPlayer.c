@@ -6,8 +6,28 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
 	placeForm(xp, yp, pooper->me->body);
 	checkSide(pooper->me->body, 1, 0, true);
 	addActor(pooper->me);
-
-	Anim *poo = makeAnim("resources/poopGuySpriteSheet.png", 4, 6, tc, ts);
+	char *baseFile = "resources/poopGuySpriteSheet.png"; 
+	int numColors = 7;
+	bool generated = false;
+	char **sprites = (char**)calloc(sizeof(char*), numColors);
+	int sLen = strlen(baseFile);
+	if (numColors > 1) {
+		generated = true;
+		for (int i = 0; i < numColors; i++) {
+			sprites[i] = (char*)calloc(sizeof(char), sLen + 2);
+			sprites[i][sLen-4] = (unsigned char)i + 48;
+			strncpy(sprites[i], baseFile, sLen - 4);
+			strcat(sprites[i], ".png");
+		}
+	} else {
+		*sprites = (char*)calloc(sizeof(char), sLen + 1);
+		strcpy(*sprites, baseFile); 
+	}
+	Anim *poo = makeAnim(sprites, numColors, generated, 4, 6, tc, ts);
+	for (int i = 0; i < numColors; i++) {
+		free(sprites[i]);
+	}
+	free(sprites);
 	//Anim *poo = makeAnim("resources/Heart2.png", 1, 1, tc, ts);
 	setScale(poo, 4, 4);
 	for (int i = 1; i < 4; i++) {
@@ -20,6 +40,10 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
 	Player *p = makePlayer(pooper, pNum, deletePoopGuy);
 	//key mouse ocntrols
 	if (p->num == 0) {
+		if (numColors != 1) {
+			float poopguyPalette0[21] = {0.023529, 0.188235, 0.027451, 0.090196, 0.737255, 0.109804, 0.098039, 0.811765, 0.121569, 0.109804, 0.862745, 0.133333, 1.000000, 1.000000, 1.000000, 0.098039, 0.772549, 0.117647, 0.105882, 0.831373, 0.129412};
+			loadPalette(poo, poopguyPalette0);
+		}
 		addControl(p, "K0W", up);
 		addControl(p, "K0A", left);
 		addControl(p, "K0S", down);
@@ -28,8 +52,10 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
 		addControl(p, "M00", poop);
 		addControl(p, "K0 ", jumpStart);
 	} else {
-	float palette[21] = {0.0,0.0,0.0,  0.4,0,0.2,  0.3,0,0.1, 0.8,0,0.2,  1,1,1,  0.9,0.1,0.2, 0.50,0,0};
-		loadPalette(poo, palette);
+		if (numColors != 1) {
+			float palette[21] = {0.0,0.0,0.0,  0.4,0,0.2,  0.3,0,0.1, 0.8,0,0.2,  1,1,1,  0.9,0.1,0.2, 0.50,0,0};
+			loadPalette(poo, palette);
+		}
 		addControl(p, "K0I", up);
 		addControl(p, "K0J", left);
 		addControl(p, "K0K", down);

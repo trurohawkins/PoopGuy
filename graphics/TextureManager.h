@@ -20,10 +20,12 @@ void makeTextureManager();
 void addTexture(textureSource *ts);
 void deleteTextureManager();
 unsigned int genTexture(unsigned char *data, int wid, int hei);
-textureSource *makeTexture(char *img);
-colorLayer *getImgColors(textureSource *ts, unsigned char *data);
+textureSource *makeTexture(char *img, bool single);
+textureSource *makeTextureFromImages(char **imgs, int num, bool whiteGen);
+int countColors(textureSource *ts, unsigned char* data);
+void getImgColors(textureSource *ts, unsigned char *data, int numColors, bool writeToFile);
 textureSource *findTexture(char *img);
-textureSource *getTexture(char *name);
+textureSource *getTexture(char **name, int num, bool whiteGen);
 void freeTextureSource(textureSource *ts);
-//void loadPalette(textureSource *ts, float *palette);
+void writeTextureToFile(textureSource *ts, colorLayer *layers);
 #endif

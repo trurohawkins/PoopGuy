@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 	int Seedstring[4] = {1,2,3,4};
 	int** map = genMap(Seedstring);
 	int** Rmap = genRain(map);
+	genWorld(map);
 	//printArray(map, worldX, worldY);
 	//addActor(rock);
 //	stomachStuff(pooper->me->body, pooper->eatPoop);

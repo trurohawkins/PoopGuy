@@ -9,44 +9,12 @@
 #include "AnimList.c"
 #include "TextureManager.c"
 
-Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts) { 
+Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col, GLuint tc, GLuint ts) { 
 	Anim *a = (Anim*)calloc(sizeof(Anim), 1);
-	/*
-	unsigned int tex;
-//	glGenTextures(1, &(a->texture));
-	//glBindTexture(GL_TEXTURE_2D, a->texture);
-	glGenTextures(1, &tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	stbi_set_flip_vertically_on_load(true);
-
-	int width, height, nrChannels;
-	unsigned char *data = stbi_load(sheet, &width, &height, &nrChannels, 0);
-	for (int i = 0; i < height; i++) {
-		for (int j = 0; j < width * nrChannels + 1000; j++) {
-			printf("%u ", data[(i*width)+ j]);	
-		}
+	a->texture = getTexture(sheet, spriteNum, generated);
+	if (a->texture == NULL) {
+		printf("texture not made well\n");
 	}
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	} else {
-		printf("failed to load texture from file %s\n", sheet);
-	}
-	stbi_image_free(data);
-	a->texture = tex;
-	a->frameX = 1.0f/col;
-	a->frameY = 1.0f/rows;
-	rows-height-y
-	cols-width-x
-	*/
-	a->texture = getTexture(sheet);
 	a->frameX = 1.0f/col;
 	a->frameY = 1.0f/rows;
 	a->frame = 0;
@@ -69,6 +37,7 @@ Anim *makeAnim(char *sheet, int rows, int col, GLuint tc, GLuint ts) {
 	a->palette = (float*)calloc(sizeof(float), a->texture->numTex * 3);
 	for (int i = 0; i < a->texture->numTex * 3; i++) {
 		float f = (a->texture->colors)[i];
+		//printf("color %i is %f\n", i, f);
 		(a->palette)[i] = f;
 	}
 	//a->palette = a->texture->colors;
@@ -171,7 +140,7 @@ void drawSprite(Anim *a, GLuint texColor) {
 	for (int i = 0; i < ts->numTex; i++) {
 		int step = i * 3;
 		glUniform3f(texColor,(a->palette)[step],(a->palette)[step+1], (a->palette)[step+2]);
-		//printf("layer %i - color: %i, %i, %i\n", i,(ts->colors)[step],(ts->colors)[step+1], (ts->colors)[step+2]);
+		//printf("layer %i - color: %f, %f, %f\n", i,(a->palette)[step],(a->palette)[step+1], (a->palette)[step+2]);
 		//printf("drawing sprite %i\n", (a->texture->tex)[i]);
 		glBindTexture(GL_TEXTURE_2D, (a->texture->tex)[i]);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
