@@ -43,9 +43,9 @@ void drawGround(linkedList *ground, float *sMatrix,  GLuint sScale, GLuint sTran
 }
 
 Ghost *makeGhost(char *baseFile, int numColors, int rows, int cols, GLuint tc, GLuint ts) {
-	printf("ghost being made\n");
+	printf("ghost being made %i\n", numColors);
 	bool generated = false;
-	char **sprites = (char**)calloc(sizeof(char*), numColors);
+	char **sprites = (char**)calloc(sizeof(char*), max(1, numColors));
 	int sLen = strlen(baseFile);
 	if (numColors > 1) {
 		generated = true;

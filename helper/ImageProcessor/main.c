@@ -6,11 +6,11 @@
 #include "../../graphics/stb_image_write.h"
 
 #include "../helper.c"
-//#include "../../graphics/glfwMain.c"
-#include "../../graphics/TextureManager.h"
+#include "../../graphics/glfwMain.c"
+#include "../../graphics/TextureManager.c"
 
-void separateImgByColor(unsigned char *data, textureSource *ts, char *paletteName);
-void writePalette(textureSource *ts, char *name);
+//void separateImgByColor(unsigned char *data, textureSource *ts, char *paletteName);
+//void writePalette(textureSource *ts, char *name);
 
 int main(int argc, char **argv) {
 	if (argc > 1) {
@@ -21,9 +21,9 @@ int main(int argc, char **argv) {
 		unsigned char *data = stbi_load(argv[1], &(ts->width), &(ts->height), &(ts->channels), 0);
 		if (data) {
 		if (argc > 2) {
-				separateImgByColor(data, ts, argv[2]);
+				writeLayerTextureToFile(ts, data,  argv[2]);
 			} else {
-				separateImgByColor(data, ts, 0);
+				writeLayerTextureToFile(ts, data, 0);
 				printf("no var name given, palette not created\n");
 			}
 		} else {
@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
 		printf("no file name given\n");
 	}
 }
-
+/*
 void separateImgByColor(unsigned char *data, textureSource *ts, char *paletteName) {
 	linkedList *colors = makeList();
 	int numColors = 0;
@@ -96,6 +96,7 @@ void separateImgByColor(unsigned char *data, textureSource *ts, char *paletteNam
 			}
 		}
 	}
+	*/
 	/*
 	for (int i = 0; i < numColors*3; i++) {
 		printf(" %i ",(ts->colors)[i]); 
@@ -107,6 +108,7 @@ void separateImgByColor(unsigned char *data, textureSource *ts, char *paletteNam
 		(ts->tex)[i] = tex;
 	}
 	*/
+	/*
 	ts->numTex = numColors;
 	writeTextureToFile(ts, layers);
 	if (paletteName != 0) {
@@ -162,3 +164,4 @@ void writePalette(textureSource *ts, char *name) {
 	fprintf(fptr, "};\n");
 	fclose(fptr);
 }
+*/

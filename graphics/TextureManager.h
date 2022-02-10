@@ -16,16 +16,26 @@ typedef struct colorLayer {
 	unsigned char* data;
 } colorLayer;
 
+typedef struct colorLayerInfo {
+	int num;
+	colorLayer *layers;
+} colorLayerInfo;
+
 void makeTextureManager();
 void addTexture(textureSource *ts);
 void deleteTextureManager();
 unsigned int genTexture(unsigned char *data, int wid, int hei);
 textureSource *makeTexture(char *img, bool single);
 textureSource *makeTextureFromImages(char **imgs, int num, bool whiteGen);
+void makeLayerTexture(textureSource *ts, unsigned char *data, int numColors);
+void writeLayerTextureToFile(textureSource *ts, unsigned char *data, char *paletteName);
+void genLayerTexture(textureSource *ts, colorLayerInfo *layers);
 int countColors(textureSource *ts, unsigned char* data);
-void getImgColors(textureSource *ts, unsigned char *data, int numColors, bool writeToFile);
+colorLayerInfo *separateImgByColor(textureSource *ts, unsigned char *data, int numColors);
 textureSource *findTexture(char *img);
 textureSource *getTexture(char **name, int num, bool whiteGen);
 void freeTextureSource(textureSource *ts);
-void writeTextureToFile(textureSource *ts, colorLayer *layers);
+void freeColorLayerInfo(colorLayerInfo *layers);
+void writeTextureToFile(textureSource *ts, colorLayerInfo *layers);
+void writePalette(textureSource *ts, char *name);
 #endif

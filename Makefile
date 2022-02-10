@@ -25,6 +25,9 @@ windows: setWindows main.o libFormGlfw.a glad.o
 setWindows:
 	$(eval CC := $(WC))
 
+whiteLayers: $(HD)ImageProcessor/main.c libglfw.a glad.o
+	gcc -o $(HD)ImageProcessor/whiteLayers -g $(HD)ImageProcessor/main.c glad.o libglfw.a -lm -lglfw -lGL -ldl
+
 main.o: main.c
 	$(CC) -Wextra -Wall main.c
 

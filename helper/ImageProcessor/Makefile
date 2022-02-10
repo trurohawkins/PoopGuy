@@ -1,2 +1,14 @@
+RD = ../../resources/
+
 whiteLayers: main.c
-	gcc -o whiteLayers -g main.c -lm
+	make whiteLayers -C ../..
+
+poopguy: whiteLayers
+	./whiteLayers $(RD)poopGuySpriteSheet.png poopguy
+
+clean:
+	rm *Palette*.c
+
+fclean:
+	rm *Palette*.c
+	rm whiteLayers

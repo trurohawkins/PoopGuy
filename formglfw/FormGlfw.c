@@ -7,7 +7,7 @@ float centerY;
 int frameX = 50;
 int frameY = 50;
 PoopGuy *pooper;
-int numPlayers = 1;
+int numPlayers = 2;
 bool gridOn = false;
 bool paused = false;
 bool godMode = false;

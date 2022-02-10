@@ -81,7 +81,8 @@ textureSource *makeTexture(char *img, bool single) {
 		ts->name = (char *)calloc(sizeof(char), strlen(img)+1);
 		strcpy(ts->name, img);
 		if (!single) {
-			getImgColors(ts, data, 0, false);
+			makeLayerTexture(ts, data, 0);
+			//separateImgByColor(ts, data, 0, false);
 		} else {
 			printf("single sprite being made to texture\n");
 			unsigned int tex = genTexture(data, ts->width, ts->height);
@@ -161,6 +162,19 @@ int countColors(textureSource *ts, unsigned char *data) {
 	return numColors;
 }
 
+void makeLayerTexture(textureSource *ts, unsigned char *data, int numColors) {
+	colorLayerInfo *layers = separateImgByColor(ts, data, numColors);
+	genLayerTexture(ts, layers);
+	freeColorLayerInfo(layers);
+}
+
+void writeLayerTextureToFile(textureSource *ts, unsigned char *data, char *paletteName) {
+	colorLayerInfo *layers = separateImgByColor(ts, data, 0);
+	writeTextureToFile(ts, layers);
+	writePalette(ts, paletteName);
+	freeColorLayerInfo(layers);
+}
+
 /* 
  * takes in PNG and converts each color to a separate file and colors them white
  * 	allows for dynamic paletting of sprites
@@ -168,17 +182,19 @@ int countColors(textureSource *ts, unsigned char *data) {
  * data - raw data of png file
  * numColors - if you know how many colors there are you can save some time by including it
  *	otherwise <=0 will count the colors in the fle for you
- * writeToFile - if true will also write textures to file
  */
-void getImgColors(textureSource *ts, unsigned char *data, int numColors, bool writeToFile) {
+colorLayerInfo *separateImgByColor(textureSource *ts, unsigned char *data, int numColors) {
 	if (numColors <= 0) {
 		numColors = countColors(ts, data);
 	}
+	ts->numTex = numColors;
 	linkedList *colors = makeList();
 	int dataLength = ts->height * ts->width * ts->channels;
-	colorLayer *layers = (colorLayer*)calloc(sizeof(colorLayer), numColors);
+	colorLayerInfo *layers = (colorLayerInfo*)calloc(sizeof(colorLayerInfo), 1);
+	layers->num = numColors;
+	layers->layers	= (colorLayer*)calloc(sizeof(colorLayer), numColors);
 	for (int i = 0; i < numColors; i++) {
-		layers[i].data = (unsigned char*)calloc(sizeof(unsigned char), dataLength);
+		(layers->layers)[i].data = (unsigned char*)calloc(sizeof(unsigned char), dataLength);
 	}
 	ts->colors = (float*)calloc(sizeof(float), numColors * 4);
 	int colorSeen = 0;
@@ -198,20 +214,20 @@ void getImgColors(textureSource *ts, unsigned char *data, int numColors, bool wr
 					//int step = (numColors * 3) - ((colorSeen+1) * 3);
 					int step = colorSeen * 4;
 					//layers[numColors-1-colorSeen].color[j] = color[j];
-					layers[colorSeen].color[j] = color[j];
+					(layers->layers)[colorSeen].color[j] = color[j];
 					(ts->colors)[step + j] = (float)color[j]/255;
 				}
 				//set any color on layer to pure white and solid, so palette can be applied purely
 				for (int j = 0; j < 4; j++) {
-					layers[colorSeen].data[i+j] = 255;
+					(layers->layers)[colorSeen].data[i+j] = 255;
 				}
 				colorSeen++;
 			} else {
 				for (int j = 0; j < numColors; j++) {
-					if (compareColor(layers[j].color, color)) {
+					if (compareColor((layers->layers[j]).color, color)) {
 						//printf("found color-%u,%u,%u at %i\n",color[0], color[1], color[2], j);
 						for (int k = 0; k < 4; k++) {
-							layers[j].data[i+k] = 255;
+							(layers->layers)[j].data[i+k] = 255;
 						}
 						break;
 					}
@@ -220,27 +236,20 @@ void getImgColors(textureSource *ts, unsigned char *data, int numColors, bool wr
 			}
 		}
 	}
+	freeList(&colors);
 	/*
-	for (int i = 0; i < numColors*3; i++) {
-		printf(" %i ",(ts->colors)[i]); 
-	}
-	printf("\n");
 	*/
-	ts->tex = (unsigned int*)calloc(sizeof(unsigned int), numColors);
-	for (int i = 0; i < numColors; i++) {
-		unsigned int tex = genTexture(layers[i].data, ts->width, ts->height);
+	return layers;
+}
+
+void genLayerTexture(textureSource *ts, colorLayerInfo *layers) {
+	ts->tex = (unsigned int*)calloc(sizeof(unsigned int), layers->num);
+	for (int i = 0; i < layers->num; i++) {
+		unsigned int tex = genTexture((layers->layers)[i].data, ts->width, ts->height);
 		(ts->tex)[i] = tex;
 	}
-	ts->numTex = numColors;
-	if (writeToFile) {
-		writeTextureToFile(ts, layers);
-	}
-	freeList(&colors);
-	for (int i = 0; i < numColors; i++) {
-		free(layers[i].data);
-	}
-	free(layers);
 }
+
 
 void freeTextureSource(textureSource* ts) {
 	free(ts->name);
@@ -249,14 +258,54 @@ void freeTextureSource(textureSource* ts) {
 	free(ts);
 }
 
+void freeColorLayerInfo(colorLayerInfo *layers)  {
+	for (int i = 0; i < layers->num; i++) {
+		free((layers->layers)[i].data);
+		//free((layers->layers[i]));
+	}
+	free(layers->layers);
+	free(layers);
+}
 
-void writeTextureToFile(textureSource *ts, colorLayer *layers) {
+void writeTextureToFile(textureSource *ts, colorLayerInfo *layers) {
 	int sLen = strlen(ts->name);
 	char *fName = (char*)calloc(sizeof(char), sLen + 2);
-	strncpy(fName, ts->name, sLen - 4);
+	strncpy(fName, ts->name, sLen-4);
 	for (int i = 0; i < ts->numTex; i++) {
-		fName[sLen - 4] = (unsigned char)i + 48;
-		stbi_write_png(fName, ts->width, ts->height, ts->channels, layers[i].data, ts->width * ts->channels);	
+		char *cur = (char*)calloc(sizeof(char), sLen + 2);
+		strcpy(cur, fName);
+		cur[sLen - 4] = (unsigned char)i + 48;
+		strcat(cur, ".png");
+		printf("creating file %s\n", cur);
+		stbi_write_png(cur, ts->width, ts->height, ts->channels, (layers->layers)[i].data, ts->width * ts->channels);	
+		free(cur);
 	}
 	free(fName);
+}
+
+void writePalette(textureSource *ts, char *name) {
+	int sLen = strlen(name);
+	char *fName = (char*)calloc(sizeof(char), sLen + 13);
+	strncpy(fName, name, sLen);
+	printf("file name = %s\n");
+	strcat(fName, "Palette0.c");
+	printf("creating palette %s at %s\n", name, fName);
+	FILE* fptr = fopen(fName, "w");
+	char *varName = (char*)calloc(sizeof(char), 16 + strlen(name));
+	strcpy(varName, "float ");
+	strcat(varName, name);
+	strcat(varName, "Palette0");
+	strcat(varName, "[");
+	fprintf(fptr, varName);
+	fprintf(fptr, "%i", ts->numTex*4);
+	fprintf(fptr, "] = {");
+
+	for (int i = 0; i < ts->numTex * 4; i++) {
+		fprintf(fptr, "%f", ts->colors[i]);
+		if (i != (ts->numTex * 4) -1) {
+			fprintf(fptr, ", ");
+		}
+	}
+	fprintf(fptr, "};\n");
+	fclose(fptr);
 }
