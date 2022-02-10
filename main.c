@@ -21,8 +21,9 @@ int main(int argc, char **argv) {
 	setFrame(windowX, windowY);
 	int Seedstring[4] = {1,2,3,4};
 	int** map = genMap(Seedstring);
-	int** Rmap = genRain(map);
+	genRain(map);
 	genWorld(map);
+	freeMap(map);
 	//printArray(map, worldX, worldY);
 	//addActor(rock);
 //	stomachStuff(pooper->me->body, pooper->eatPoop);

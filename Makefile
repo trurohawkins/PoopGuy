@@ -52,7 +52,7 @@ Shaders.o: $(SHD)Shaders.c $(SHD)Shaders.h $(SHD)glslLib.c
 Graphics.o: $(GD)Graphics.c $(GD)Graphics.h
 	$(CC) $(GD)Graphics.c
 
-Anim.o: $(GD)Anim.c $(GD)Anim.h $(GD)AnimList.c $(GD)AnimList.h $(GD)TextureManager.c $(GD)TextureManager.h
+Anim.o: $(GD)Anim.c $(GD)Anim.h $(GD)AnimList.c $(GD)AnimList.h $(GD)TextureManager.c $(GD)TextureManager.h $(GD)Ghost.c $(GD)Ghost.h
 	$(CC) $(GD)Anim.c
 
 Input.o: $(ID)Input.c $(ID)Input.h $(ID)Joystick.c $(ID)Joystick.h

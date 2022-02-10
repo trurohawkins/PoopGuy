@@ -88,8 +88,8 @@ textureSource *makeTexture(char *img, bool single) {
 			ts->tex = (unsigned int*)calloc(sizeof(unsigned int), 1);
 			*(ts->tex) = tex;
 			ts->numTex = 1;
-			ts->colors = (float*)calloc(sizeof(float), 3);
-			for (int i = 0; i < 3; i++) {
+			ts->colors = (float*)calloc(sizeof(float), 4);
+			for (int i = 0; i < 4; i++) {
 				(ts->colors)[i] = 1;
 			}
 		}
@@ -118,10 +118,10 @@ textureSource *makeTextureFromImages(char **imgs, int num, bool whiteGen) {
 	strcpy(ts->name, imgs[0]);
 	ts->numTex = num;
 	ts->tex = (unsigned int*)calloc(sizeof(unsigned int), num);
-	ts->colors = (float*)calloc(sizeof(float), num * 3);
+	ts->colors = (float*)calloc(sizeof(float), num * 4);
 	for (int i = 0; i < num; i++) {
-		for (int j =0; j < 3; j++) {
-			(ts->colors)[i*3 + j] = 1;
+		for (int j =0; j < 4; j++) {
+			(ts->colors)[i*4 + j] = 1;
 		}
 		unsigned char *data = stbi_load(imgs[i], &(ts->width), &(ts->height), &(ts->channels), 0);
 		if (data) {
@@ -144,10 +144,11 @@ int countColors(textureSource *ts, unsigned char *data) {
 	int numColors = 0;
 	for (int i = 0; i < ts->height * ts->width * ts->channels; i+=ts->channels) {
 		if (data[i+3] != 0) {
-			unsigned char *color = (unsigned char*)calloc(sizeof(unsigned char),3);
+			unsigned char *color = (unsigned char*)calloc(sizeof(unsigned char),4);
 			color[0] = data[i];
 			color[1] = data[i+1];
 			color[2] = data[i+2];
+			color[3] = data[i+3];
 			if (checkList(&colors, color, compareColor) == true) {
 				free(color);
 			} else {
@@ -179,27 +180,28 @@ void getImgColors(textureSource *ts, unsigned char *data, int numColors, bool wr
 	for (int i = 0; i < numColors; i++) {
 		layers[i].data = (unsigned char*)calloc(sizeof(unsigned char), dataLength);
 	}
-	ts->colors = (float*)calloc(sizeof(float), numColors * 3);
+	ts->colors = (float*)calloc(sizeof(float), numColors * 4);
 	int colorSeen = 0;
 	unsigned char *color;
 	for (int i = 0; i < dataLength; i+=ts->channels) {
 		if (data[i+3] != 0) {
-			color = (unsigned char*)calloc(sizeof(unsigned char),3);
+			color = (unsigned char*)calloc(sizeof(unsigned char),4);
 			color[0] = data[i];
 			color[1] = data[i+1];
 			color[2] = data[i+2];
+			color[3] = data[i+3];
 			if (checkList(&colors, color, compareColor) == false) {
 				//we havent seen this color
 				//process it by assigning it an empty color layer
 				addToList(&colors, color);
-				for (int j = 0; j < 3; j++) {
+				for (int j = 0; j < 4; j++) {
 					//int step = (numColors * 3) - ((colorSeen+1) * 3);
-					int step = colorSeen * 3;
+					int step = colorSeen * 4;
 					//layers[numColors-1-colorSeen].color[j] = color[j];
 					layers[colorSeen].color[j] = color[j];
 					(ts->colors)[step + j] = (float)color[j]/255;
 				}
-				//set any color on layer to pure white full opacity
+				//set any color on layer to pure white and solid, so palette can be applied purely
 				for (int j = 0; j < 4; j++) {
 					layers[colorSeen].data[i+j] = 255;
 				}

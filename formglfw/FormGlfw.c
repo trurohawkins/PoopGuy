@@ -7,7 +7,7 @@ float centerY;
 int frameX = 50;
 int frameY = 50;
 PoopGuy *pooper;
-int numPlayers = 2;
+int numPlayers = 1;
 bool gridOn = false;
 bool paused = false;
 bool godMode = false;
@@ -99,12 +99,18 @@ void updateLoop() {
 		makeActorList();
 		makeAnimList();
 		makeTextureManager();
+		initBackgroundGhosts();
+		initForegroundGhosts();
 		for (int i = 0; i < numPlayers; i++) {
 			PoopGuy* tmp = makePoopPlayer(1 + (i*4), 2, i, tcTrans, tcScale);
 			if (i == 0) {
 				pooper = tmp;
 			}
 		}
+		//cloud = makeGhost("resources/cloud.png", 1, 1, 1, tcTrans, tcScale);
+		Ghost *cloud2 = makeGhost("resources/demonghost.png", 0, 1, 1, tcTrans, tcScale);
+		//addBackground(cloud);
+		addForeground(cloud2);
 		/*
 		Form *f = makeForm(1,1,1,1,1);
 		placeForm(10, 10, f);
@@ -116,7 +122,7 @@ void updateLoop() {
 		*/
 		//char *mappings = fileToString("gamecontrollerdb.txt");
 		//const char *cMap = (const char*)mappings;
-		printf("%i\n", glfwUpdateGamepadMappings(gamecontrollerdb));
+		glfwUpdateGamepadMappings(gamecontrollerdb);
 		//free(mappings);
 		Player *nullPlayer = makePlayer(NULL, -1, NULL);
 		addControl(nullPlayer, "K0G", toggleGod);
@@ -144,17 +150,13 @@ void updateLoop() {
 			}
 			glClearColor(0.1, 0.2, 0.4, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			//drawSprite(h);
 			if (gridOn) {
 				drawGrid(matrix, tMat, sMat, rMat, drawColor, vLi);
 			}
 			drawWorld(w, tMat, sMat, rMat, drawColor, squa, spriteTrans, spriteScale, spriteRot);
 			glfwSwapBuffers(screen->window);
 		}
-		freePlayerManager();
-		deleteAnimList();
-		deleteTextureManager();
-		free(godPos);
+		exitGame();
 	}
 }
 
@@ -174,6 +176,8 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 	glUniformMatrix4fv(rMat, 1, GL_TRUE, mat);
 	GLuint baseShader = getSP(0);//makeShaderProgram("graphicsSource/matVS.glsl", "graphicsSource/simpFS.glsl");
 	GLuint texShader = getSP(1);
+	glUseProgram(texShader);
+	drawBG(sMatrix, sScale, sTrans, sRot, texColor);
 
 	int fx = frameX/2;
 	int fy = frameY/2;
@@ -256,14 +260,7 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 	}
 	freeListSaveObj(&animList);
 	freeList(&posList);
-}
-
-int convertInvert(bool inv) {
-	if (inv) {
-		return -1;
-	} else {
-		return 1;
-	}
+	drawFG(sMatrix, sScale, sTrans, sRot, texColor);
 }
 
 void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, int yp, GLuint sScale, GLuint sTrans, GLuint sRot) {
@@ -297,6 +294,7 @@ void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, i
 
 	drawSprite(a, texColor);
 }
+
 
 void drawGrid(float *mat, int tMat, int sMat, int rMat, int color, GLuint vLi) {
 	float xSize = 2.0f / frameX;//(float)scr->width / 10000;
@@ -374,6 +372,13 @@ void toggleGod(void *, float poo) {
 }
 
 void exitGame() {
+	printf("exiting\n");
+	freeBG();
+	freeFG();
+	freePlayerManager();
+	deleteAnimList();
+	deleteTextureManager();
+	free(godPos);
 	freeWorld();
 	freeJoyList();
 	freeInput();

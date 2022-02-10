@@ -1,5 +1,15 @@
 #include "poopPlayer.h"
 
+void setPalette(int pNum, Anim *a) {
+	if (pNum == 0) {
+		float palette[28] = {0.023529, 0.188235, 0.027451,1, 0.090196, 0.737255, 0.109804,1, 0.098039, 0.811765, 0.121569,1, 0.109804, 0.862745, 0.133333,1, 1.000000, 1.000000, 1.000000,1, 0.098039, 0.772549, 0.117647,1, 0.105882, 0.831373, 0.129412,1};
+		loadPalette(a, palette);
+	} else if (pNum == 1) {
+		float palette[28] = {0.0,0.0,0.0,1,  0.4,0,0.2,1,  0.3,0,0.1,1, 0.8,0,0.2,1,  1,1,1,1,  0.9,0.1,0.2,1, 0.50,0,0,1};
+		loadPalette(a, palette);
+	}
+}
+
 
 PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
 	PoopGuy *pooper = makePoopGuy(3, 3);
@@ -24,6 +34,9 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
 		strcpy(*sprites, baseFile); 
 	}
 	Anim *poo = makeAnim(sprites, numColors, generated, 4, 6, tc, ts);
+	if (numColors != 1) {
+		setPalette(pNum, poo);
+	}
 	for (int i = 0; i < numColors; i++) {
 		free(sprites[i]);
 	}
@@ -40,10 +53,6 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
 	Player *p = makePlayer(pooper, pNum, deletePoopGuy);
 	//key mouse ocntrols
 	if (p->num == 0) {
-		if (numColors != 1) {
-			float poopguyPalette0[21] = {0.023529, 0.188235, 0.027451, 0.090196, 0.737255, 0.109804, 0.098039, 0.811765, 0.121569, 0.109804, 0.862745, 0.133333, 1.000000, 1.000000, 1.000000, 0.098039, 0.772549, 0.117647, 0.105882, 0.831373, 0.129412};
-			loadPalette(poo, poopguyPalette0);
-		}
 		addControl(p, "K0W", up);
 		addControl(p, "K0A", left);
 		addControl(p, "K0S", down);
@@ -52,10 +61,6 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
 		addControl(p, "M00", poop);
 		addControl(p, "K0 ", jumpStart);
 	} else {
-		if (numColors != 1) {
-			float palette[21] = {0.0,0.0,0.0,  0.4,0,0.2,  0.3,0,0.1, 0.8,0,0.2,  1,1,1,  0.9,0.1,0.2, 0.50,0,0};
-			loadPalette(poo, palette);
-		}
 		addControl(p, "K0I", up);
 		addControl(p, "K0J", left);
 		addControl(p, "K0K", down);

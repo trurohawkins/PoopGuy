@@ -25,6 +25,14 @@ void freeDirections() {
 	free(dirs);
 }
 
+int convertInvert(bool inv) {
+	if (inv) {
+		return -1;
+	} else {
+		return 1;
+	}
+}
+
 int **getDirs() {
 	return dirs;
 }

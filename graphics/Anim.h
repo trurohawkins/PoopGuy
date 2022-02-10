@@ -30,6 +30,7 @@ typedef struct Anim {
 } Anim;
 
 #include "AnimList.h"
+#include "Ghost.h"
 
 Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col, GLuint tc, GLuint ts);
 unsigned int makeSpriteTexture(char *sheet, int rows, int col);

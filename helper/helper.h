@@ -13,6 +13,7 @@
 void initDirections();
 void freeDirections();
 int **getDirs();
+int convertInvert(bool inv);
 float randPercent();
 int clamp(int, int, int);
 float max(float a, float b);

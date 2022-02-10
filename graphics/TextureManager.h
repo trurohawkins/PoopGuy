@@ -12,7 +12,7 @@ typedef struct textureSource {
 } textureSource;
 
 typedef struct colorLayer {
-	unsigned char color[3];
+	unsigned char color[4];
 	unsigned char* data;
 } colorLayer;
 

@@ -32,4 +32,3 @@ void AnimListAnimate() {
 		cur = cur->next;
 	}
 }
-	
