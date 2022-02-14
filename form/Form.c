@@ -27,7 +27,7 @@ Form *makeForm(float r, float g, float b, float wid, float len) {
 	//float wid = w;
 	//float len = l;
 	if (wid != 0 && len != 0) {
-		printf("form with body\n");
+		//printf("form with body\n");
 		newForm->body = (float***) calloc(wid, sizeof(float**));
 		for (int i = 0; i < wid; i++) {
 			newForm->body[i] = (float**) calloc(len, sizeof(float*));
@@ -101,8 +101,8 @@ Form *checkSide(Form *f, int xd, int yd, bool collide) {
 			//printf("checking: %f, %f\n", (f->pos[0] - f->size[0]/2) + i, f->pos[1] + row);
 			hit = checkCol((f->pos[0] - f->size[0]/2) + i, f->pos[1] + row);
 			if (hit != 0) {
-				//printf("hit something Y\n");
 				break;
+				//printf("hit something Y\n");
 			}
 		}
 	}
@@ -110,7 +110,10 @@ Form *checkSide(Form *f, int xd, int yd, bool collide) {
 }
 
 
-void deleteForm(Form *f) {
+void deleteForm(void *form) {
+	Form *f = (Form*)form;
+	//removeForm(f);
+//	printf("form: %i\n", f->id);
 	if (f->size[0] != 0 && f->size[1] != 0) {
 		for (int x = 0; x < f->size[0]; x++) {
 			for(int y = 0; y < f->size[1]; y++) {
@@ -145,6 +148,20 @@ void setInvert(Form *f, int axis, bool flipped) {
 	f->invert[axis] = flipped;
 }
 
+bool checkFormIsSolid(void *form) {
+	Form *f = (Form*)form;
+	if (f->size[0] != 0 || f->size[1] != 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+void printForm(void *form) {
+	Form *f = (Form*)form;
+	printf("form id: %i size:%i, %i\n", f->id, f->size[0], f->size[1]);
+}
+
 /*
 void setStat(Form *f, float stat) {
 	//printf("setting stat %f\n", stat);
@@ -152,15 +169,11 @@ void setStat(Form *f, float stat) {
 }
 */
 
-void freeWorld() {
-	deleteWorld();
-	deleteActorList();
-	freeDirections();
-}
 
 //#include "../helper/helper.c"
 #include "World.c"
 #include "Value.c"
+#include "Cell.c"
 #include "../actor/Action.c"
 #include "../actor/Actor.c"
 #include "../actor/acts/control.c"

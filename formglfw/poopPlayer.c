@@ -46,6 +46,7 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
 	for (int i = 1; i < 4; i++) {
 		addSprite(poo, i, 6);
 	}
+	setOffset(poo, 0.0, -0.007);//so he overlaps ground makes it look like hes waalking
 	GLuint spriteVao = makeSpriteVao(1, 1);
 	animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
 	setAnim(pooper->me->body, poo);

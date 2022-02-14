@@ -25,7 +25,7 @@ void addToList(linkedList **head, void *item) {
 	}
 }
 
-bool checkList(linkedList **head, void *item, bool (*cmp)(void*, void*)) {
+bool cmpList(linkedList **head, void *item, bool (*cmp)(void*, void*)) {
 	linkedList *cur = *head;
 	while (cur != NULL) {
 		if (cur->data != NULL) {
@@ -38,29 +38,35 @@ bool checkList(linkedList **head, void *item, bool (*cmp)(void*, void*)) {
 	return false;
 }
 
-void *removeFromList(linkedList **head, void *item) {
-/*
-	linkedList *pre = 0;
+void *checkList(linkedList **head, bool (*chk)(void*)) {
 	linkedList *cur = *head;
-	while (cur != 0) {
-		if (cur->data == item) {
-			linkedList *tmp = cur;
-			if (pre != 0) {
-				pre->next = cur->next;
-			} else {
-				head = cur->next;
+	while (cur != NULL) {
+		if (cur->data != NULL) {
+			if (chk(cur->data) == true) {
+				return cur->data;
 			}
-			deleteAction(tmp->data);
-			free(tmp);
 		}
-		if (cur->next != 0) {
-			pre = cur;
-			cur = cur->next;
-		} else {
-			cur = 0;
-		}
+		cur = cur->next;
 	}
-*/
+	return false;
+}
+
+void *printList(linkedList **head, char *listName, void (*print)(void*)) {
+	linkedList *cur = *head;
+	printf("printing list %s\n", listName);
+	int num = 0;
+	while (cur != NULL) {
+		printf("[%i] ", num);
+		if (cur->data != NULL) {
+			print(cur->data);
+		}
+		cur = cur->next;
+		num++;
+	}
+	printf("printing done\n");
+}
+
+void *removeFromList(linkedList **head, void *item) {
 	void *data = 0;
 	if ((*head)->data == item) {
 		linkedList *oh = *head;
@@ -81,6 +87,35 @@ void *removeFromList(linkedList **head, void *item) {
 			}
 			pre = pre->next;
 		}
+	}
+	return data;
+}
+
+void *removeFromListCheck(linkedList **head, bool (*chk)(void*)) {
+	void *data = 0;
+	if ((head) != NULL) {
+	if ((*head)->data != NULL) {
+		if (chk((*head)->data)) {
+			linkedList *oh = *head;
+			(*head) = (*head)->next;
+			data = oh->data;
+			free(oh);
+		} else {
+			linkedList *tmp = (*head)->next;
+			linkedList *pre = *head;
+			while (tmp != 0) {
+				if (chk(tmp->data)) {
+					pre->next = tmp->next;
+					data = tmp->data;
+					free(tmp);
+					tmp = pre->next;
+				} else {
+					tmp = tmp->next;
+				}
+				pre = pre->next;
+			}
+		}
+	}
 	}
 	return data;
 }
@@ -107,6 +142,7 @@ void freeListSaveObj(linkedList **ll) {
 		cur = next;
 	}	
 }
+
 void deleteList(linkedList **ll, void (*deleteFunc)(void*)) {
 	linkedList *cur = *ll;
 	linkedList *next = 0;

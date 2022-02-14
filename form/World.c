@@ -6,10 +6,13 @@ World* theWorld;
 
 void makeWorld(int x, int y) {	
 	World *newWorld = (World*)calloc(1, sizeof(World));
-	TYPE ***mudBall = (TYPE***) calloc( x, sizeof(TYPE**));
+	Cell ***mudBall = (Cell***) calloc( x, sizeof(Cell**));
 
 	for (int i = 0; i < x ; i += 1) {
-		mudBall[i] = (TYPE**) calloc(y , sizeof(TYPE*));
+		mudBall[i] = (Cell**) calloc(y , sizeof(Cell*));
+		for (int j = 0; j < y; j++) {
+			mudBall[i][j] = makeCell(i,j);
+		}
 	}
 	newWorld->map = mudBall;
 	newWorld->x = x;
@@ -25,12 +28,16 @@ World *getWorld() {
 void deleteWorld() {
 	for (int i = 0; i < theWorld->x ; i += 1) {
 		for (int j = 0; j < theWorld->y; j++) {
+			/*
 			Form *f = theWorld->map[i][j];
 			if (f != NULL) {
 				if (f->id == 10) {
 					deleteForm(f);
 				}
 			}
+			*/
+		//	printCell(theWorld->map[i][j]);
+			freeCell(theWorld->map[i][j]);
 		}
 		free(theWorld->map[i]); 
 	}
@@ -69,7 +76,8 @@ void placeForm(int x, int y, TYPE *form) {
 	form->pos[1] = y;// + mod[1];
 	if (form->size[0] == 0 && form->size[1] == 0) {
 		if (x >= 0 && y >= 0 && x < theWorld->x && y < theWorld->y) {
-			theWorld->map[x][y] = form;
+			//theWorld->map[x][y] = form;
+			addToCell(theWorld->map[x][y], form);
 		}
 	} else {
 		//printf("placing\n");
@@ -79,24 +87,32 @@ void placeForm(int x, int y, TYPE *form) {
 				int yp = form->pos[1] + form->body[i][j][1];
 				if (xp >= 0 && yp >= 0 && xp < theWorld->x && yp < theWorld->y) {
 					//printf("placing: %i, %i\n", xp, yp);
-					Form *f = theWorld->map[xp][yp];
+					/*
+					Form *f = getSolidForm(theWorld->map[xp][yp]);
 					if (f != NULL) {
 						if (f->id == 10) {
 							deleteForm(f);
 						}
 					}
-					theWorld->map[xp][yp] = form;
+					*/
+					addToCell(theWorld->map[xp][yp],form);
 				}
 			}
 		}
 	}
 }
+Form *checkForm(int x, int y) {
+	return checkSolidForm(theWorld->map[x][y]);
+}
 
 Form *takeForm(int x, int y) {
 	Form *form = 0;
 	if (x >= 0 && y >= 0 && x < theWorld->x && y < theWorld->y) {
+		/*
 		form = theWorld->map[x][y];
 		theWorld->map[x][y] = 0;
+		*/
+		form = getSolidForm(theWorld->map[x][y]);
 	}
 	return form;
 }
@@ -107,11 +123,15 @@ Form *removeForm(Form* form) {
 	} else {
 		for (int i = 0; i < form->size[0]; i++) {
 			for (int j = 0; j < form->size[1]; j++) {
-				int xp = form->pos[0] + form->body[i][j][0];
-				int yp = form->pos[1] + form->body[i][j][1];
+				int xp = form->pos[0] + (form->body[i][j])[0];
+				int yp = form->pos[1] + (form->body[i][j])[1];
+				/*
 				if (xp >= 0 && yp >= 0 && xp < theWorld->x && yp < theWorld->y) {
 					theWorld->map[xp][yp] = 0;
 				}
+				*/
+				takeForm(xp, yp);
+				//takeForm(form->pos[0], form->pos[1]);
 			}
 		}
 
@@ -121,8 +141,15 @@ Form *removeForm(Form* form) {
 //	f->pos[1] = -1; maybe add back? took out because in the middle of move we need to remember the old position
 	return form;
 }
+
+void freeWorld() {
+	deleteActorList();
+	deleteWorld();
+	freeDirections();
+}
+
 Form *makeDirt(float moist) {
-	Form *d = makeForm(0.7, 0.3, 0.1, 0, 0);
+	Form *d = makeForm(0.7, 0.3, 0.1, 1, 1);
 	d->id = 10;
 	addStat(d, "moisture", moist * 0.1);
 	addStat(d, "hydroK", 1);

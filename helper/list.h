@@ -13,8 +13,11 @@ typedef struct linkedList
 linkedList *makeList();
 
 void addToList(linkedList **head, void *item);
-bool checkList(linkedList **head, void *item, bool (*cmp)(void*, void*));
+void *printList(linkedList **head, char *listName, void (*print)(void*));
+bool cmpList(linkedList **head, void *item, bool (*cmp)(void*, void*));
+void *checkList(linkedList **head, bool (*chk)(void*));
 void *removeFromList(linkedList **head, void *item);
+void *removeFromListCheck(linkedList **head, bool (*chk)(void*));
 void *removeFromListInt(linkedList **head, int item);
 void freeList(linkedList **ll);
 void deleteList(linkedList **ll, void (*deleteFunc)(void*));

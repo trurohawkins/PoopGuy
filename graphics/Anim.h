@@ -11,6 +11,7 @@
 
 
 typedef struct Anim {
+	int drawOrder;
 	int speed;
 	int speedCounter;
 	float frameX;
@@ -21,6 +22,7 @@ typedef struct Anim {
 	int *length;
 	int scale[2];
 	int flip[2];
+	float offset[2];
 	int roto;
 	GLuint texCoords;
 	GLuint texScale;
@@ -30,16 +32,18 @@ typedef struct Anim {
 } Anim;
 
 #include "AnimList.h"
-#include "Ghost.h"
+#include "UI.h"
 
 Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col, GLuint tc, GLuint ts);
 unsigned int makeSpriteTexture(char *sheet, int rows, int col);
 float rotoToRadian(int d);
 void freeAnim(Anim *a);
 void setScale (Anim* a, int x, int y);
+void setOffset (Anim* a, float x, float y);
 void setFlipX(Anim *a, int x);
 void setFlipY(Anim *a, int y);
 void setRotation(Anim *a, int d);
+void setDrawOrder(Anim *a, int o);
 void addSprite(Anim *a, int index, int len);
 void animAddVao(Anim *a, GLuint vao);
 void animate(Anim *a);

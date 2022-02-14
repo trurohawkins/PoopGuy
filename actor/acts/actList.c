@@ -49,6 +49,7 @@ void move(Form *f, Action *a) {
 		for (int i = 0; i < speed; i++) {
 			int p = f->pos[1] + sign(mv->force[1]);//mv->dir[1];
 			if (checkSide(f, 0, sign(mv->force[1]), true) == 0) {
+				//printf("moving form Y val from %f to %i\n", f->pos[1], p);
 				removeForm(f);
 				placeForm(f->pos[0], p, f);
 			}
@@ -84,7 +85,7 @@ void decelerate(moveVar *mv) {
 
 Form *checkCol(int x, int y) {
 	if (x >= 0 && y >= 0 && x < theWorld->x && y < theWorld->y) {
-		return theWorld->map[x][y];
+		return checkForm(x,y);//SolidForm(theWorld->map[x][y]);
 	} else {
 		if (inert == 0) {
 			makeInert();

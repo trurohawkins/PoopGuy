@@ -43,7 +43,7 @@ void separateImgByColor(unsigned char *data, textureSource *ts, char *paletteNam
 			color[0] = data[i];
 			color[1] = data[i+1];
 			color[2] = data[i+2];
-			if (checkList(&colors, color, compareColor) == true) {
+			if (cmpList(&colors, color, compareColor) == true) {
 				free(color);
 			} else {
 				addToList(&colors, color);
@@ -68,7 +68,7 @@ void separateImgByColor(unsigned char *data, textureSource *ts, char *paletteNam
 			color[0] = data[i];
 			color[1] = data[i+1];
 			color[2] = data[i+2];
-			if (checkList(&colors, color, compareColor) == false) {
+			if (cmpList(&colors, color, compareColor) == false) {
 				//we havent seen this color
 				//process it by assigning it an empty color layer
 				addToList(&colors, color);

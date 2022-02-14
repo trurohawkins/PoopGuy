@@ -1,12 +1,12 @@
 linkedList *BG;
 linkedList *FG;
 
-void initBackgroundGhosts(){
+void initBackgroundUI(){
 	BG = makeList();
 }
 
-void addBackground(Ghost *gho) {
-	addToList(&BG, gho);
+void addBackground(UI *ui) {
+	addToList(&BG, ui);
 }
 void drawBG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, GLuint texColor) {
 	drawGround(BG, sMatrix, sScale, sTrans, sRot, texColor);
@@ -15,12 +15,12 @@ void drawBG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, GLuint te
 void freeBG() {
 	freeList(&BG);
 }
-void initForegroundGhosts() {
+void initForegroundUI() {
 	FG = makeList();
 }
 
-void addForeground(Ghost *gho) {
-	addToList(&FG, gho);
+void addForeground(UI *ui) {
+	addToList(&FG, ui);
 }
 
 void drawFG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, GLuint texColor) {
@@ -35,15 +35,15 @@ void drawGround(linkedList *ground, float *sMatrix,  GLuint sScale, GLuint sTran
 	linkedList *cur = ground;
 	while (cur != NULL) {
 		if (cur->data != NULL) {
-			Ghost *gho = (Ghost*)cur->data;
-			drawGhost(gho, sMatrix, sScale, sTrans, sRot, texColor);
+			UI *ui = (UI*)cur->data;
+			drawUI(ui, sMatrix, sScale, sTrans, sRot, texColor);
 		}
 		cur = cur->next;
 	}
 }
 
-Ghost *makeGhost(char *baseFile, int numColors, int rows, int cols, GLuint tc, GLuint ts) {
-	printf("ghost being made %i\n", numColors);
+UI *makeUI(char *baseFile, int numColors, int rows, int cols, GLuint tc, GLuint ts) {
+	printf("uist being made %i\n", numColors);
 	bool generated = false;
 	char **sprites = (char**)calloc(sizeof(char*), max(1, numColors));
 	int sLen = strlen(baseFile);
@@ -72,32 +72,32 @@ Ghost *makeGhost(char *baseFile, int numColors, int rows, int cols, GLuint tc, G
 	GLuint spriteVao = makeSpriteVao(1, 1);
 	animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
 	addAnim(poo);
-	Ghost *gho = (Ghost *)calloc(sizeof(Ghost), 1);
-	gho->xp = -0.01;
-	gho->yp = 0;
-	gho->xSize = 1;
-	gho->ySize = 1;
-	gho->roto = 3;
-	gho->xInvert = false;
-	gho->yInvert = false;
-	gho->a = poo;
-	return gho;
+	UI *ui = (UI *)calloc(sizeof(UI), 1);
+	ui->xp = -0.01;
+	ui->yp = 0;
+	ui->xSize = 1;
+	ui->ySize = 1;
+	ui->roto = 3;
+	ui->xInvert = false;
+	ui->yInvert = false;
+	ui->a = poo;
+	return ui;
 }
 
-void drawGhost(Ghost *gho, float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, GLuint texColor) {
-	Anim *a = gho->a;
+void drawUI(UI *ui, float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, GLuint texColor) {
+	Anim *a = ui->a;
 	sMatrix[3] = 0;
 	sMatrix[7] = 0;
-	sMatrix[0] = gho->xSize * a->scale[0] * convertInvert(gho->xInvert);//a->flip[0];
-	sMatrix[5] = gho->ySize * a->scale[1] * convertInvert(gho->yInvert);//a->flip[1];
+	sMatrix[0] = ui->xSize * a->scale[0] * convertInvert(ui->xInvert);//a->flip[0];
+	sMatrix[5] = ui->ySize * a->scale[1] * convertInvert(ui->yInvert);//a->flip[1];
 	glUniformMatrix4fv(sScale, 1, GL_TRUE, sMatrix);
 	setSpriteTexture(a);
-	sMatrix[3] = (-1 + gho->xSize/2) + (gho->xp * gho->xSize);// + -a->flip[0] * 0.01f;
-	sMatrix[7] = (-1 + gho->ySize/2) + (gho->yp * gho->ySize);// + 0.01f;	
+	sMatrix[3] = (-1 + ui->xSize/2) + (ui->xp * ui->xSize);// + -a->flip[0] * 0.01f;
+	sMatrix[7] = (-1 + ui->ySize/2) + (ui->yp * ui->ySize);// + 0.01f;	
 	sMatrix[0] = 1;//xSize * a->scale[0] * a->flip[0];
 	sMatrix[5] = 1;//ySize * a->scale[1] * a->flip[1];
 	glUniformMatrix4fv(sTrans, 1, GL_TRUE, sMatrix);
-	float rad = rotoToRadian(gho->roto);
+	float rad = rotoToRadian(ui->roto);
 	float rMatrix[] = {
 		cos(rad), -sin(rad), 0.0, 0.0,
 		sin(rad), cos(rad), 0.0, 0.0,
@@ -109,14 +109,14 @@ void drawGhost(Ghost *gho, float *sMatrix, GLuint sScale, GLuint sTrans, GLuint 
 }
 
 
-void moveGhost(Ghost *gho, int xd, int yd, float xPow, float yPow) {
-	if (gho != NULL) {
-		gho->xp += xd * xPow;
-		gho->yp += yd * yPow;
+void moveUI(UI *ui, int xd, int yd, float xPow, float yPow) {
+	if (ui != NULL) {
+		ui->xp += xd * xPow;
+		ui->yp += yd * yPow;
 	}
 }
 
-void freeGhost(Ghost *gho) {
-	free(gho);
+void freeUI(UI *ui) {
+	free(ui);
 }
 

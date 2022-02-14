@@ -40,7 +40,7 @@ FormGlfw.o: $(GF)FormGlfw.c $(GF)FormGlfw.h $(GF)Player.c $(GF)Player.h $(GF)poo
 libform.a: Form.o helper.o
 	ar rs libform.a Form.o helper.o
 
-Form.o:  $(FD)Form.c $(FD)Form.h $(FD)World.c $(FD)World.h $(AD)Eco.c $(AD)Eco.h $(AD)Action.c $(AD)Action.h $(AD)Actor.c $(AD)Actor.h $(AD)PoopGuy.c $(AD)PoopGuy.h  $(AD)ActorList.h $(AD)ActorList.c $(ACD)actList.c $(ACD)actList.h $(ACD)gravity.c $(ACD)gravity.h $(ACD)jump.c $(ACD)jump.h $(ACD)eatPoop.h $(ACD)eatPoop.c $(ACD)control.c $(ACD)control.h $(FD)procGen.c $(FD)procGen.h $(FD)Value.h $(FD)Value.c
+Form.o:  $(FD)Form.c $(FD)Form.h $(FD)World.c $(FD)World.h $(AD)Eco.c $(AD)Eco.h $(AD)Action.c $(AD)Action.h $(AD)Actor.c $(AD)Actor.h $(AD)PoopGuy.c $(AD)PoopGuy.h  $(AD)ActorList.h $(AD)ActorList.c $(ACD)actList.c $(ACD)actList.h $(ACD)gravity.c $(ACD)gravity.h $(ACD)jump.c $(ACD)jump.h $(ACD)eatPoop.h $(ACD)eatPoop.c $(ACD)control.c $(ACD)control.h $(FD)procGen.c $(FD)procGen.h $(FD)Value.h $(FD)Value.c $(FD)Cell.c $(FD)Cell.h
 	$(CC) $(FD)Form.c 
 
 libglfw.a: glfwMain.o Shaders.o Input.o Anim.o
@@ -55,7 +55,7 @@ Shaders.o: $(SHD)Shaders.c $(SHD)Shaders.h $(SHD)glslLib.c
 Graphics.o: $(GD)Graphics.c $(GD)Graphics.h
 	$(CC) $(GD)Graphics.c
 
-Anim.o: $(GD)Anim.c $(GD)Anim.h $(GD)AnimList.c $(GD)AnimList.h $(GD)TextureManager.c $(GD)TextureManager.h $(GD)Ghost.c $(GD)Ghost.h
+Anim.o: $(GD)Anim.c $(GD)Anim.h $(GD)AnimList.c $(GD)AnimList.h $(GD)TextureManager.c $(GD)TextureManager.h $(GD)UI.c $(GD)UI.h
 	$(CC) $(GD)Anim.c
 
 Input.o: $(ID)Input.c $(ID)Input.h $(ID)Joystick.c $(ID)Joystick.h

@@ -20,17 +20,18 @@ typedef struct Form {
 Form *makeForm(float r, float g, float b, float wid, float len);
 Form *checkSide(Form *f, int xd, int yd, bool collide);
 int getEdge (Form *f, int side, int d);
-void deleteForm(Form *f);
+void deleteForm(void *form);
 void makeInert();
+void printForm(void *f);
 int compareForms(Form *f1, Form *f2);
+bool checkFormIsSolid(void *form);
 void setRoto(Form *f, int degree);
 void setInvert(Form *f, int axis, bool flipped);
-//void setStat(Form *f, float stat);
-void freeWorld();
 
 #include "../actor/Action.h"
 #include "../actor/Actor.h"
 #include "../actor/acts/control.h"
+#include "Cell.h"
 #include "World.h"
 #include "Value.h"
 #endif

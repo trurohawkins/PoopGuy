@@ -8,10 +8,11 @@
 */
 #include "AnimList.c"
 #include "TextureManager.c"
-#include "Ghost.c"
+#include "UI.c"
 
 Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col, GLuint tc, GLuint ts) { 
 	Anim *a = (Anim*)calloc(sizeof(Anim), 1);
+	a->drawOrder = 0;
 	a->texture = getTexture(sheet, spriteNum, generated);
 	if (a->texture == NULL) {
 		printf("texture not made well\n");
@@ -31,6 +32,8 @@ Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col, G
 	a->scale[1] = 1;
 	a->flip[0] = 1;
 	a->flip[1] = 1;
+	a->offset[0] = 0;
+	a->offset[1] = 0;
 	a->roto = 3;
 	a->vao = -1;
 	a->texCoords = tc;
@@ -38,7 +41,7 @@ Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col, G
 	a->palette = (float*)calloc(sizeof(float), a->texture->numTex * 4);
 	for (int i = 0; i < a->texture->numTex * 4; i++) {
 		float f = (a->texture->colors)[i];
-		printf("color %i is %f\n", i, f);
+		//printf("color %i is %f\n", i, f);
 		(a->palette)[i] = f;
 	}
 	//a->palette = a->texture->colors;
@@ -65,6 +68,11 @@ void setScale(Anim *a, int x, int y) {
 	a->scale[1] = y;
 }
 
+void setOffset(Anim *a, float x, float y) {
+	a->offset[0] = x;
+	a->offset[1] = y;
+}
+
 void setFlipX(Anim *a, int x) {
 	a->flip[0] = x;
 }
@@ -75,6 +83,10 @@ void setFlipY(Anim *a, int y) {
 
 void setRotation(Anim *a, int d) {
 	a->roto = d;
+}
+
+void setDrawOrder(Anim *a, int o) {
+	a->drawOrder = o;
 }
 
 void addSprite(Anim *a, int index, int len) {

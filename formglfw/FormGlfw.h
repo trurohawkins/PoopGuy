@@ -4,6 +4,12 @@
 #include "../helper/helper.h"
 #include "../graphics/glfwMain.h"
 #include "Player.h"
+
+typedef struct AnimOrder {
+	int order;
+	linkedList *anims;
+	linkedList *poses;
+} AnimOrder;
 //#include "helper/file.h"
 
 void updateLoop();
@@ -11,6 +17,10 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, int yp, GLuint sScale, GLuint sTrans, GLuint sRot);
 void drawGrid(float *mat, int tMat, int sMat,  int rMat, int color, GLuint vLi);
 //void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
+AnimOrder *makeAnimOrder(int order);
+void addFormToAnim(AnimOrder *ao, Form *f, int x, int y);
+void drawAnimOrder(AnimOrder *ao, float *sMatrix, float xSize, float ySize,  GLuint sScale, GLuint sTrans, GLuint sRot);
+void freeAnimOrder(AnimOrder *ao);
 void setCenter(float cp[2]);
 void setAnim(Form *f, Anim *a);
 void setGrid(bool state);

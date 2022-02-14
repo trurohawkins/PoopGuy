@@ -46,6 +46,7 @@ void freeActionList(Actor *actor) {
 }
 
 void deleteActor(Actor *actor) {
+	removeForm(actor->body);
 	deleteForm(actor->body);
 	freeActionList(actor);
 	//free(actor);
