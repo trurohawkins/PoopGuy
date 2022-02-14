@@ -103,7 +103,7 @@ void updateLoop() {
 		//UI *cloud2 = makeUI("resources/demonghost.png", 0, 1, 1, tcTrans, tcScale);
 		//addBackground(cloud);
 		//addForeground(cloud2);
-		makeCloud(10, 50);
+		makeCloud(10, 50, 20);
 		/*
 		Form *f = makeForm(1,1,1,0,0);
 		placeForm(10, 10, f);
@@ -214,6 +214,7 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 					for (int i = 0; i < w->map[xp][yp]->count; i++) {
 						Form *f = residents[i];//checkSolidForm(w->map[xp][yp]);
 						if (f != NULL) {
+						
 							if (f->anim == NULL) {
 								glUseProgram(baseShader);
 								glBindVertexArray(squa);
@@ -232,14 +233,18 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 								glUniform4f(color, fCol[0], fCol[1], fCol[2], 1.0);
 								free(fCol);
 								glDrawArrays(GL_TRIANGLES, 0, 6);
-							} else if (f->anim != NULL && (xp == f->pos[0] && yp == f->pos[1])) {
+							} else if (f->anim != NULL && (xp == (int)(floor(f->pos[0])) && yp == (int)(floor(f->pos[1])))) {
+								float xfp = f->pos[0] - (cx-fx);//x + (cx-fx);
+								float yfp = f->pos[1] - (cy-fy);
+								//printf("form at %f, %f\n", xfp, yfp);
+								//printf("adding  %i, %i\n", x, y);
 								Anim *a = (Anim*)f->anim;
 								if (a->drawOrder > 0) {
-									addFormToAnim(front, f, x, y);
+									addFormToAnim(front, f, xfp, yfp);
 								} else if (a->drawOrder < 0) {
-									addFormToAnim(back, f, x, y);
+									addFormToAnim(back, f, xfp, yfp);
 								} else {
-									addFormToAnim(mid, f, x, y);
+									addFormToAnim(mid, f, xfp, yfp);
 								}
 							}
 						}
@@ -259,7 +264,7 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 	drawFG(sMatrix, sScale, sTrans, sRot);
 }
 
-void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, int yp, GLuint sScale, GLuint sTrans, GLuint sRot) {
+void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, float xp, float yp, GLuint sScale, GLuint sTrans, GLuint sRot) {
 	Anim *a = (Anim*)f->anim;
 	float *anim = getStat(f, "anim");
 	if (anim != NULL) {
@@ -292,6 +297,70 @@ void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, i
 	drawSprite(a);
 }
 
+
+AnimOrder *makeAnimOrder(int order) {
+	AnimOrder *ao = (AnimOrder*)calloc(sizeof(AnimOrder), 1);
+	ao->anims = makeList();
+	ao->poses = makeList();
+	ao->order = order;
+}
+
+void addFormToAnim(AnimOrder *ao, Form *f, float x, float y) {
+	addToList(&(ao->anims), f);
+	float *xPos = (float*)calloc(1, sizeof(float));
+	float *yPos = (float*)calloc(1, sizeof(float));
+	*xPos = x;
+	*yPos = y;
+	addToList(&(ao->poses), xPos);
+	addToList(&(ao->poses), yPos);
+}
+
+void drawAnimOrder(AnimOrder *ao, float *sMatrix, float xSize, float ySize, GLuint sScale, GLuint sTrans, GLuint sRot) {
+	linkedList *curAnim = ao->anims;//animList;
+	linkedList *curPos = ao->poses;//posList;
+	float *xPos;
+	float *yPos;
+	while (curAnim != NULL) {
+		if (curAnim->data != NULL) {
+			xPos = (float*)(curPos->data);
+			curPos = curPos->next;
+			if (curPos != NULL) {
+				yPos = (float*)(curPos->data);
+			} else {
+				printf("no yPos\n");
+			}
+			curPos = curPos->next;
+			Form *f = (Form*)(curAnim->data);
+			drawFormSprite(f, sMatrix, xSize, ySize, *xPos, *yPos, sScale, sTrans, sRot);
+		}
+		curAnim = curAnim->next;
+	}
+}
+
+void freeAnimOrder(AnimOrder *ao) {
+	freeListSaveObj(&(ao->anims));
+	freeList(&(ao->poses));
+	free(ao);
+}
+
+void setCenter(float cp[2]) {
+	centerX = cp[0];
+	centerY = cp[1];
+}
+
+void setFrame(int x, int y) {
+	frameX = x;
+	frameY = y;
+}
+
+void setAnim(Form *f, Anim *a) {
+	f->anim = a;
+	addAnim(a);
+}
+
+void setGrid(bool state) {
+	gridOn = state;
+}
 
 void drawGrid(float *mat, int tMat, int sMat, int rMat, int color, GLuint vLi) {
 	float xSize = 2.0f / frameX;//(float)scr->width / 10000;
@@ -327,70 +396,6 @@ void drawGrid(float *mat, int tMat, int sMat, int rMat, int color, GLuint vLi) {
 		glUniformMatrix4fv(tMat, 1 ,GL_TRUE, mat);
 		glDrawArrays(GL_LINES, 0, 2);
 	}
-}
-
-AnimOrder *makeAnimOrder(int order) {
-	AnimOrder *ao = (AnimOrder*)calloc(sizeof(AnimOrder), 1);
-	ao->anims = makeList();
-	ao->poses = makeList();
-	ao->order = order;
-}
-
-void addFormToAnim(AnimOrder *ao, Form *f, int x, int y) {
-	addToList(&(ao->anims), f);
-	int *xPos = (int*)calloc(1, sizeof(int));
-	int *yPos = (int*)calloc(1, sizeof(int));
-	*xPos = x;
-	*yPos = y;
-	addToList(&(ao->poses), xPos);
-	addToList(&(ao->poses), yPos);
-}
-
-void drawAnimOrder(AnimOrder *ao, float *sMatrix, float xSize, float ySize, GLuint sScale, GLuint sTrans, GLuint sRot) {
-	linkedList *curAnim = ao->anims;//animList;
-	linkedList *curPos = ao->poses;//posList;
-	int *xPos;
-	int *yPos;
-	while (curAnim != NULL) {
-		if (curAnim->data != NULL) {
-			xPos = (int*)(curPos->data);
-			curPos = curPos->next;
-			if (curPos != NULL) {
-				yPos = (int*)(curPos->data);
-			} else {
-				printf("no yPos\n");
-			}
-			curPos = curPos->next;
-			Form *f = (Form*)(curAnim->data);
-			drawFormSprite(f, sMatrix, xSize, ySize, *xPos, *yPos, sScale, sTrans, sRot);
-		}
-		curAnim = curAnim->next;
-	}
-}
-
-void freeAnimOrder(AnimOrder *ao) {
-	freeListSaveObj(&(ao->anims));
-	freeList(&(ao->poses));
-	free(ao);
-}
-
-void setCenter(float cp[2]) {
-	centerX = cp[0];
-	centerY = cp[1];
-}
-
-void setFrame(int x, int y) {
-	frameX = x;
-	frameY = y;
-}
-
-void setAnim(Form *f, Anim *a) {
-	f->anim = a;
-	addAnim(a);
-}
-
-void setGrid(bool state) {
-	gridOn = state;
 }
 
 void togglePause(void *, float poo) {

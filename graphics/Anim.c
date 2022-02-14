@@ -56,7 +56,7 @@ void getUniformValue(GLuint texShader, char *name, GLuint *dest) {
 		printf("shader doesnt have a var %s\n", name);
 	} else {
 		*dest = t;
-		printf("got value %u for %s\n", t, name);
+		//printf("got value %u for %s\n", t, name);
 	}
 }
 

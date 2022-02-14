@@ -11,6 +11,7 @@ typedef struct Cell {
 
 Cell *makeCell(int x, int y);
 void addToCell(Cell *c, Form *f);
+void removeFromCell(Cell *c, Form *f);
 Form *getSolidForm(Cell *c);
 Form *checkSolidForm(Cell *c);
 Form **getContents(Cell *c);

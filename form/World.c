@@ -119,7 +119,12 @@ Form *takeForm(int x, int y) {
 
 Form *removeForm(Form* form) {
 	if (form->size[0] == 0 && form->size[1] == 0) {
-		takeForm(form->pos[0], form->pos[1]);
+		int x = form->pos[0];
+		int y = form->pos[1];
+		if (x >= 0 && y >= 0 && x < theWorld->x && y < theWorld->y) {
+		//takeForm(form->pos[0], form->pos[1]);
+			removeFromCell(theWorld->map[x][y], form);
+		}
 	} else {
 		for (int i = 0; i < form->size[0]; i++) {
 			for (int j = 0; j < form->size[1]; j++) {

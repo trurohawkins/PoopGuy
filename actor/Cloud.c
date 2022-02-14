@@ -1,8 +1,13 @@
 #include "Cloud.h"
+World *w = 0;
 
-Actor *makeCloud(int x, int y) {
+Actor *makeCloud(int x, int y, int speed) {
 	Form *f = makeForm(1,1,1,0,0);
 	placeForm(x, y, f);
+
+	if (w == 0) {
+		w = getWorld();
+	}
 
 	char **sheets = (char**)calloc(sizeof(char*), 1);
 	*sheets = "resources/cloud.png";
@@ -16,12 +21,44 @@ Actor *makeCloud(int x, int y) {
 	free(sheets);	
 
 
+	cloudVar *cv = calloc(sizeof(cloudVar*), 1);
+	cv->moveInterval = speed;
+	cv->moveCounter = 0;
 	Actor *cloud = makeActor(f);
-	Action *ch = makeAction(&cloudHover, NULL);
+	Action *ch = makeAction(&cloudHover, cv);
 	addAction(cloud, ch);
 	addActor(cloud);
 }
 
-void cloudHover(Form *c, Action *a) {
 
+void cloudHover(Form *c, Action *a) {
+	cloudVar *cv = (cloudVar*)(a->vars);
+	/*
+	if (cv->moveCounter > cv->moveInterval) {
+		removeForm(c);
+		if (c->pos[0] < w->x) {
+			placeForm(c->pos[0] + 1, c->pos[1], c);
+		} else {
+			placeForm(0, c->pos[1], c);
+		}
+		cv->moveCounter = 0;
+	} else {
+		printf("cloud at %f, %f\n", c->pos[0], c->pos[1]);
+		float step = 1.0 / (cv->moveInterval - 3); 
+		c->pos[0] += step;
+		cv->moveCounter++;
+	}
+	*/
+	float step = 1.0 / (cv->moveInterval); 
+	float next = c->pos[0] + step;
+	float check = (float)(floor(c->pos[0]) + 1);
+	//printf("my next pos %f i am checking %f\n", next, check);
+	//if (c->pos[0] + step == floor(c->pos[0]) + 1)  {
+	if (check - next < 0.0001) {
+		removeForm(c);
+		placeForm(check, c->pos[1], c);
+		//printf("cloud at %f\n", c->pos[0]);
+	} else {
+		c->pos[0] += step;
+	}
 }

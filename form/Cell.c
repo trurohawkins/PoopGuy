@@ -17,10 +17,12 @@ void addToCell(Cell* c, Form *f) {
 		*/
 		addToList(&(c->within), f);
 		c->count++;
+		/*
 		if (c->count > 1) {
 			printf("why so many in here??\n");
 			printCell(c);
 		}
+		*/
 		//if (f->size[0] != 0 && f->size[1] != 0) {
 		if (checkFormIsSolid(f)) {
 			c->solid = true;
@@ -28,6 +30,14 @@ void addToCell(Cell* c, Form *f) {
 	} else {
 		printf("tried to add NULL form to Cell ");
 		printCell(c);
+	}
+}
+
+void removeFromCell(Cell *c, Form *f) {
+	void *fv = (void *)f;
+	void *v = removeFromList(&(c->within), fv);
+	if (v != NULL) {
+		c->count--;
 	}
 }
 
