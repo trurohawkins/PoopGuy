@@ -46,8 +46,11 @@ void freeActionList(Actor *actor) {
 }
 
 void deleteActor(Actor *actor) {
-	removeForm(actor->body);
-	deleteForm(actor->body);
+	if (checkFormIsSolid(actor->body)) {
+		//if form is not solid(it has a body larger than 1 Cell), then its easier if the actor takes care of it, t oprevent cyclical calls involving removing the different parts when deleting world
+		removeForm(actor->body);
+		deleteForm(actor->body);
+	}
 	freeActionList(actor);
 	//free(actor);
 }

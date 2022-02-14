@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 	srand(time(NULL));
 	initDirections();
 	int worldX = 300;
-	int worldY = 300;
+	int worldY = 100;
 	int windowX = 100;
 	int windowY = 100;
 	makeWorld(worldX, worldY);

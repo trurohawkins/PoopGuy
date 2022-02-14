@@ -1,5 +1,6 @@
 #include "FormGlfw.h"
 #include "Player.c"
+#include "../actor/Cloud.c"
 #include "../controllerDB.c"
 
 float centerX;
@@ -12,7 +13,6 @@ bool gridOn = false;
 bool paused = false;
 bool godMode = false;
 float *godPos;
-int texColor;
 
 void updateLoop() {
 	//GLFWwindow *window
@@ -56,13 +56,7 @@ void updateLoop() {
 			printf("vert doesnt have a var sMat\n");
 		}
 		int spriteRot = glGetUniformLocation(texShader, "rMat");
-		int tcScale = glGetUniformLocation(texShader, "tcScale");
-		int tcTrans = glGetUniformLocation(texShader, "tcTrans");
-		texColor = glGetUniformLocation(texShader, "colorShift");
-		if (texColor == -1) {
-			printf("frag doesnt have a var colorShift\n");
-		}
-		glUniform3f(texColor, 255, 255, 255);
+		initTexInts(texShader);
 		float tscMat [] = {
 			//1.0f/6, 0.0, 0.0,
 			//0.0, 1.0f/4, 0.0,
@@ -90,8 +84,6 @@ void updateLoop() {
 		glUseProgram(baseShader);
 		glUniformMatrix4fv(rMat, 1, GL_TRUE, matrix);
 		glUseProgram(texShader);
-		glUniformMatrix3fv(tcScale, 1, GL_TRUE, tscMat);
-		glUniformMatrix3fv(tcTrans, 1, GL_TRUE, ttcMat);
 		glUniformMatrix4fv(spriteTrans, 1, GL_TRUE, matrix);
 		glUniformMatrix4fv(spriteScale, 1, GL_TRUE, matrix);
 		World *w = getWorld();
@@ -102,7 +94,7 @@ void updateLoop() {
 		initBackgroundUI();
 		initForegroundUI();
 		for (int i = 0; i < numPlayers; i++) {
-			PoopGuy* tmp = makePoopPlayer(2 + (i*4), w->y - 3, i, tcTrans, tcScale);
+			PoopGuy* tmp = makePoopPlayer(2 + (i*4), w->y - 3, i);
 			if (i == 0) {
 				pooper = tmp;
 			}
@@ -111,6 +103,7 @@ void updateLoop() {
 		//UI *cloud2 = makeUI("resources/demonghost.png", 0, 1, 1, tcTrans, tcScale);
 		//addBackground(cloud);
 		//addForeground(cloud2);
+		makeCloud(10, 50);
 		/*
 		Form *f = makeForm(1,1,1,0,0);
 		placeForm(10, 10, f);
@@ -182,7 +175,7 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 	GLuint baseShader = getSP(0);//makeShaderProgram("graphicsSource/matVS.glsl", "graphicsSource/simpFS.glsl");
 	GLuint texShader = getSP(1);
 	glUseProgram(texShader);
-	drawBG(sMatrix, sScale, sTrans, sRot, texColor);
+	drawBG(sMatrix, sScale, sTrans, sRot);
 
 	int fx = frameX/2;
 	int fy = frameY/2;
@@ -263,7 +256,7 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 	freeAnimOrder(back);
 	freeAnimOrder(front);
 	freeAnimOrder(mid);
-	drawFG(sMatrix, sScale, sTrans, sRot, texColor);
+	drawFG(sMatrix, sScale, sTrans, sRot);
 }
 
 void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, int yp, GLuint sScale, GLuint sTrans, GLuint sRot) {
@@ -296,7 +289,7 @@ void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, int xp, i
 	glUniformMatrix4fv(sRot, 1, GL_TRUE, rMatrix);
 	//glUniform3f(texColor, 1, 1, 1);
 
-	drawSprite(a, texColor);
+	drawSprite(a);
 }
 
 

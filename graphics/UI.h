@@ -14,15 +14,15 @@ typedef struct UI {
 
 void initBackgroundUI();
 void addBackground(UI *ui); 
-void drawBG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, GLuint texColor);
+void drawBG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot);
 void freeBG();
 void initForegroundUI();
 void addForeground(UI *ui); 
-void drawFG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, GLuint texColor);
+void drawFG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot);
 void freeFG();
-void drawGround(linkedList *ground, float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, GLuint texColor);
-UI *makeUI(char *baseFile, int numColors, int rows, int cols, GLuint tc, GLuint ts);
-void drawUI(UI *ui, float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, GLuint texColor);
+void drawGround(linkedList *ground, float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot);
+UI *makeUI(char *baseFile, int numColors, int rows, int cols);
+void drawUI(UI *ui, float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot);
 void moveUI(UI *ui, int xd, int yd, float xPow, float yPow);
 void freeUI(UI *ui);
 #endif

@@ -11,7 +11,7 @@ void setPalette(int pNum, Anim *a) {
 }
 
 
-PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
+PoopGuy *makePoopPlayer(int xp, int yp, int pNum) {
 	PoopGuy *pooper = makePoopGuy(3, 3);
 	placeForm(xp, yp, pooper->me->body);
 	checkSide(pooper->me->body, 1, 0, true);
@@ -33,7 +33,7 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum, GLuint tc, GLuint ts) {
 		*sprites = (char*)calloc(sizeof(char), sLen + 1);
 		strcpy(*sprites, baseFile); 
 	}
-	Anim *poo = makeAnim(sprites, numColors, generated, 4, 6, tc, ts);
+	Anim *poo = makeAnim(sprites, numColors, generated, 4, 6);
 	if (numColors != 1) {
 		setPalette(pNum, poo);
 	}

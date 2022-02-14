@@ -10,7 +10,11 @@
 #include "TextureManager.c"
 #include "UI.c"
 
-Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col, GLuint tc, GLuint ts) { 
+GLuint tcTrans;
+GLuint tcScale;
+GLuint tcColor;
+
+Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col) { 
 	Anim *a = (Anim*)calloc(sizeof(Anim), 1);
 	a->drawOrder = 0;
 	a->texture = getTexture(sheet, spriteNum, generated);
@@ -36,8 +40,6 @@ Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col, G
 	a->offset[1] = 0;
 	a->roto = 3;
 	a->vao = -1;
-	a->texCoords = tc;
-	a->texScale = ts;
 	a->palette = (float*)calloc(sizeof(float), a->texture->numTex * 4);
 	for (int i = 0; i < a->texture->numTex * 4; i++) {
 		float f = (a->texture->colors)[i];
@@ -46,6 +48,62 @@ Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col, G
 	}
 	//a->palette = a->texture->colors;
 	return a;
+}
+
+void getUniformValue(GLuint texShader, char *name, GLuint *dest) {
+	GLuint t = glGetUniformLocation(texShader, name);
+	if (t == -1) {
+		printf("shader doesnt have a var %s\n", name);
+	} else {
+		*dest = t;
+		printf("got value %u for %s\n", t, name);
+	}
+}
+
+void setTexTrans(GLuint tt) {
+	if (tt == -1) {
+		printf("frag doesnt have a var tcTrans\n");
+	} else {
+		tcTrans = tt;
+	}
+}
+
+void setTexScale(GLuint ts) {
+	if (ts == -1) {
+		printf("frag doesnt have a var tcScale\n");
+	} else {
+		tcScale = ts;
+	}
+}
+
+void setTexColor(GLuint tc) {
+	if (tc == -1) {
+		printf("frag doesnt have a var colorShift\n");
+	} else {
+		tcColor = tc;
+	}
+}
+
+void initTexInts(GLuint texShader) {
+	getUniformValue(texShader, "tcScale", &tcScale);
+	getUniformValue(texShader, "tcTrans", &tcTrans);
+	getUniformValue(texShader, "colorShift", &tcColor);
+	glUseProgram(texShader);
+	float tscMat [] = {
+		//1.0f/6, 0.0, 0.0,
+		//0.0, 1.0f/4, 0.0,
+		1.0, 0.0, 0.0,
+		0.0, 1.0, 0.0,
+		0.0, 0.0, 1.0
+	};
+	float ttcMat [] = {
+		1.0, 0.0, 0.0,
+		0.0, 1.0, 0.0,//-1.0f/4,
+		0.0, 0.0, 1.0,
+	};
+	glUniformMatrix3fv(tcScale, 1, GL_TRUE, tscMat);
+	glUniformMatrix3fv(tcTrans, 1, GL_TRUE, ttcMat);
+	glUniform3f(tcColor, 255, 255, 255);
 }
 
 float rotoToRadian(int d) {
@@ -141,18 +199,22 @@ void setSpriteTexture(Anim *a) {
 		0.0, a->frameY, 0.0,
 		0.0, 0.0, 1.0,
 	};
+	/*
 	glUniformMatrix3fv(a->texCoords, 1, GL_TRUE, tMat);
 	glUniformMatrix3fv(a->texScale, 1, GL_TRUE, sMat);
+	*/
+	glUniformMatrix3fv(tcTrans, 1, GL_TRUE, tMat);
+	glUniformMatrix3fv(tcScale, 1, GL_TRUE, sMat);
 }
 
-void drawSprite(Anim *a, GLuint texColor) {
-	glUniform2f(a->texCoords, getCoordX(a), getCoordY(a));
+void drawSprite(Anim *a) {
+	glUniform2f(tcTrans, getCoordX(a), getCoordY(a));
 
 	glBindVertexArray(a->vao);
 	textureSource *ts = a->texture;
 	for (int i = 0; i < ts->numTex; i++) {
 		int step = i * 4;
-		glUniform4f(texColor,(a->palette)[step],(a->palette)[step+1], (a->palette)[step+2], (a->palette)[step+3]);
+		glUniform4f(tcColor,(a->palette)[step],(a->palette)[step+1], (a->palette)[step+2], (a->palette)[step+3]);
 		//printf("layer %i - color: %f, %f, %f, %f\n", i,(a->palette)[step],(a->palette)[step+1], (a->palette)[step+2], (a->palette)[step+3]);
 		//printf("drawing sprite %i\n", (a->texture->tex)[i]);
 		glBindTexture(GL_TEXTURE_2D, (a->texture->tex)[i]);

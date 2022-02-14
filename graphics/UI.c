@@ -8,8 +8,8 @@ void initBackgroundUI(){
 void addBackground(UI *ui) {
 	addToList(&BG, ui);
 }
-void drawBG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, GLuint texColor) {
-	drawGround(BG, sMatrix, sScale, sTrans, sRot, texColor);
+void drawBG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot) {
+	drawGround(BG, sMatrix, sScale, sTrans, sRot);
 }
 
 void freeBG() {
@@ -23,26 +23,26 @@ void addForeground(UI *ui) {
 	addToList(&FG, ui);
 }
 
-void drawFG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, GLuint texColor) {
-	drawGround(FG, sMatrix, sScale, sTrans, sRot, texColor);
+void drawFG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot) {
+	drawGround(FG, sMatrix, sScale, sTrans, sRot);
 }
 
 void freeFG() {
 	freeList(&FG);
 }
 
-void drawGround(linkedList *ground, float *sMatrix,  GLuint sScale, GLuint sTrans, GLuint sRot, GLuint texColor) {
+void drawGround(linkedList *ground, float *sMatrix,  GLuint sScale, GLuint sTrans, GLuint sRot) {
 	linkedList *cur = ground;
 	while (cur != NULL) {
 		if (cur->data != NULL) {
 			UI *ui = (UI*)cur->data;
-			drawUI(ui, sMatrix, sScale, sTrans, sRot, texColor);
+			drawUI(ui, sMatrix, sScale, sTrans, sRot);
 		}
 		cur = cur->next;
 	}
 }
 
-UI *makeUI(char *baseFile, int numColors, int rows, int cols, GLuint tc, GLuint ts) {
+UI *makeUI(char *baseFile, int numColors, int rows, int cols) {
 	printf("uist being made %i\n", numColors);
 	bool generated = false;
 	char **sprites = (char**)calloc(sizeof(char*), max(1, numColors));
@@ -59,7 +59,7 @@ UI *makeUI(char *baseFile, int numColors, int rows, int cols, GLuint tc, GLuint 
 		*sprites = (char*)calloc(sizeof(char), sLen + 1);
 		strcpy(*sprites, baseFile); 
 	}
-	Anim *poo = makeAnim(sprites, numColors, generated, rows, cols, tc, ts);
+	Anim *poo = makeAnim(sprites, numColors, generated, rows, cols);
 	/*
 	if (numColors != 1) {
 		setPalette(pNum, poo);
@@ -84,7 +84,7 @@ UI *makeUI(char *baseFile, int numColors, int rows, int cols, GLuint tc, GLuint 
 	return ui;
 }
 
-void drawUI(UI *ui, float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, GLuint texColor) {
+void drawUI(UI *ui, float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot) {
 	Anim *a = ui->a;
 	sMatrix[3] = 0;
 	sMatrix[7] = 0;
@@ -105,7 +105,7 @@ void drawUI(UI *ui, float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot, G
 		0.0, 0.0, 0.0, 1.0
 	};
 	glUniformMatrix4fv(sRot, 1, GL_TRUE, rMatrix);
-	drawSprite(a, texColor);
+	drawSprite(a);
 }
 
 
