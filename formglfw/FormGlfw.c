@@ -41,21 +41,6 @@ void updateLoop() {
 		if (drawColor == -1) {
 			printf("frag doesnt have a var drawColor\n");
 		}
-		/*
-		int texC = glGetUniformLocation(texShader, "texCoordShift");
-		if (texC == -1) {
-			printf(":38 couldnt get text coordinates from shader\n");
-		}
-		int spriteTrans = glGetUniformLocation(texShader, "tMat");
-		if (spriteTrans == -1) {
-			printf("vert doesnt have a var tMat\n");
-		}
-		int spriteScale = glGetUniformLocation(texShader, "sMat");
-		if (spriteScale == -1) {
-			printf("vert doesnt have a var sMat\n");
-		}
-		int spriteRot = glGetUniformLocation(texShader, "rMat");
-		*/
 		initTexInts(texShader);
 		float tscMat [] = {
 			//1.0f/6, 0.0, 0.0,
@@ -69,12 +54,6 @@ void updateLoop() {
 			0.0, 1.0, 0.0,//-1.0f/4,
 			0.0, 0.0, 1.0,
 		};
-		/*
-		float tscMat [] = {
-			1.0, 0.0,
-			0.0, 1.0f
-		};
-		*/
 		float matrix[] = {
 			1.0, 0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0, 0.0,
@@ -83,11 +62,6 @@ void updateLoop() {
 		};
 		glUseProgram(baseShader);
 		glUniformMatrix4fv(rMat, 1, GL_TRUE, matrix);
-/*
-		glUseProgram(texShader);
-		glUniformMatrix4fv(spriteTrans, 1, GL_TRUE, matrix);
-		glUniformMatrix4fv(spriteScale, 1, GL_TRUE, matrix);
-	*/
 		World *w = getWorld();
 		makePlayerManager();
 		makeActorList();
@@ -106,21 +80,6 @@ void updateLoop() {
 		//addBackground(cloud);
 		addForeground(cloud2);
 		makeCloud(10, 50, 20);
-		/*
-		Form *f = makeForm(1,1,1,0,0);
-		placeForm(10, 10, f);
-		char **sheets = (char**)calloc(sizeof(char*), 1);
-		*sheets = "resources/Heart.png";
-		Anim *h = makeAnim(sheets, 0, false, 1, 1, tcTrans, tcScale);
-		setDrawOrder(h, -1);
-		setScale(h, 10, 10);
-		GLuint sv = makeSpriteVao(1,1);
-		animAddVao(h, sv);
-		setAnim(f, h);
-		free(sheets);	
-		*/
-		//char *mappings = fileToString("gamecontrollerdb.txt");
-		//const char *cMap = (const char*)mappings;
 		glfwUpdateGamepadMappings(gamecontrollerdb);
 		//free(mappings);
 		Player *nullPlayer = makePlayer(NULL, -1, NULL);
@@ -185,10 +144,6 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa) {
 	int cy = clamp(centerY, fy, w->y - fy - 1);
 	float xSize = 2.0f / frameX;//(float)scr->width / 10000;
 	float ySize = 2.0f / frameY;//(float)scr->height /10000;
-	//sMatrix[0] = 1;//xSize;
-	//sMatrix[5] = 1;//ySize;
-	//glUseProgram(texShader);
-	//glUniformMatrix4fv(sScale, 1, GL_TRUE, sMatrix);
 	mat[0] = xSize;
 	mat[5] = ySize;
 	glUseProgram(baseShader);
@@ -197,10 +152,6 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa) {
 	mat[0] = 1;
 	mat[5] = 1;
 	//make list for sprite//need to be drawn after solid blocks
-	/*
-	linkedList *animList = makeList();
-	linkedList *posList = makeList();//store screen positions of sprites
-	*/
 	AnimOrder *back = makeAnimOrder(-1);
 	AnimOrder *mid = makeAnimOrder(0);
 	AnimOrder *front = makeAnimOrder(1);
@@ -267,40 +218,6 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa) {
 
 void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, float xp, float yp) {
 	Anim *a = (Anim*)f->anim;
-	/*
-	float *anim = getStat(f, "anim");
-	if (anim != NULL) {
-		if (a->sprite != (int)(*anim)) {
-			changeSprite(a, (int)*anim);
-		} 
-	}
-	*/
-	/*
-	sMatrix[3] = 0;
-	sMatrix[7] = 0;
-	//sMatrix[0] = xSize * a->scale[0] * convertInvert(f->invert[0]);//a->flip[0];
-	//sMatrix[5] = ySize * a->scale[1] * convertInvert(f->invert[1]);//a->flip[1];
-	sMatrix[0] = xSize * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
-	sMatrix[5] = ySize * a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
-	glUniformMatrix4fv(sScale, 1, GL_TRUE, sMatrix);
-	setSpriteTexture(a);
-	sMatrix[3] = (-1 + xSize/2) + (xp * xSize) + a->offset[0];// + -a->flip[0] * 0.01f;
-	sMatrix[7] = (-1 + ySize/2) + (yp * ySize) + a->offset[1];// + 0.01f;	
-	//printf("drawing x&y: %f, %f\n", sMatrix[3], sMatrix[7]);
-	sMatrix[0] = 1;//xSize * a->scale[0] * a->flip[0];
-	sMatrix[5] = 1;//ySize * a->scale[1] * a->flip[1];
-	glUniformMatrix4fv(sTrans, 1, GL_TRUE, sMatrix);
-	//float rad = rotoToRadian(f->roto);
-	float rad = rotoToRadian(a->roto);
-	float rMatrix[] = {
-		cos(rad), -sin(rad), 0.0, 0.0,
-		sin(rad), cos(rad), 0.0, 0.0,
-		0.0, 0.0, 1.0 ,0.0,
-		0.0, 0.0, 0.0, 1.0
-	};
-	glUniformMatrix4fv(sRot, 1, GL_TRUE, rMatrix);
-	//glUniform3f(texColor, 1, 1, 1);
-*/
 	drawSprite(a, sMatrix, xSize, ySize, xp, yp);
 }
 
@@ -338,7 +255,8 @@ void drawAnimOrder(AnimOrder *ao, float *sMatrix, float xSize, float ySize) {
 			}
 			curPos = curPos->next;
 			Form *f = (Form*)(curAnim->data);
-			drawFormSprite(f, sMatrix, xSize, ySize, *xPos, *yPos);
+			drawSprite((Anim*)f->anim, sMatrix, xSize, ySize, xPos, yPos);
+			//drawFormSprite(f, sMatrix, xSize, ySize, *xPos, *yPos);
 		}
 		curAnim = curAnim->next;
 	}
