@@ -158,6 +158,7 @@ Form *makeDirt(float moist) {
 	d->id = 10;
 	addStat(d, "moisture", moist * 0.1);
 	addStat(d, "hydroK", 1);
+	addStat(d, "tile", 0);//or anim
 	//addToList(&(theWorld->terrain), d);
 	return d; //makeForm(0.7, 0.3, 0.1, 0, 0);
 }

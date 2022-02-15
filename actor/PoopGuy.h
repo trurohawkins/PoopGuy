@@ -19,7 +19,7 @@ PoopGuy *getPoopGuy();
 void deletePoopGuy(void *);
 void keyPressPoopGuy(PoopGuy *, char);
 void keyReleasePoopGuy(PoopGuy *, char);
-
+/*
 void up(void *pg, float val);
 void left(void *pg, float val);
 void down(void *pg, float val);
@@ -31,4 +31,5 @@ void toggleEat(void *pg, float val);
 void jumpStart(void *pg, float val);
 
 void setAnimSprite(PoopGuy *pg);
+*/
 #endif

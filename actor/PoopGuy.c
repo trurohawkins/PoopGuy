@@ -86,7 +86,7 @@ void keyReleasePoopGuy(PoopGuy *pooper, char input) {
 			break;
 	}	
 }
-
+/*
 void up(void *pg, float val) {
 	PoopGuy *p = (PoopGuy*)pg;	
 	if (val > 0) {
@@ -211,4 +211,5 @@ void setAnimSprite(PoopGuy *pg) {
 		}
 	}
 }
+*/
 

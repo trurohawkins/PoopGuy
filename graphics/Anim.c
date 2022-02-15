@@ -13,6 +13,9 @@
 GLuint tcTrans;
 GLuint tcScale;
 GLuint tcColor;
+GLuint spriteTrans;
+GLuint spriteScale;
+GLuint spriteRot;
 
 Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col) { 
 	Anim *a = (Anim*)calloc(sizeof(Anim), 1);
@@ -88,6 +91,10 @@ void initTexInts(GLuint texShader) {
 	getUniformValue(texShader, "tcScale", &tcScale);
 	getUniformValue(texShader, "tcTrans", &tcTrans);
 	getUniformValue(texShader, "colorShift", &tcColor);
+	getUniformValue(texShader, "tMat", &spriteTrans);
+	getUniformValue(texShader, "sMat", &spriteScale);
+	getUniformValue(texShader, "rMat", &spriteRot);
+
 	glUseProgram(texShader);
 	float tscMat [] = {
 		//1.0f/6, 0.0, 0.0,
@@ -139,9 +146,14 @@ void setFlipY(Anim *a, int y) {
 	a->flip[1] = y;
 }
 
-void setRotation(Anim *a, int d) {
-	a->roto = d;
+void setRoto(Anim *a, int degree) {
+	a->roto = degree;
 }
+
+void setInvert(Anim *a, int axis, bool flipped) {
+	a->invert[axis] = flipped;
+}
+
 
 void setDrawOrder(Anim *a, int o) {
 	a->drawOrder = o;
@@ -207,7 +219,33 @@ void setSpriteTexture(Anim *a) {
 	glUniformMatrix3fv(tcScale, 1, GL_TRUE, sMat);
 }
 
-void drawSprite(Anim *a) {
+void drawSprite(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp) {
+
+	sMatrix[3] = 0;
+	sMatrix[7] = 0;
+	//sMatrix[0] = xSize * a->scale[0] * convertInvert(f->invert[0]);//a->flip[0];
+	//sMatrix[5] = ySize * a->scale[1] * convertInvert(f->invert[1]);//a->flip[1];
+	sMatrix[0] = xSize * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
+	sMatrix[5] = ySize * a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
+	glUniformMatrix4fv(spriteScale, 1, GL_TRUE, sMatrix);
+	setSpriteTexture(a);
+	sMatrix[3] = (-1 + xSize/2) + ((xp + a->offset[0]) * xSize);// + -a->flip[0] * 0.01f;
+	sMatrix[7] = (-1 + ySize/2) + ((yp + a->offset[1]) * ySize);// + 0.01f;	
+	//printf("drawing x&y: %f, %f\n", sMatrix[3], sMatrix[7]);
+	sMatrix[0] = 1;//xSize * a->scale[0] * a->flip[0];
+	sMatrix[5] = 1;//ySize * a->scale[1] * a->flip[1];
+	glUniformMatrix4fv(spriteTrans, 1, GL_TRUE, sMatrix);
+	//float rad = rotoToRadian(f->roto);
+	float rad = rotoToRadian(a->roto);
+	float rMatrix[] = {
+		cos(rad), -sin(rad), 0.0, 0.0,
+		sin(rad), cos(rad), 0.0, 0.0,
+		0.0, 0.0, 1.0 ,0.0,
+		0.0, 0.0, 0.0, 1.0
+	};
+	glUniformMatrix4fv(spriteRot, 1, GL_TRUE, rMatrix);
+
+	
 	glUniform2f(tcTrans, getCoordX(a), getCoordY(a));
 
 	glBindVertexArray(a->vao);
@@ -215,8 +253,6 @@ void drawSprite(Anim *a) {
 	for (int i = 0; i < ts->numTex; i++) {
 		int step = i * 4;
 		glUniform4f(tcColor,(a->palette)[step],(a->palette)[step+1], (a->palette)[step+2], (a->palette)[step+3]);
-		//printf("layer %i - color: %f, %f, %f, %f\n", i,(a->palette)[step],(a->palette)[step+1], (a->palette)[step+2], (a->palette)[step+3]);
-		//printf("drawing sprite %i\n", (a->texture->tex)[i]);
 		glBindTexture(GL_TEXTURE_2D, (a->texture->tex)[i]);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}

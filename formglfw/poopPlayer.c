@@ -46,7 +46,7 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum) {
 	for (int i = 1; i < 4; i++) {
 		addSprite(poo, i, 6);
 	}
-	setOffset(poo, 0.0, -0.007);//so he overlaps ground makes it look like hes waalking
+	setOffset(poo, 0.0, -0.3);//so he overlaps ground makes it look like hes waalking
 	GLuint spriteVao = makeSpriteVao(1, 1);
 	animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
 	setAnim(pooper->me->body, poo);
@@ -83,3 +83,141 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum) {
 	makeJoyAxeControl(p, '1', yMove);
 	return pooper;
 }
+
+void up(void *pg, float val) {
+	PoopGuy *p = (PoopGuy*)pg;	
+	if (val > 0) {
+		Anim *a = (Anim*)p->me->body->anim;
+		//setInvert(p->me->body, 0, false);
+		//setRoto(p->me->body, 0);
+		setInvert(a, 0, false);
+		setRoto(a, 0);
+		eatPooVar *ep = (eatPooVar*)(p->eatPoop->vars);
+		changeDir(ep, p->me->body,0);
+		setAnimSprite(p);
+	}
+}
+
+void left(void *pg, float val) {
+	PoopGuy *p = (PoopGuy*)pg;	
+	controlVar *cv = (controlVar*)p->control->vars;
+	eatPooVar *ep = (eatPooVar*)(p->eatPoop->vars);
+	if (val > 0) {
+		Anim *a = (Anim*)p->me->body->anim;
+		setInvert(a, 0, true);
+		setRoto(a, 1);
+		changeDir(ep, p->me->body, 1);
+		cv->moveLeft = 1;
+	} else {
+		cv->moveLeft = 0;
+	}
+	setAnimSprite(p);
+}
+
+void down(void *pg, float val) {
+	PoopGuy *p = (PoopGuy*)pg;	
+	if (val > 0) {
+		Anim *a = (Anim*)p->me->body->anim;
+		setInvert(a, 0, false);
+		setRoto(a, 2);
+		eatPooVar *ep = (eatPooVar*)(p->eatPoop->vars);
+		changeDir(ep, p->me->body,2);
+		setAnimSprite(p);
+	}
+}
+
+void right(void *pg, float val) {
+	//printf("%p is going right\n", pg);
+	PoopGuy *p = (PoopGuy*)pg;	
+	controlVar *cv = (controlVar*)p->control->vars;
+	eatPooVar *ep = (eatPooVar*)(p->eatPoop->vars);
+	if (val > 0) {
+		Anim *a = (Anim*)p->me->body->anim;
+		setInvert(a, 0, false);	
+		setRoto(a, 3);
+		changeDir(ep, p->me->body, 3);
+		cv->moveRight = 1;
+	} else {
+		cv->moveRight = 0;
+	}
+	setAnimSprite(p);
+}
+
+void xMove(void *pg, float val) {
+	if (val > 0) {
+		right(pg, 1);
+	}  else if (val < 0) {
+		left(pg, 1);
+	} else {
+		right(pg, 0);
+		left(pg, 0);
+	}
+}
+void yMove(void *pg, float val) {
+	printf("y move val: %f\n", val);
+	if (val > 0) {
+		up(pg, 1);
+	}  else if (val < 0) {
+		down(pg, 1);
+	} else {
+		up(pg, 0);
+		down(pg, 0);
+	}
+}
+
+void poop(void *pg, float val) {
+	PoopGuy *p = (PoopGuy*)pg;	
+	eatPooVar *ep = (eatPooVar*)(p->eatPoop->vars);
+	if (val > 0) {
+		ep->pooping = 1;
+	} else {
+		ep->pooping = 0;
+	}
+	setAnimSprite(p);
+}
+
+void toggleEat(void *pg, float val) {
+	PoopGuy *p = (PoopGuy*)pg;	
+	if (val > 0) {//only if when pressed not released
+		eatPooVar *ep = (eatPooVar*)(p->eatPoop->vars);
+		ep->eating = (ep->eating+1)%2;
+		setAnimSprite(p);
+	}
+}
+
+void jumpStart(void *pg, float val) {
+	PoopGuy *p = (PoopGuy*)pg;	
+	if (val > 0) {
+		startJump(p->me->body, p->jump);
+	}
+}
+
+void setAnimSprite(PoopGuy *pg) {
+	eatPooVar *ep = (eatPooVar*)(pg->eatPoop->vars);
+	controlVar *cv = (controlVar*)(pg->control->vars);
+	bool walking = cv->moveLeft > 0 || cv->moveRight > 0;
+	Anim *a = (Anim*)pg->me->body->anim;
+	if (walking) {
+		if (ep->eating) {
+			//setStat(pg->me->body, 3);
+			//setStat(pg->me->body, "anim", 3);
+			changeSprite(a, 3);
+
+		} else {
+			//setStat(pg->me->body, "anim", 2);
+			changeSprite(a, 2);
+			//setStat(pg->me->body, 2);	
+		}
+	} else {
+		if (ep->eating) {
+			//setStat(pg->me->body, 1);
+			changeSprite(a, 1);
+			//setStat(pg->me->body, "anim", 1);
+		} else {
+			//setStat(pg->me->body, 0);	
+			changeSprite(a, 0);
+			//setStat(pg->me->body, "anim", 0);
+		}
+	}
+}
+

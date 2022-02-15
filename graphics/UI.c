@@ -8,8 +8,8 @@ void initBackgroundUI(){
 void addBackground(UI *ui) {
 	addToList(&BG, ui);
 }
-void drawBG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot) {
-	drawGround(BG, sMatrix, sScale, sTrans, sRot);
+void drawBG(float *sMatrix) {
+	drawGround(BG, sMatrix);
 }
 
 void freeBG() {
@@ -23,20 +23,20 @@ void addForeground(UI *ui) {
 	addToList(&FG, ui);
 }
 
-void drawFG(float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot) {
-	drawGround(FG, sMatrix, sScale, sTrans, sRot);
+void drawFG(float *sMatrix) {
+	drawGround(FG, sMatrix);
 }
 
 void freeFG() {
 	freeList(&FG);
 }
 
-void drawGround(linkedList *ground, float *sMatrix,  GLuint sScale, GLuint sTrans, GLuint sRot) {
+void drawGround(linkedList *ground, float *sMatrix) {
 	linkedList *cur = ground;
 	while (cur != NULL) {
 		if (cur->data != NULL) {
 			UI *ui = (UI*)cur->data;
-			drawUI(ui, sMatrix, sScale, sTrans, sRot);
+			drawUI(ui, sMatrix);
 		}
 		cur = cur->next;
 	}
@@ -84,7 +84,8 @@ UI *makeUI(char *baseFile, int numColors, int rows, int cols) {
 	return ui;
 }
 
-void drawUI(UI *ui, float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot) {
+void drawUI(UI *ui, float *sMatrix) {
+	/*
 	Anim *a = ui->a;
 	sMatrix[3] = 0;
 	sMatrix[7] = 0;
@@ -105,7 +106,8 @@ void drawUI(UI *ui, float *sMatrix, GLuint sScale, GLuint sTrans, GLuint sRot) {
 		0.0, 0.0, 0.0, 1.0
 	};
 	glUniformMatrix4fv(sRot, 1, GL_TRUE, rMatrix);
-	drawSprite(a);
+	*/
+	drawSprite(ui->a, sMatrix,  ui->xSize, ui->ySize, ui->xp, ui->yp);
 }
 
 

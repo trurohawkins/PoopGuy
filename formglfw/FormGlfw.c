@@ -46,7 +46,6 @@ void updateLoop() {
 		if (texC == -1) {
 			printf(":38 couldnt get text coordinates from shader\n");
 		}
-		*/
 		int spriteTrans = glGetUniformLocation(texShader, "tMat");
 		if (spriteTrans == -1) {
 			printf("vert doesnt have a var tMat\n");
@@ -56,6 +55,7 @@ void updateLoop() {
 			printf("vert doesnt have a var sMat\n");
 		}
 		int spriteRot = glGetUniformLocation(texShader, "rMat");
+		*/
 		initTexInts(texShader);
 		float tscMat [] = {
 			//1.0f/6, 0.0, 0.0,
@@ -83,9 +83,11 @@ void updateLoop() {
 		};
 		glUseProgram(baseShader);
 		glUniformMatrix4fv(rMat, 1, GL_TRUE, matrix);
+/*
 		glUseProgram(texShader);
 		glUniformMatrix4fv(spriteTrans, 1, GL_TRUE, matrix);
 		glUniformMatrix4fv(spriteScale, 1, GL_TRUE, matrix);
+	*/
 		World *w = getWorld();
 		makePlayerManager();
 		makeActorList();
@@ -100,9 +102,9 @@ void updateLoop() {
 			}
 		}
 		//cloud = makeGhost("resources/cloud.png", 1, 1, 1, tcTrans, tcScale);
-		//UI *cloud2 = makeUI("resources/demonghost.png", 0, 1, 1, tcTrans, tcScale);
+		UI *cloud2 = makeUI("resources/demonghost.png", 0, 1, 1);
 		//addBackground(cloud);
-		//addForeground(cloud2);
+		addForeground(cloud2);
 		makeCloud(10, 50, 20);
 		/*
 		Form *f = makeForm(1,1,1,0,0);
@@ -151,14 +153,14 @@ void updateLoop() {
 			if (gridOn) {
 				drawGrid(matrix, tMat, sMat, rMat, drawColor, vLi);
 			}
-			drawWorld(w, tMat, sMat, rMat, drawColor, squa, spriteTrans, spriteScale, spriteRot);
+			drawWorld(w, tMat, sMat, rMat, drawColor, squa);
 			glfwSwapBuffers(screen->window);
 		}
 		exitGame();
 	}
 }
 
-void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, int sTrans, int sScale, int sRot) {
+void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa) {
 		float mat[] = {
 			1.0, 0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0, 0.0,
@@ -175,7 +177,7 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 	GLuint baseShader = getSP(0);//makeShaderProgram("graphicsSource/matVS.glsl", "graphicsSource/simpFS.glsl");
 	GLuint texShader = getSP(1);
 	glUseProgram(texShader);
-	drawBG(sMatrix, sScale, sTrans, sRot);
+	drawBG(sMatrix);
 
 	int fx = frameX/2;
 	int fy = frameY/2;
@@ -183,10 +185,10 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 	int cy = clamp(centerY, fy, w->y - fy - 1);
 	float xSize = 2.0f / frameX;//(float)scr->width / 10000;
 	float ySize = 2.0f / frameY;//(float)scr->height /10000;
-	sMatrix[0] = 1;//xSize;
-	sMatrix[5] = 1;//ySize;
-	glUseProgram(texShader);
-	glUniformMatrix4fv(sScale, 1, GL_TRUE, sMatrix);
+	//sMatrix[0] = 1;//xSize;
+	//sMatrix[5] = 1;//ySize;
+	//glUseProgram(texShader);
+	//glUniformMatrix4fv(sScale, 1, GL_TRUE, sMatrix);
 	mat[0] = xSize;
 	mat[5] = ySize;
 	glUseProgram(baseShader);
@@ -214,7 +216,6 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 					for (int i = 0; i < w->map[xp][yp]->count; i++) {
 						Form *f = residents[i];//checkSolidForm(w->map[xp][yp]);
 						if (f != NULL) {
-						
 							if (f->anim == NULL) {
 								glUseProgram(baseShader);
 								glBindVertexArray(squa);
@@ -255,27 +256,32 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa, i
 		}
 	}
 	glUseProgram(texShader);
-	drawAnimOrder(back, sMatrix, xSize, ySize, sScale, sTrans, sRot);
-	drawAnimOrder(mid, sMatrix, xSize, ySize, sScale, sTrans, sRot);
-	drawAnimOrder(front, sMatrix, xSize, ySize, sScale, sTrans, sRot);
+	drawAnimOrder(back, sMatrix, xSize, ySize);
+	drawAnimOrder(mid, sMatrix, xSize, ySize);
+	drawAnimOrder(front, sMatrix, xSize, ySize);
 	freeAnimOrder(back);
 	freeAnimOrder(front);
 	freeAnimOrder(mid);
-	drawFG(sMatrix, sScale, sTrans, sRot);
+	drawFG(sMatrix);
 }
 
-void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, float xp, float yp, GLuint sScale, GLuint sTrans, GLuint sRot) {
+void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, float xp, float yp) {
 	Anim *a = (Anim*)f->anim;
+	/*
 	float *anim = getStat(f, "anim");
 	if (anim != NULL) {
 		if (a->sprite != (int)(*anim)) {
 			changeSprite(a, (int)*anim);
 		} 
-	} 
+	}
+	*/
+	/*
 	sMatrix[3] = 0;
 	sMatrix[7] = 0;
-	sMatrix[0] = xSize * a->scale[0] * convertInvert(f->invert[0]);//a->flip[0];
-	sMatrix[5] = ySize * a->scale[1] * convertInvert(f->invert[1]);//a->flip[1];
+	//sMatrix[0] = xSize * a->scale[0] * convertInvert(f->invert[0]);//a->flip[0];
+	//sMatrix[5] = ySize * a->scale[1] * convertInvert(f->invert[1]);//a->flip[1];
+	sMatrix[0] = xSize * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
+	sMatrix[5] = ySize * a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
 	glUniformMatrix4fv(sScale, 1, GL_TRUE, sMatrix);
 	setSpriteTexture(a);
 	sMatrix[3] = (-1 + xSize/2) + (xp * xSize) + a->offset[0];// + -a->flip[0] * 0.01f;
@@ -284,7 +290,8 @@ void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, float xp,
 	sMatrix[0] = 1;//xSize * a->scale[0] * a->flip[0];
 	sMatrix[5] = 1;//ySize * a->scale[1] * a->flip[1];
 	glUniformMatrix4fv(sTrans, 1, GL_TRUE, sMatrix);
-	float rad = rotoToRadian(f->roto);
+	//float rad = rotoToRadian(f->roto);
+	float rad = rotoToRadian(a->roto);
 	float rMatrix[] = {
 		cos(rad), -sin(rad), 0.0, 0.0,
 		sin(rad), cos(rad), 0.0, 0.0,
@@ -293,8 +300,8 @@ void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, float xp,
 	};
 	glUniformMatrix4fv(sRot, 1, GL_TRUE, rMatrix);
 	//glUniform3f(texColor, 1, 1, 1);
-
-	drawSprite(a);
+*/
+	drawSprite(a, sMatrix, xSize, ySize, xp, yp);
 }
 
 
@@ -315,7 +322,7 @@ void addFormToAnim(AnimOrder *ao, Form *f, float x, float y) {
 	addToList(&(ao->poses), yPos);
 }
 
-void drawAnimOrder(AnimOrder *ao, float *sMatrix, float xSize, float ySize, GLuint sScale, GLuint sTrans, GLuint sRot) {
+void drawAnimOrder(AnimOrder *ao, float *sMatrix, float xSize, float ySize) {
 	linkedList *curAnim = ao->anims;//animList;
 	linkedList *curPos = ao->poses;//posList;
 	float *xPos;
@@ -331,7 +338,7 @@ void drawAnimOrder(AnimOrder *ao, float *sMatrix, float xSize, float ySize, GLui
 			}
 			curPos = curPos->next;
 			Form *f = (Form*)(curAnim->data);
-			drawFormSprite(f, sMatrix, xSize, ySize, *xPos, *yPos, sScale, sTrans, sRot);
+			drawFormSprite(f, sMatrix, xSize, ySize, *xPos, *yPos);
 		}
 		curAnim = curAnim->next;
 	}
@@ -406,7 +413,7 @@ void togglePause(void *, float poo) {
 
 void toggleGod(void *, float poo) {
 	if (poo > 0) {
-		if (godMode) {
+		if (godMode && numPlayers > 0) {
 			setCenter(pooper->me->body->pos);
 			setFrame(100, 100);
 			godMode = false;

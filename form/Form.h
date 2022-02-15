@@ -7,8 +7,8 @@ typedef struct Form {
 	float pMod[2];
 	float color[3];
 	int size[2];
-	int roto;
-	bool invert[2];
+	//int roto;
+	//bool invert[2];
 	float ***body;
 	void *anim;
 	void *stats;
@@ -25,9 +25,10 @@ void makeInert();
 void printForm(void *f);
 int compareForms(Form *f1, Form *f2);
 bool checkFormIsSolid(void *form);
+/*
 void setRoto(Form *f, int degree);
 void setInvert(Form *f, int axis, bool flipped);
-
+*/
 #include "../actor/Action.h"
 #include "../actor/Actor.h"
 #include "../actor/acts/control.h"

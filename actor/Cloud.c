@@ -12,7 +12,7 @@ Actor *makeCloud(int x, int y, int speed) {
 	char **sheets = (char**)calloc(sizeof(char*), 1);
 	*sheets = "resources/cloud.png";
 	Anim *h = makeAnim(sheets, 0, false, 1, 1);
-	f->roto = 3;
+	h->roto = 3;
 	setDrawOrder(h, -1);
 	setScale(h, 10, 10);
 	GLuint sv = makeSpriteVao(1,1);
