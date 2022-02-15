@@ -216,12 +216,6 @@ void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa) {
 	drawFG(sMatrix);
 }
 
-void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, float xp, float yp) {
-	Anim *a = (Anim*)f->anim;
-	drawSprite(a, sMatrix, xSize, ySize, xp, yp);
-}
-
-
 AnimOrder *makeAnimOrder(int order) {
 	AnimOrder *ao = (AnimOrder*)calloc(sizeof(AnimOrder), 1);
 	ao->anims = makeList();
@@ -255,8 +249,7 @@ void drawAnimOrder(AnimOrder *ao, float *sMatrix, float xSize, float ySize) {
 			}
 			curPos = curPos->next;
 			Form *f = (Form*)(curAnim->data);
-			drawSprite((Anim*)f->anim, sMatrix, xSize, ySize, xPos, yPos);
-			//drawFormSprite(f, sMatrix, xSize, ySize, *xPos, *yPos);
+			drawSprite((Anim*)f->anim, sMatrix, xSize, ySize, *xPos, *yPos);
 		}
 		curAnim = curAnim->next;
 	}

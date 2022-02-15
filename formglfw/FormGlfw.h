@@ -14,7 +14,6 @@ typedef struct AnimOrder {
 
 void updateLoop();
 void drawWorld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa);
-void drawFormSprite(Form *f, float *sMatrix, float xSize, float ySize, float xp, float yp);
 void drawGrid(float *mat, int tMat, int sMat,  int rMat, int color, GLuint vLi);
 //void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 AnimOrder *makeAnimOrder(int order);
