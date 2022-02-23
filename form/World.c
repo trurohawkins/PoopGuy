@@ -72,10 +72,17 @@ void placeForm(int x, int y, TYPE *form) {
 		}
 	}
 	*/
+	bool solidForm = checkFormIsSolid(form);
 	form->pos[0] = x;// + mod[0];
 	form->pos[1] = y;// + mod[1];
 	if (form->size[0] == 0 && form->size[1] == 0) {
 		if (x >= 0 && y >= 0 && x < theWorld->x && y < theWorld->y) {
+			if (solidForm) {
+				Form *f = getSolidForm(theWorld->map[x][y]);
+				if (f != NULL) {
+					deleteForm(f);
+				}
+			}
 			//theWorld->map[x][y] = form;
 			addToCell(theWorld->map[x][y], form);
 		}
@@ -86,21 +93,19 @@ void placeForm(int x, int y, TYPE *form) {
 				int xp = form->pos[0] + form->body[i][j][0];
 				int yp = form->pos[1] + form->body[i][j][1];
 				if (xp >= 0 && yp >= 0 && xp < theWorld->x && yp < theWorld->y) {
-					//printf("placing: %i, %i\n", xp, yp);
-					/*
-					Form *f = getSolidForm(theWorld->map[xp][yp]);
-					if (f != NULL) {
-						if (f->id == 10) {
+					if (solidForm) {
+						Form *f = getSolidForm(theWorld->map[xp][yp]);
+						if (f != NULL) {
 							deleteForm(f);
 						}
 					}
-					*/
 					addToCell(theWorld->map[xp][yp],form);
 				}
 			}
 		}
 	}
 }
+
 Form *checkForm(int x, int y) {
 	return checkSolidForm(theWorld->map[x][y]);
 }
@@ -147,6 +152,16 @@ Form *removeForm(Form* form) {
 	return form;
 }
 
+int getFormID(int x, int y) {
+	if (x > -1 && y > -1 && x < theWorld->x && y < theWorld->y) {
+		Form *f = checkSolidForm(theWorld->map[x][y]);
+		if (f != NULL) {
+			return f->id;
+		}
+	}
+	return -1;
+}
+
 void freeWorld() {
 	deleteActorList();
 	deleteWorld();
@@ -158,9 +173,20 @@ Form *makeDirt(float moist) {
 	d->id = 10;
 	addStat(d, "moisture", moist * 0.1);
 	addStat(d, "hydroK", 1);
-	addStat(d, "tile", 0);//or anim
+	float tileVal = 0 + randPercent();//randpercent used as remainer to determine which tile to use for this block
+	addStat(d, "tile", tileVal);//or anim
 	//addToList(&(theWorld->terrain), d);
 	return d; //makeForm(0.7, 0.3, 0.1, 0, 0);
+}
+
+Form *makeStone() {
+	Form *s = makeForm(0.2, 0.3, 0.4, 1, 1);
+	s->id = 20;
+	addStat(s, "moisture", 0);
+	addStat(s, "hydroK", 1);
+	addStat(s, "tile", 1);//or anim
+	//addToList(&(theWorld->terrain), d);
+	return s; //makeForm(0.7, 0.3, 0.1, 0, 0);
 }
 
 void makeInert() {
@@ -182,6 +208,16 @@ void makeSquare(int x, int y, int z) {
 	//addToList(&(theWorld->terrain), b);
 	for (int i = 1; i < z ; i++) {
 		for (int j = 1; j < z ; j++) {
+			placeForm( x + i, y + j, b) ;
+		}
+	}
+}
+
+void makeStoneSquare(int x, int y, int z) {
+	//addToList(&(theWorld->terrain), b);
+	for (int i = 1; i < z ; i++) {
+		for (int j = 1; j < z ; j++) {
+			TYPE *b = makeStone() ;
 			placeForm( x + i, y + j, b) ;
 		}
 	}

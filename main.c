@@ -15,10 +15,10 @@ int main(int argc, char **argv) {
 	initDirections();
 	int worldX = 300;
 	int worldY = 300;
-	int windowX = 100;
-	int windowY = 100;
+	int windowX = 51;
+	int windowY = 51;
 	makeWorld(worldX, worldY);
-	setFrame(windowX, windowY);
+	initCamera(windowX, windowY);
 	int Seedstring[4] = {1,2,3,4};
 	int** map = genMap(Seedstring);
 	genRain(map);

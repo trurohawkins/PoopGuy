@@ -43,6 +43,7 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum) {
 	free(sprites);
 	//Anim *poo = makeAnim("resources/Heart2.png", 1, 1, tc, ts);
 	setScale(poo, 4, 4);
+	addSprite(poo, 0, 1);
 	for (int i = 1; i < 4; i++) {
 		addSprite(poo, i, 6);
 	}

@@ -25,6 +25,25 @@ void addToList(linkedList **head, void *item) {
 	}
 }
 
+void *indexList(linkedList **head, int index) {
+	linkedList *cur = *head;
+	int originalIndex = index;
+	while(cur != NULL) {
+		if (cur->data != NULL) {
+			if (index == 0) {
+				return cur->data;
+			} else {
+				index--;
+				cur = cur->next;
+			}
+		}
+	}
+	if (index > 0) {
+		printf("index %i out of range for list\n", originalIndex);
+	}
+	return NULL;
+}
+
 bool cmpList(linkedList **head, void *item, bool (*cmp)(void*, void*)) {
 	linkedList *cur = *head;
 	while (cur != NULL) {
@@ -50,6 +69,34 @@ void *checkList(linkedList **head, bool (*chk)(void*)) {
 	}
 	return false;
 }
+
+bool isInList(linkedList **head, void *item) {
+	linkedList * cur = *head;
+	while(cur != NULL) {
+		if (cur->data != NULL) {
+			if (cur->data == item) {
+				return true;
+			}
+		}
+		cur = cur->next;
+	}
+	return false;
+}
+
+bool isInListInt(linkedList **head, int item) {
+	linkedList * cur = *head;
+	while(cur != NULL) {
+		if (cur->data != NULL) {
+			int data = *((int*)cur->data);
+			if (data == item) {
+				return true;
+			}
+		}
+		cur = cur->next;
+	}
+	return false;
+}
+
 
 void *printList(linkedList **head, char *listName, void (*print)(void*)) {
 	linkedList *cur = *head;
@@ -118,6 +165,31 @@ void *removeFromListCheck(linkedList **head, bool (*chk)(void*)) {
 	}
 	}
 	return data;
+}
+
+void **getContents(linkedList **head, int num) {
+	if (num > 0) {
+		void **contents = (void**)calloc(sizeof(void*), num);
+		linkedList *cur = *head;
+		int i = 0;
+		while (cur != NULL) {
+			if (i < num) {
+				if (cur->data != NULL) {
+					contents[i] = cur->data;	
+					i++;
+					cur = cur->next;
+				}
+			}
+		}
+		if (i > 0) {
+			return contents;
+		} else {
+			free(contents);
+			return NULL;
+		}
+	} else {
+		return NULL;
+	}
 }
 
 void freeList(linkedList **ll) {

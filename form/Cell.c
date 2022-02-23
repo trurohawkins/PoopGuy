@@ -46,9 +46,11 @@ Form *getSolidForm(Cell* c) {
 	if (c->within != 0) {
 		//printCell(c);
 		f = removeFromListCheck(&(c->within), checkFormIsSolid);	
-		//printCell(c);
-		c->count--;
-		c->solid = false;
+		if (f != NULL) {
+			//printCell(c);
+			c->count--;
+			c->solid = false;
+		}
 	}
 	return f;
 }
@@ -63,7 +65,7 @@ Form *checkSolidForm(Cell* c) {
 	return f;
 }
 
-Form **getContents(Cell *c) {
+Form **getCellContents(Cell *c) {
 	if (c->count == 0 || c->within == NULL) {
 		return NULL;
 	}

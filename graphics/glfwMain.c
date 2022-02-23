@@ -6,6 +6,7 @@ GLuint screenWidth = 800*8/5, screenHeight = 450*8/5;
 Screen *curScreen;
 GLuint baseShaderProgram;
 GLuint texShaderProgram;
+GLuint tileShaderProgram;
 
 
 int initializeGLFW() {
@@ -48,8 +49,9 @@ int initializeGLFW() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	baseShaderProgram = makeShaderProgram(matVS, matFS);
-	texShaderProgram = makeShaderProgram(texVS, texFS);
-
+	//texShaderProgram = makeShaderProgramFile("graphics/shaders/texVS.glsl", "graphics/shaders/texFS.glsl");
+	texShaderProgram = makeShaderProgram(singleTexVS, singleTexFS);
+	tileShaderProgram = makeShaderProgram(texVS, texFS);
 }
 
 GLuint squareVao2d() {
@@ -139,7 +141,9 @@ Screen *getWindow() {
 GLuint getSP(int shader) {
 	if (shader == 0) {
 		return baseShaderProgram;
-	} else {
+	} else if (shader == 1) {
 		return texShaderProgram;
+	} else {
+		return tileShaderProgram;
 	}
 }

@@ -14,7 +14,7 @@ void addToCell(Cell *c, Form *f);
 void removeFromCell(Cell *c, Form *f);
 Form *getSolidForm(Cell *c);
 Form *checkSolidForm(Cell *c);
-Form **getContents(Cell *c);
+Form **getCellContents(Cell *c);
 void printCell(Cell *c);
 void freeCell(Cell *c);
 

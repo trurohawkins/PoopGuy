@@ -2,12 +2,19 @@
 #include "list.c"
 //#include "file.c"
 int **dirs;
+int **dir8;
+float *angles;
 
 void initDirections() {
 	dirs = (int**)calloc(4, sizeof(int*));
 	for (int i = 0; i < 4; i++) {
 		dirs[i] = (int*)calloc(2, sizeof(int));
 	}
+	dir8 = (int**)calloc(8, sizeof(int*));
+	for (int i = 0; i < 8; i++) {
+		dir8[i] = (int*)calloc(2, sizeof(int));
+	}
+	angles = (float*)calloc(8, sizeof(float));
 	dirs[0][0] = 0;
 	dirs[0][1] = 1;
 	dirs[1][0] = -1;
@@ -16,6 +23,32 @@ void initDirections() {
 	dirs[2][1] = -1;
 	dirs[3][0] = 1;
 	dirs[3][1] = 0;
+
+	dir8[0][0] = 0;
+	dir8[0][1] = 1;
+	dir8[1][0] = -1;
+	dir8[1][1] = 1;
+	dir8[2][0] = -1;
+	dir8[2][1] = 0;
+	dir8[3][0] = -1;
+	dir8[3][1] = -1;
+	dir8[4][0] = 0;
+	dir8[4][1] = -1;
+	dir8[5][0] = 1;
+	dir8[5][1] = -1;
+	dir8[6][0] = 1;
+	dir8[6][1] = 0;
+	dir8[7][0] = 1;
+	dir8[7][1] = 1;
+
+	angles[0] = 0;
+	angles[1] = 45;
+	angles[2] = 90;
+	angles[3] = 135;
+	angles[4] = 180;
+	angles[5] = 225;
+	angles[6] = 270;
+	angles[7] = 315;
 }
 
 void freeDirections() {
@@ -23,6 +56,11 @@ void freeDirections() {
 		free(dirs[i]);
 	}
 	free(dirs);
+	for (int i = 0; i < 8; i++) {
+		free(dir8[i]);
+	}
+	free(dir8);
+	free(angles);
 }
 
 int convertInvert(bool inv) {
@@ -37,8 +75,24 @@ int **getDirs() {
 	return dirs;
 }
 
+int **getDir8() {
+	return dir8;
+}
+
+float getAngle(int dir) {
+	if (dir > -1 && dir < 8) {
+		return angles[dir];
+	} else {
+		return -1;
+	}
+}
+
 float randPercent() {
 	return (float)rand()/(float)(RAND_MAX);
+}
+
+int randomInt(int upper) {
+	return rand() % upper;
 }
 
 int clamp(int val, int min, int max) {
@@ -152,5 +206,14 @@ bool compareColor(void *c1, void *c2) {
 		}
 	}
 	return false;
+}
+
+int decPlace(int d) {
+	int num = 0;
+	while (d >= 10) {
+		d/=10;
+		num++;
+	}
+	return num;
 }
 

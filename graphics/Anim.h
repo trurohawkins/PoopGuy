@@ -9,7 +9,6 @@
 #include "../helper/helper.h"
 #include "TextureManager.h"
 
-
 typedef struct Anim {
 	int drawOrder;
 	int speed;
@@ -32,8 +31,11 @@ typedef struct Anim {
 
 #include "AnimList.h"
 #include "UI.h"
+#include "Tile.h"
 
 Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col);
+char **makeSheet(char *baseFile, int numColors);
+Anim *makeAnimSheet(char *baseFile, int numColors, int rows, int col);
 unsigned int makeSpriteTexture(char *sheet, int rows, int col);
 void getUniformValue(GLuint texShader, char *name, GLuint *dest);
 void setTexTrans(GLuint tt);
@@ -58,6 +60,8 @@ float getCoordX(Anim *a);
 float getCoordY(Anim *a);
 void setSpriteTexture(Anim *a);
 void drawSprite(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp);
+void setUpTiles(Anim *a, float *sMatrix, float xSize, float ySize);
+void drawTiles(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp);
 void loadPalette(Anim *a, float *palette);
 
 #endif

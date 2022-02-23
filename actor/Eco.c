@@ -68,7 +68,7 @@ int chSky(int x, int y) {
 	int sky = 1;
 	for (int yi = theWorld->y - 1; yi > y; yi--) {
 		//if (theWorld->map[x][yi] != NULL) {
-		if (checkSolidForm(theWorld->map[x][y]) != NULL) {
+		if (checkSolidForm(theWorld->map[x][yi]) != NULL) {
 			sky = 0; //block is covered from sunlight
 			return sky;
 		} 

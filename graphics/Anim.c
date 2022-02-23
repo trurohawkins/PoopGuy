@@ -9,6 +9,7 @@
 #include "AnimList.c"
 #include "TextureManager.c"
 #include "UI.c"
+#include "Tile.c"
 
 GLuint tcTrans;
 GLuint tcScale;
@@ -17,23 +18,33 @@ GLuint spriteTrans;
 GLuint spriteScale;
 GLuint spriteRot;
 
-Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col) { 
+GLuint tcTransTile;
+GLuint tcScaleTile;
+GLuint tcColorTile;
+GLuint spriteTransTile;
+GLuint spriteScaleTile;
+GLuint spriteRotTile;
+
+Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int cols) { 
 	Anim *a = (Anim*)calloc(sizeof(Anim), 1);
 	a->drawOrder = 0;
 	a->texture = getTexture(sheet, spriteNum, generated);
 	if (a->texture == NULL) {
 		printf("texture not made well\n");
 	}
-	a->frameX = 1.0f/col;
+	a->frameX = 1.0f/cols;
 	a->frameY = 1.0f/rows;
 	a->frame = 0;
 	a->sprite = 0;
 	a->speed = 5;
 	a->spriteNum = rows;
-	a->length = (int*)calloc(sizeof(int), col);
-	a->length[0] = 0;
-	for (int i = 1; i <  col; i++) {
-		a->length[i] = -1;
+	for (int i = 0; i < a->spriteNum; i++) {
+		float cy = ((a->spriteNum-1) - i) * a->frameY + 1;
+		//printf("index: %i is value %f\n", i, cy);
+	}
+	a->length = (int*)calloc(sizeof(int), rows);
+	for (int i = 0; i <  rows; i++) {
+		a->length[i] = cols;
 	}
 	a->scale[0] = 1;
 	a->scale[1] = 1;
@@ -46,10 +57,41 @@ Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col) {
 	a->palette = (float*)calloc(sizeof(float), a->texture->numTex * 4);
 	for (int i = 0; i < a->texture->numTex * 4; i++) {
 		float f = (a->texture->colors)[i];
-		//printf("color %i is %f\n", i, f);
 		(a->palette)[i] = f;
 	}
 	//a->palette = a->texture->colors;
+	return a;
+}
+
+char **makeSheet(char *baseFile, int numColors) {
+	char **sprites = (char**)calloc(sizeof(char*), max(1, numColors));
+	int sLen = strlen(baseFile);
+	if (numColors > 1) {
+		for (int i = 0; i < numColors; i++) {
+			sprites[i] = (char*)calloc(sizeof(char), sLen + 2);
+			sprites[i][sLen-4] = (unsigned char)i + 48;
+			strncpy(sprites[i], baseFile, sLen - 4);
+			strcat(sprites[i], ".png");
+		}
+	} else {
+		*sprites = (char*)calloc(sizeof(char), sLen + 1);
+		strcpy(*sprites, baseFile); 
+	}
+	return sprites;
+}
+
+Anim *makeAnimSheet(char *baseFile, int numColors, int rows, int cols) {
+	char **sheet = makeSheet(baseFile, numColors);
+	Anim *a = NULL;
+	if (numColors > 1) {
+		a = makeAnim(sheet, numColors, true, rows, cols);
+	} else {
+		a = makeAnim(sheet, numColors, false, rows, cols);
+	}
+	for (int i = 0; i < numColors; i++) {
+		free(sheet[i]);
+	}
+	free(sheet);
 	return a;
 }
 
@@ -111,6 +153,13 @@ void initTexInts(GLuint texShader) {
 	glUniformMatrix3fv(tcScale, 1, GL_TRUE, tscMat);
 	glUniformMatrix3fv(tcTrans, 1, GL_TRUE, ttcMat);
 	glUniform3f(tcColor, 255, 255, 255);
+	GLuint tileShader = getSP(2);
+	getUniformValue(tileShader, "tcScale", &tcScaleTile);
+	getUniformValue(tileShader, "tcTrans", &tcTransTile);
+	getUniformValue(tileShader, "colorShift", &tcColorTile);
+	getUniformValue(tileShader, "tMat", &spriteTransTile);
+	getUniformValue(tileShader, "sMat", &spriteScaleTile);
+	getUniformValue(tileShader, "rMat", &spriteRotTile);
 }
 
 float rotoToRadian(int d) {
@@ -256,6 +305,78 @@ void drawSprite(Anim *a, float *sMatrix, float xSize, float ySize, float xp, flo
 		glBindTexture(GL_TEXTURE_2D, (a->texture->tex)[i]);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
+}
+
+void setUpTiles(Anim *a, float *sMatrix, float xSize, float ySize) {
+	float mat[] = {
+		1.0, 0.0, 0.0, 0.0,
+		0.0, 1.0, 0.0, 0.0,
+		0.0, 0.0, 1.0, 0.0,
+		0.0, 0.0, 0.0, 1.0
+	};
+	glUniformMatrix4fv(spriteRotTile, 1, GL_TRUE, mat);
+	glUniformMatrix4fv(spriteTransTile, 1, GL_TRUE, mat);
+
+	mat[3] = 0;
+	mat[7] = 0;
+	mat[0] = xSize * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
+	mat[5] = ySize * a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
+	glUniformMatrix4fv(spriteScaleTile, 1, GL_TRUE, mat);
+	float tMat [] = {
+		1.0, 0.0, getCoordX(a),
+		0.0, 1.0, getCoordY(a),
+		0.0, 0.0, 1.0,
+	};
+	float sMat [] = {
+		a->frameX, 0.0, 0.0,
+		0.0, a->frameY, 0.0,
+		0.0, 0.0, 1.0,
+	};
+	glUniformMatrix3fv(tcTransTile, 1, GL_TRUE, tMat);
+	glUniformMatrix3fv(tcScaleTile, 1, GL_TRUE, sMat);
+	//setSpriteTexture(a);
+	//float rad = rotoToRadian(a->roto);
+	/*
+	float rMatrix[] = {
+		cos(rad), -sin(rad), 0.0, 0.0,
+		sin(rad), cos(rad), 0.0, 0.0,
+		0.0, 0.0, 1.0 ,0.0,
+		0.0, 0.0, 0.0, 1.0
+	};
+	*/
+	//glUniform2f(tcTrans, getCoordX(a), getCoordY(a));
+	//glBindVertexArray(a->vao);
+	textureSource *ts = a->texture;
+	int step = 0 * 4;
+	glUniform4f(tcColorTile,(a->palette)[step],(a->palette)[step+1], (a->palette)[step+2], (a->palette)[step+3]);
+	glBindTexture(GL_TEXTURE_2D, (ts->tex)[0]);
+}
+
+void useTile(Anim *a) {
+	glBindVertexArray(a->vao);
+	textureSource *ts = a->texture;
+	int step = 0 * 4;
+	glUniform4f(tcColor,(a->palette)[step],(a->palette)[step+1], (a->palette)[step+2], (a->palette)[step+3]);
+	glBindTexture(GL_TEXTURE_2D, (ts->tex)[0]);
+
+}
+
+void drawTiles(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp) {
+	sMatrix[3] = (-1 + xSize/2) + ((xp + a->offset[0]) * xSize);// + -a->flip[0] * 0.01f;
+	sMatrix[7] = (-1 + ySize/2) + ((yp + a->offset[1]) * ySize);// + 0.01f;	
+	//printf("drawing x&y: %f, %f\n", sMatrix[3], sMatrix[7]);
+	sMatrix[0] = 1;//xSize * a->scale[0] * a->flip[0];
+	sMatrix[5] = 1;//ySize * a->scale[1] * a->flip[1];
+	glUniformMatrix4fv(spriteTransTile, 1, GL_TRUE, sMatrix);
+	textureSource *ts = a->texture;
+	//printf("%u\n", (a->texture->tex)[0]);
+	//printf("%i\n", ts->numTex);
+	//for (int i = 0; i < ts->numTex; i++) {
+		//int step = i * 4;
+		//glUniform4f(tcColor,(a->palette)[step],(a->palette)[step+1], (a->palette)[step+2], (a->palette)[step+3]);
+		//glBindTexture(GL_TEXTURE_2D, (ts->tex)[i]);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	//}
 }
 
 void loadPalette(Anim *a, float *palette) {

@@ -65,8 +65,12 @@ UI *makeUI(char *baseFile, int numColors, int rows, int cols) {
 		setPalette(pNum, poo);
 	}
 	*/
-	for (int i = 0; i < numColors; i++) {
-		free(sprites[i]);
+	if (numColors > 0) {
+		for (int i = 0; i < numColors; i++) {
+			free(sprites[i]);
+		}
+	} else {
+		free(*sprites);
 	}
 	free(sprites);
 	GLuint spriteVao = makeSpriteVao(1, 1);
