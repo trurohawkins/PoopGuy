@@ -3,8 +3,10 @@
 
 typedef struct DrawScreen {
 	float *data;
-	int dimension;
-	int max;
+	int dimensionX;
+	int dimensionY;
+	int maxX;
+	int maxY;
 	int stride;
 	GLuint vbo;
 	int location;
@@ -20,16 +22,16 @@ typedef struct TileSet {
 } TileSet;
 
 void initTileSets();
-TileSet *makeTileSet(Anim *a, int frame, int world);
+TileSet *makeTileSet(Anim *a, int dx, int dy, int mx, int my);
 void setTileVBO(TileSet *ts);
 int addTileSet(TileSet *ts);
 TileSet *getTile(int index);
 int getTileCount();
-DrawScreen *makeDrawScreen(int dimension, int maxDimension, int location, int stride, bool base);
+DrawScreen *makeDrawScreen(int dimensionX, int dimensionY, int maxDimensionX, int maxDimensionY, int location, int stride, bool base);
 void initializeData(DrawScreen *ds, bool base);
 void setScreenVBO(DrawScreen *ds);
-void resizeDrawScreen(DrawScreen *ds, int newSize, bool base);
-void resizeTileSet(TileSet *t, int newSize);
+void resizeDrawScreen(DrawScreen *ds, int newSizeX, int newSizeY, bool base);
+void resizeTileSet(TileSet *t, int newSizeX, int newSizeY);
 void editData(DrawScreen *ds, int x, int y, float val, int mod);
 int *getXY(DrawScreen *ds, int index);
 float getData(DrawScreen *ds, int x, int y, int mod);

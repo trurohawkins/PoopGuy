@@ -14,9 +14,9 @@ int main(int argc, char **argv) {
 	srand(time(NULL));
 	initDirections();
 	int worldX = 300;
-	int worldY = 300;
-	int windowX = 51;
-	int windowY = 51;
+	int worldY = 100;
+	int windowX = 60;
+	int windowY = 20;
 	makeWorld(worldX, worldY);
 	initCamera(windowX, windowY);
 	int Seedstring[4] = {1,2,3,4};

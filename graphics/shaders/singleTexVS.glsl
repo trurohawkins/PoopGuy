@@ -16,7 +16,7 @@ uniform vec2 texCoordShift;
 
 void main()
 {
-gl_Position = tMat * rMat * sMat * vec4(aPos, 1.0);
+gl_Position = tMat * sMat * rMat * vec4(aPos, 1.0);
 ourColor = aColor;
 vec3 Tex =  tcTrans * tcScale * vec3(aTexCoord, 1.0);
 TexCoord = vec2(Tex.x, Tex.y);

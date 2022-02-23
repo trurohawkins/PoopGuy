@@ -13,10 +13,11 @@ int frameY = 50;
 int defaultFrameY = -1;
 int defaultFrameX = -1;
 PoopGuy *pooper;
-int numPlayers = 2;
+int numPlayers = 1;
 bool gridOn = false;
 bool paused = false;
 bool godMode = false;
+bool debugDraw = false;
 float *godPos;
 
 void updateLoop() {
@@ -101,14 +102,15 @@ void updateLoop() {
 		Anim *stone = makeAnimSheet("resources/rockSheet.png", 1, 6, 1);
 		GLuint ss = makeSpriteVao(1,1);
 		animAddVao(stone, ss);
-		TileSet *dirtTiles = makeTileSet(dirt, cam->frameX, w->x);
-		TileSet *stoneTiles = makeTileSet(stone, cam->frameX, w->x);
+		TileSet *dirtTiles = makeTileSet(dirt, cam->frameX, cam->frameY, w->x, w->y);
+		TileSet *stoneTiles = makeTileSet(stone, cam->frameX, cam->frameY, w->x, w->y);
 
 		glfwUpdateGamepadMappings(gamecontrollerdb);
 		//free(mappings);
 		Player *nullPlayer = makePlayer(NULL, -1, NULL);
 		addControl(nullPlayer, "K0G", toggleGod);
 		addControl(nullPlayer, "K0P", togglePause);
+		addControl(nullPlayer, "K0B", toggleDebugDraw);//B for Boxes
 		godPos =  (float*)calloc(2, sizeof(float));
 		godPos[0] = getWorld()->x /2;
 		godPos[1] = getWorld()->y /2;
@@ -139,19 +141,22 @@ void updateLoop() {
 				} else {
 					setCenter(cam, godPos);
 				}
-			}
+		
 			glClearColor(0.1, 0.2, 0.4, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			//drawWorldDebug(w, cam, tMat, sMat, rMat, drawColor, squa);
-			glUseProgram(texShader);
-			glBindVertexArray(squa);
-			drawWorld(w, cam);
+			if (debugDraw) {
+				drawWorldDebug(w, cam, tMat, sMat, rMat, drawColor, squa);
+			} else {
+				//glUseProgram(texShader);
+				drawWorld(w, cam);
+			}
 			if (gridOn) {
 				glUseProgram(baseShader);
 				drawGrid(matrix, tMat, sMat, rMat, drawColor, vLi);
 			}
 			
 			glfwSwapBuffers(screen->window);
+			}
 		}
 		exitGame();
 	}
@@ -308,6 +313,12 @@ void togglePause(void *, float poo) {
 	}
 }
 
+void toggleDebugDraw(void *, float poo) {
+	if (poo > 0) {
+		debugDraw = !debugDraw;
+	}
+}
+
 void toggleGod(void *, float poo) {
 	if (poo > 0) {
 		printf("toggle god %i\n", godMode);
@@ -321,7 +332,7 @@ void toggleGod(void *, float poo) {
 			setFrame(cam, cam->defaultFrameX, cam->defaultFrameY);
 			for (int i = 0; i < getTileCount(); i++) {
 				TileSet *ts = getTile(i);
-				resizeTileSet(ts, cam->defaultFrameX);
+				resizeTileSet(ts, cam->defaultFrameX, cam->defaultFrameY);
 			}
 			godMode = false;
 		} else {
@@ -329,7 +340,7 @@ void toggleGod(void *, float poo) {
 			setFrame(cam, getWorld()->x, getWorld()->y);
 			for (int i = 0; i < getTileCount(); i++) {
 				TileSet *ts = getTile(i);
-				resizeTileSet(ts, getWorld()->x);
+				resizeTileSet(ts, getWorld()->x, getWorld()->y);
 			}
 			godMode= true;
 		}

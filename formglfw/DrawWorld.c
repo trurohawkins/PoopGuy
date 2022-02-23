@@ -7,8 +7,8 @@ void drawWorld(World *w, Camera *cam) {
 	}
 	int fx = cam->frameX/2;
 	int fy = cam->frameY/2;
-	int cx = clamp(cam->centerX, fx, w->x - fx - 1);
-	int cy = clamp(cam->centerY, fy, w->y - fy - 1);
+	int cx = clamp(cam->centerX, fx, w->x - fx);
+	int cy = clamp(cam->centerY, fy, w->y - fy);
 	AnimOrder *back = makeAnimOrder(-1);
 	AnimOrder *mid = makeAnimOrder(0);
 	AnimOrder *front = makeAnimOrder(1);
@@ -128,7 +128,7 @@ void drawWorld(World *w, Camera *cam) {
 			bindData(tmp->rot);
 			bindData(tmp->color);
 			bindData(tmp->texture);
-			glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, cam->frameX * cam->frameX);
+			glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, cam->frameX * cam->frameY);
 		}
 		free(tileSets);
 	}
@@ -313,8 +313,8 @@ void drawWorldDebug(World *w, Camera *cam, int tMat, int sMat, int rMat, int col
 	GLuint baseShader = getSP(0);//makeShaderProgram("graphicsSource/matVS.glsl", "graphicsSource/simpFS.glsl");
 	int fx = cam->frameX/2;
 	int fy = cam->frameY/2;
-	int cx = clamp(cam->centerX, fx, w->x - fx - 1);
-	int cy = clamp(cam->centerY, fy, w->y - fy - 1);
+	int cx = clamp(cam->centerX, fx, w->x - fx);
+	int cy = clamp(cam->centerY, fy, w->y - fy);
 	float xSize = 2.0f / cam->frameX;//(float)scr->width / 10000;
 	float ySize = 2.0f / cam->frameY;//(float)scr->height /10000;
 	glUseProgram(baseShader);
