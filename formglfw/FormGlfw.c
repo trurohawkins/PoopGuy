@@ -90,10 +90,12 @@ void updateLoop() {
 		//cloud = makeGhost("resources/cloud.png", 1, 1, 1, tcTrans, tcScale);
 		Button *demonButt = makeButton("resources/demonghost.png", 0, 2, 1, tmpButtFunc);
 		Button *faceButt = makeButton("resources/faceghost.png", 0, 2, 1, exitMenu);
-		Text *resume = makeText("RESUME", 1, true, 1, 1, 1);
-		addText(faceButt->graphics, resume);
-		Text *exit = makeText("EXIT", 1, true, 1, 1, 1);
-		addText(demonButt->graphics, exit);
+		Text *resume = makeText("RESUME", 1, true, 0.3, 0.6, 0.1, 0.8);
+		addButtonText(faceButt, resume);
+		addButtonSubColor(faceButt, 1, 1, 1, 1);
+		Text *exit = makeText("EXIT", 1, true, 0.7, 0.4, 0.2, 0.8);
+		addButtonText(demonButt, exit);
+		addButtonSubColor(demonButt, 1, 0.8, 0.9, 1);
 		placeUI(demonButt->graphics, -0.5, 0);
 		placeUI(faceButt->graphics, 0.5, 0);
 		pauseMenu = makeMenu(50);

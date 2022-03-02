@@ -77,6 +77,23 @@ void addText(UI *ui, Text *t) {
 	ui->text = t;//makeText(str, 1, true);
 }
 
+void addButtonText(Button *butt, Text *t) {
+	addText(butt->graphics, t);
+	butt->textCol1 = (float *)calloc(4, sizeof(float));
+	butt->textCol2 = (float *)calloc(4, sizeof(float));
+	for (int i = 0; i < 4; i++) {
+		(butt->textCol1)[i] = t->color[i];
+		(butt->textCol2)[i] = t->color[i];
+	}
+}
+
+void addButtonSubColor(Button *butt, float r, float g, float b, float a) {
+	butt->textCol2[0] = r;
+	butt->textCol2[1] = g;
+	butt->textCol2[2] = b;
+	butt->textCol2[3] = a;
+}
+
 Button *makeButton(char *baseFile, int numColors, int rows, int cols, void(*func)(void)) {
 	Button *butt = (Button*)calloc(1,sizeof(Button));
 	butt->graphics = makeUI(baseFile, numColors, rows, cols);
@@ -90,6 +107,32 @@ Menu *makeMenu(float keySpeed) {
 	m->buttons = makeList();
 	m->cursorX = m->cursorY = m->mx = m->my = 0;
 	m->keySpeed = keySpeed;
+}
+
+void drawUI(UI *ui, float *sMatrix) {
+	glUseProgram(getSP(1));
+	drawUIAnim(ui->a, sMatrix,  ui->xSize, ui->ySize, ui->xp, ui->yp);
+	if (ui->text) {
+		Screen *s = getWindow();
+		float xp = ((1 + ui->xp)/2) * s->width;//(-0.5 * s->width) + (ui->xp  * s->width);
+		//printf("%f / %d\n", xp, s->width);
+		float yp = ((1 + ui->yp)/2) * s->height;
+		drawText(ui->text, xp, yp);
+	}
+}
+
+void moveUI(UI *ui, int xd, int yd, float xPow, float yPow) {
+	if (ui != NULL) {
+		ui->xp += xd * xPow;
+		ui->yp += yd * yPow;
+	}
+}
+
+void placeUI(UI *ui, float xp, float yp) {
+	if (ui != NULL) {
+		ui->xp = xp;
+		ui->yp = yp;
+	}
 }
 
 void setMenuActive(Menu *m, bool active) {
@@ -246,11 +289,23 @@ void menuMovement(float xp, float yp) {
 			//printf("%i, %i\n", screen->width, screen->height);
 		}
 		if (curMenu->curButt) {
-			changeSprite(curMenu->curButt->graphics->a, 0);
+			if (curMenu->curButt->graphics) {
+				changeSprite(curMenu->curButt->graphics->a, 0);
+				Text *t = curMenu->curButt->graphics->text;
+				if (t) {
+					setTextColor(t, curMenu->curButt->textCol1);
+				}
+			}
 		}
 		curMenu->curButt = chosen;
 		if (chosen) {
-			changeSprite(curMenu->curButt->graphics->a, 1);
+			if (curMenu->curButt->graphics) {
+				changeSprite(curMenu->curButt->graphics->a, 1);
+					Text *t = curMenu->curButt->graphics->text;
+					if (t) {
+						setTextColor(t, curMenu->curButt->textCol2);
+					}
+			}
 		}
 	}
 
@@ -274,33 +329,6 @@ void addButton(Menu *m, Button *butt) {
 	addToList(&(m->buttons), butt);
 	m->count++;
 }
-
-void drawUI(UI *ui, float *sMatrix) {
-	glUseProgram(getSP(1));
-	drawUIAnim(ui->a, sMatrix,  ui->xSize, ui->ySize, ui->xp, ui->yp);
-	if (ui->text) {
-		Screen *s = getWindow();
-		float xp = ((1 + ui->xp)/2) * s->width;//(-0.5 * s->width) + (ui->xp  * s->width);
-		//printf("%f / %d\n", xp, s->width);
-		float yp = ((1 + ui->yp)/2) * s->height;
-		drawText(ui->text, xp, yp);
-	}
-}
-
-void moveUI(UI *ui, int xd, int yd, float xPow, float yPow) {
-	if (ui != NULL) {
-		ui->xp += xd * xPow;
-		ui->yp += yd * yPow;
-	}
-}
-
-void placeUI(UI *ui, float xp, float yp) {
-	if (ui != NULL) {
-		ui->xp = xp;
-		ui->yp = yp;
-	}
-}
-
 void freeButton(Button *butt) {
 	freeUI(butt->graphics);
 	free(butt);

@@ -18,6 +18,8 @@ typedef struct UI {
 typedef struct Button {
 	UI *graphics;
 	void (*func)(void);
+	float *textCol1;
+	float *textCol2;
 } Button;
 
 typedef struct Menu {
@@ -36,6 +38,8 @@ UI *makeUI(char *baseFile, int numColors, int rows, int cols);
 Button *makeButton(char *baseFile, int numColors, int rows, int cols, void (*func)(void));
 Menu *makeMenu(float keySpeed);
 void addText(UI *ui , Text *t);
+void addButtonText(Button *butt, Text *t);
+void addButtonSubColor(Button *butt, float r, float g, float b, float a);
 void addButton(Menu *m, Button *butt);
 void setMenuActive(Menu *m, bool active);
 void processMenuKeys(int key, int action);

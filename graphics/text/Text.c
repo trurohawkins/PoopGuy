@@ -27,7 +27,7 @@ void initText() {
 	};
 
 	//glUniformMatrix4fv(glGetUniformLocation(textShader, "projection"), 1, GL_FALSE, projection);
-	glUniform3f(glGetUniformLocation(textShader, "textColor"), 0.5, 0.8, 0.2);
+	glUniform4f(glGetUniformLocation(textShader, "textColor"), 0.5, 0.8, 0.2, 0.5);
 	screenVolume = screen->width * screen->height;
 	setOrtho();
 	FT_Library ft;
@@ -36,7 +36,7 @@ void initText() {
 		return;
 	}
 	FT_Face face;
-	if (FT_New_Face(ft, "resources/fonts/Arial.ttf", 0, &face)) {
+	if (FT_New_Face(ft, "resources/fonts/Cave-Story.ttf", 0, &face)) {
 		printf("Freetype couldnt load font\n");
 		return; 
 	}
@@ -129,10 +129,10 @@ void renderText(char *string, float x, float y, float scale) {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void setTextColor(float r, float g, float b) {
+void setTextDrawColor(float *col) {
 	GLuint textShader = getSP(3);
 	glUseProgram(textShader);
-	glUniform3f(glGetUniformLocation(textShader, "textColor"), r, g, b);
+	glUniform4f(glGetUniformLocation(textShader, "textColor"), col[0], col[1], col[2], col[3]);
 }
 
 //called for resizing operations
@@ -186,11 +186,12 @@ void drawText(Text *t, float x, float y) {
 	}
 	//printf("drawing %s at %f. %f\n", t->str, x, y);
 	//printf("drawing at scale %f\n", screenScale);
-	setTextColor(t->r, t->g, t->b);
+	float *col = t->color;
+	setTextDrawColor(t->color);//col[0], col[1], col[2], col[3]);
 	renderText(t->str, x, y, t->scale);
 }
 
-Text *makeText(char *str, float scale, bool centered, float r, float g, float b) {
+Text *makeText(char *str, float scale, bool centered, float r, float g, float b, float a) {
 	Text *t = (Text*)calloc(sizeof(Text), 1);
 	t->str = (char*)calloc(sizeof(char), strlen(str) + 1);
 	strcpy(t->str, str);
@@ -207,14 +208,23 @@ Text *makeText(char *str, float scale, bool centered, float r, float g, float b)
 		str++;
 	}
 	t->height /= total;
-	t->r = r;
-	t->g = g;
-	t->b = b;
+	t->color = (float*)calloc(sizeof(float), 4);
+	t->color[0] = r;
+	t->color[1] = g;
+	t->color[2] = b;
+	t->color[3] = a;
 	return t;
+}
+
+void setTextColor(Text *t, float *col) {
+	for (int i = 0; i < 4; i++) {
+		t->color[i] = col[i];
+	}
 }
 
 void freeText(Text *t) {
 	free(t->str);
+	free(t->color);
 	free(t);
 }
 

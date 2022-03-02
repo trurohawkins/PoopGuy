@@ -20,9 +20,7 @@ typedef struct Text {
 	float length;
 	float height;//average height of characters
 	bool centered;
-	float r;
-	float g;
-	float b;
+	float *color;
 } Text;
 #include "../glfwMain.h"
 #include <ft2build.h>
@@ -34,9 +32,10 @@ typedef struct Text {
 textCharacter *makeTextCharacter(unsigned int texture, int xs, int ys, int xb, int yb, int advance);
 void initText();
 void renderText(char *string, float x, float y, float scale);
-void setTextColor(float r, float g, float b);
+void setTextDrawColor(float *col);
 void setOrtho();//float left, float right, float bottom, float top, float near, float far);
 void drawText(Text *t, float x, float y);
-Text *makeText(char *str, float scale, bool centered, float r, float g, float b);
+Text *makeText(char *str, float scale, bool centered, float r, float g, float b, float a);
+void setTextColor(Text *, float *col);
 void freeText (Text * t);
 #endif
