@@ -1,8 +1,8 @@
 CC = gcc -c -g
 LC = gcc -c -g 
 WC = x86_64-w64-mingw32-gcc -c -g
-RELEASELIBS = -l:libglfw3.a -lm -ldl -lpthread -l:libfreetype.a
-DEVLIBS = -lglfw -lGL -lm -ldl -lfreetype
+RELEASELIBS = -l:libglfw3.a -lm -ldl -lpthread -l:libfreetype.a -l:libcglm.a
+DEVLIBS = -lglfw -lGL -lm -ldl -lfreetype -lcglm
 GLW = -lglfw3 -lopengl32 -lgdi32 
 GF = formglfw/
 FD = form/
@@ -15,7 +15,7 @@ TD = $(GD)text/
 HD = helper/
 
 PoopGuy: main.o libFormGlfw.a glad.o
-	gcc -o PoopGuy main.o glad.o libFormGlfw.a $(DEVLIBS)
+	gcc -o  PoopGuy main.o glad.o libFormGlfw.a  $(DEVLIBS)
 
 standalone: main.o libFormGlfw.a glad.o
 	gcc -o PoopGuy main.o glad.o libFormGlfw.a $(RELEASELIBS) 
@@ -63,7 +63,7 @@ Anim.o: $(GD)Anim.c $(GD)Anim.h $(GD)AnimList.c $(GD)AnimList.h $(GD)TextureMana
 	$(CC) $(GD)Anim.c
 
 Text.o: $(TD)Text.c $(TD)Text.h
-	$(CC) $(TD)Text.c -l:libfreetype.a
+	$(CC) $(TD)Text.c -l:libfreetype.a -lcglm
 
 Input.o: $(ID)Input.c $(ID)Input.h $(ID)Joystick.c $(ID)Joystick.h
 	${CC} ${ID}Input.c

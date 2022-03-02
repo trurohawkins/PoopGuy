@@ -307,6 +307,43 @@ void drawSprite(Anim *a, float *sMatrix, float xSize, float ySize, float xp, flo
 	}
 }
 
+void drawUIAnim(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp) {
+	sMatrix[3] = 0;
+	sMatrix[7] = 0;
+	sMatrix[0] = xSize * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
+	sMatrix[5] = ySize * a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
+	glUniformMatrix4fv(spriteScale, 1, GL_TRUE, sMatrix);
+	setSpriteTexture(a);
+	sMatrix[3] = xp;//(-1 + xSize/2) + ((xp + a->offset[0]) * xSize);// + -a->flip[0] * 0.01f;
+	sMatrix[7] = yp;//(-1 + ySize/2) + ((yp + a->offset[1]) * ySize);// + 0.01f;	
+	//printf("drawing x&y: %f, %f\n", sMatrix[3], sMatrix[7]);
+	sMatrix[0] = 1;//xSize * a->scale[0] * a->flip[0];
+	sMatrix[5] = 1;//ySize * a->scale[1] * a->flip[1];
+	glUniformMatrix4fv(spriteTrans, 1, GL_TRUE, sMatrix);
+	//float rad = rotoToRadian(f->roto);
+	float rad = rotoToRadian(a->roto);
+	float rMatrix[] = {
+		cos(rad), -sin(rad), 0.0, 0.0,
+		sin(rad), cos(rad), 0.0, 0.0,
+		0.0, 0.0, 1.0 ,0.0,
+		0.0, 0.0, 0.0, 1.0
+	};
+	glUniformMatrix4fv(spriteRot, 1, GL_TRUE, rMatrix);
+
+	
+	glUniform2f(tcTrans, getCoordX(a), getCoordY(a));
+
+	glBindVertexArray(a->vao);
+	textureSource *ts = a->texture;
+	for (int i = 0; i < ts->numTex; i++) {
+		int step = i * 4;
+		glUniform4f(tcColor,(a->palette)[step],(a->palette)[step+1], (a->palette)[step+2], (a->palette)[step+3]);
+		glBindTexture(GL_TEXTURE_2D, (a->texture->tex)[i]);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
+
+}
+
 void setUpTiles(Anim *a, float *sMatrix, float xSize, float ySize) {
 	float mat[] = {
 		1.0, 0.0, 0.0, 0.0,

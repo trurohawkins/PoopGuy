@@ -71,6 +71,7 @@ textureSource *makeTexture(char *img, bool single) {
 	textureSource *ts = (textureSource*)calloc(sizeof(textureSource), 1);
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char *data = stbi_load(img, &(ts->width), &(ts->height), &(ts->channels), 0);
+	printf("texture-%s has width of %d\n", img, ts->width);
 	if (data) {
 		/*
 		unsigned int tex = genTexture(data, ts->width, ts->height);

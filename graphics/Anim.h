@@ -30,8 +30,8 @@ typedef struct Anim {
 } Anim;
 
 #include "AnimList.h"
-#include "UI.h"
 #include "Tile.h"
+#include "UI.h"
 
 Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int col);
 char **makeSheet(char *baseFile, int numColors);
@@ -60,6 +60,7 @@ float getCoordX(Anim *a);
 float getCoordY(Anim *a);
 void setSpriteTexture(Anim *a);
 void drawSprite(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp);
+void drawUIAnim(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp);
 void setUpTiles(Anim *a, float *sMatrix, float xSize, float ySize);
 void drawTiles(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp);
 void loadPalette(Anim *a, float *palette);

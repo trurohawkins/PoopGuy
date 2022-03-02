@@ -90,8 +90,12 @@ void updateLoop() {
 		//cloud = makeGhost("resources/cloud.png", 1, 1, 1, tcTrans, tcScale);
 		Button *demonButt = makeButton("resources/demonghost.png", 0, 2, 1, tmpButtFunc);
 		Button *faceButt = makeButton("resources/faceghost.png", 0, 2, 1, exitMenu);
-		placeUI(demonButt->graphics, 0, 0.5);
-		placeUI(faceButt->graphics, 1, 0.5);
+		Text *resume = makeText("RESUME", 1, true, 1, 1, 1);
+		addText(faceButt->graphics, resume);
+		Text *exit = makeText("EXIT", 1, true, 1, 1, 1);
+		addText(demonButt->graphics, exit);
+		placeUI(demonButt->graphics, -0.5, 0);
+		placeUI(faceButt->graphics, 0.5, 0);
 		pauseMenu = makeMenu(50);
 		addButton(pauseMenu, demonButt);
 		addButton(pauseMenu, faceButt);
@@ -162,7 +166,10 @@ void updateLoop() {
 					glUseProgram(baseShader);
 					drawGrid(matrix, tMat, sMat, rMat, drawColor, vLi);
 				}
-				renderText("POOPGUY", 25, 25, 1);		
+				//drawText(exit, 25, 25);
+				//drawText(resume, 100, 100);
+				//renderText("YONNI", screen->width/2, screen->height/2, 1);		
+				//renderText("POOPGUY", 25, 25, 1);		
 				glfwSwapBuffers(screen->window);
 			
 			} else {

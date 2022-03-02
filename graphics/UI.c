@@ -3,10 +3,17 @@ linkedList *FG;
 linkedList *pauseScreen;
 Menu *curMenu;
 
-void drawGround(linkedList *ground, float *sMatrix) {
+void drawGround(linkedList *ground) {
+	
 	linkedList *cur = ground;
 	while (cur != NULL) {
 		if (cur->data != NULL) {
+			float sMatrix[] = {
+				1.0, 0.0, 0.0, 0.0,
+				0.0, 1.0, 0.0, 0.0,
+				0.0, 0.0, 1.0, 0.0,
+				0.0, 0.0, 0.0, 1.0
+			};
 			UI *ui = (UI*)cur->data;
 			drawUI(ui, sMatrix);
 		}
@@ -57,7 +64,17 @@ UI *makeUI(char *baseFile, int numColors, int rows, int cols) {
 	ui->xInvert = false;
 	ui->yInvert = false;
 	ui->a = poo;
+	ui->text = 0;
 	return ui;
+}
+
+void addText(UI *ui, Text *t) {
+	/*
+	ui->text = (char *)calloc(sizeof(char), strlen(str));
+	strcpy(ui->text, str);
+	(
+	*/
+	ui->text = t;//makeText(str, 1, true);
 }
 
 Button *makeButton(char *baseFile, int numColors, int rows, int cols, void(*func)(void)) {
@@ -259,7 +276,15 @@ void addButton(Menu *m, Button *butt) {
 }
 
 void drawUI(UI *ui, float *sMatrix) {
-	drawSprite(ui->a, sMatrix,  ui->xSize, ui->ySize, ui->xp, ui->yp);
+	glUseProgram(getSP(1));
+	drawUIAnim(ui->a, sMatrix,  ui->xSize, ui->ySize, ui->xp, ui->yp);
+	if (ui->text) {
+		Screen *s = getWindow();
+		float xp = ((1 + ui->xp)/2) * s->width;//(-0.5 * s->width) + (ui->xp  * s->width);
+		//printf("%f / %d\n", xp, s->width);
+		float yp = ((1 + ui->yp)/2) * s->height;
+		drawText(ui->text, xp, yp);
+	}
 }
 
 void moveUI(UI *ui, int xd, int yd, float xPow, float yPow) {
@@ -282,6 +307,9 @@ void freeButton(Button *butt) {
 }
 
 void freeUI(UI *ui) {
+	if (ui->text != 0) {
+		freeText(ui->text);
+	}
 	free(ui);
 }
 
@@ -310,7 +338,7 @@ void removeBackground(UI *ui) {
 }
 
 void drawBG(float *sMatrix) {
-	drawGround(BG, sMatrix);
+	drawGround(BG);
 }
 
 void freeBG() {
@@ -330,7 +358,7 @@ void removeForeground(UI *ui) {
 }
 
 void drawFG(float *sMatrix) {
-	drawGround(FG, sMatrix);
+	drawGround(FG);
 }
 
 void freeFG() {
@@ -350,7 +378,7 @@ void removePauseUI(UI *ui) {
 }
 
 void drawPause(float *sMatrix) {
-	drawGround(pauseScreen, sMatrix);
+	drawGround(pauseScreen);
 }
 
 void freePause() {

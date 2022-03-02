@@ -136,6 +136,7 @@ void glfwWindowSizeCallback(GLFWwindow *window, int width, int height) {
 	curScreen->width = width;
 	curScreen->height = height;
 	glViewport(0, 0, curScreen->width, curScreen->height);
+	setOrtho();//for text rendering
 }
 
 Screen *getWindow() {
