@@ -16,8 +16,9 @@ void drawGrid(float *mat, int tMat, int sMat,  int rMat, int color, GLuint vLi);
 //void setFrame(int x, int y);
 void setAnim(Form *f, Anim *a);
 void setGrid(bool state);
-void togglePause(void *,float val);
+void togglePauseMenu(void *,float val);
 void toggleDebugDraw(void *,float val);
 void toggleGod(void *,float);
 void exitGame();
+void exitMenu();
 #endif

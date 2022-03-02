@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "PlayerManager.c"
 #include "poopPlayer.c"
+#include "god.c"
 
 Player *makePlayer(void *character, int num, void (*deleteFunc)(void*)) {
 	Player *p = (Player *)calloc(1, sizeof(Player));
@@ -8,6 +9,7 @@ Player *makePlayer(void *character, int num, void (*deleteFunc)(void*)) {
 	p->self = character;
 	p->controls = makeList();
 	p->delFunc = deleteFunc;
+	p->active = true;
 	addPlayer(p);
 	return p;
 }

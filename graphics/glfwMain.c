@@ -1,12 +1,13 @@
 #include "glfwMain.h"
 #include "shaders/glslLib.c"
 
-GLuint screenWidth = 800*8/5, screenHeight = 450*8/5;
+const unsigned int screenWidth = 800*8/5, screenHeight = 450*8/5;
 //GLFWwindow *window;
 Screen *curScreen;
 GLuint baseShaderProgram;
-GLuint texShaderProgram;
+GLuint textureShaderProgram;
 GLuint tileShaderProgram;
+GLuint textShaderProgram;
 
 
 int initializeGLFW() {
@@ -41,17 +42,20 @@ int initializeGLFW() {
 	int major, minor, rev;
 	glfwGetVersion(&major, &minor, &rev);
 	printf("OpenGL - %i.%i.%i\n", major, minor, rev);
-
 	//tell GL to only draw onto a pixel if shape is cloer to the viewer
 	// I turned it off because the sprites are all the same distance from camera
 	//glEnable(GL_DEPTH_TEST);//enable depther testing
 	//glDepthFunc(GL_LESS); //depth testing interpets a smaller value as "closer"
+	//glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	baseShaderProgram = makeShaderProgram(matVS, matFS);
-	//texShaderProgram = makeShaderProgramFile("graphics/shaders/texVS.glsl", "graphics/shaders/texFS.glsl");
-	texShaderProgram = makeShaderProgram(singleTexVS, singleTexFS);
-	tileShaderProgram = makeShaderProgram(texVS, texFS);
+	//textureShaderProgram = makeShaderProgramFile("graphics/shaders/texVS.glsl", "graphics/shaders/texFS.glsl");
+	textureShaderProgram = makeShaderProgram(singleTextureVS, singleTextureFS);
+	tileShaderProgram = makeShaderProgram(textureVS, textureFS);
+	//textShaderProgram = makeShaderProgramFile("graphics/shaders/textVS.glsl", "graphics/shaders/textFS.glsl");
+	textShaderProgram = makeShaderProgram(textVS, textFS);
+
 }
 
 GLuint squareVao2d() {
@@ -142,8 +146,10 @@ GLuint getSP(int shader) {
 	if (shader == 0) {
 		return baseShaderProgram;
 	} else if (shader == 1) {
-		return texShaderProgram;
-	} else {
+		return textureShaderProgram;
+	} else if (shader == 2) {
 		return tileShaderProgram;
+	} else {
+		return textShaderProgram;
 	}
 }

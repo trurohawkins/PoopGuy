@@ -4,14 +4,14 @@ Action *makeControl() {
 	cv->moveRight = 0;
 	cv->mrCount = 0;
 	cv->mlCount = 0;
-	cv->pooper = 0;
+	cv->move = 0;
 	Action *a = makeAction(&control, cv);
 	return a;
 }
 
-void setPoopGuy(void *c, PoopGuy *n_pooper) {
+void setControlsMove(void *c, moveVar *mv) {
 	controlVar *cv = (controlVar*)c;
-	cv->pooper = n_pooper;
+	cv->move = mv;
 }
 
 void control(Form *f, Action *a) {
@@ -28,9 +28,9 @@ void control(Form *f, Action *a) {
 		cv->mlCount = 0;
 	}
 	if (moveX != 0 && (cv->mrCount > 3 || cv->mlCount > 3)) {
-		moveVar *mv = (moveVar*)(cv->pooper->move->vars);
-		if (abs(mv->force[0] + (cv->pooper->speed * moveX)) <= cv->pooper->maxForce) {
-			addForce(mv, cv->pooper->speed * moveX, 0);
+		//moveVar *mv = (moveVar*)(cv->pooper->move->vars);
+		if (abs(cv->move->force[0] + (cv->move->speed * moveX)) <= cv->move->maxForce) {
+			addForce(cv->move, cv->move->speed * moveX, 0);
 		}
 		//taking steps up smll walls
 		if (checkSide(f, moveX, 0, false) != 0) {

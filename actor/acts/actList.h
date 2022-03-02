@@ -1,6 +1,7 @@
 typedef struct moveVar {
 	int speedCounter;
 	int speed;
+	int maxForce;
 	int dir[2];
 	int force[2];
 	int mass;

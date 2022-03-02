@@ -9,6 +9,7 @@
 
 #include "shaders/Shaders.h"
 #include "input/Input.h"
+#include "text/Text.h"
 #include "Anim.h"
 #include "../helper/helper.h"
 

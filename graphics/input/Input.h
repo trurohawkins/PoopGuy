@@ -1,6 +1,7 @@
 #ifndef INP
 #define INP
 #include "Joystick.h"
+#include "../Anim.h"//so we have access to UI mouse fnctions,
 //#include "../glfwMain.h"
 
 typedef struct InpMap
@@ -28,6 +29,7 @@ void clearInput();
 void freeCurInput();
 //InpMap *makeInputMap(char *str, void (*func)(void));
 void tmpFunc(void*, float);
+void getMouseBack();
 
 void freeInput();
 

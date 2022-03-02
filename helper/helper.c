@@ -95,6 +95,11 @@ int randomInt(int upper) {
 	return rand() % upper;
 }
 
+float distance(float x1, float y1, float x2, float y2) {
+	float d = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+	return d;
+}
+
 int clamp(int val, int min, int max) {
 	if (min < max) {
 		if (val < min) {
@@ -107,6 +112,11 @@ int clamp(int val, int min, int max) {
 	} else {
 		return val;
 	}
+}
+
+double clampF(double val, double min, double max) {
+  const double t = val < min ? min : val;
+  return t > max ? max : t;
 }
 
 float max(float a, float b) {

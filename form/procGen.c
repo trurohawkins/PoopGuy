@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-#include "../helper/helper.c"
+//#include "../helper/helper.h"
 #include "../form/procGen.h"
 
 void arrayToFile(char *txt, int **array)

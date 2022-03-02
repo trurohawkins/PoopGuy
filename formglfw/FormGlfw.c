@@ -12,13 +12,15 @@ int frameX = 50;
 int frameY = 50;
 int defaultFrameY = -1;
 int defaultFrameX = -1;
-PoopGuy *pooper;
+PoopGuy **poopers;
 int numPlayers = 1;
 bool gridOn = false;
 bool paused = false;
 bool godMode = false;
 bool debugDraw = false;
 float *godPos;
+Menu *pauseMenu;
+GOD *god = 0;
 
 void updateLoop() {
 	//GLFWwindow *window
@@ -75,23 +77,25 @@ void updateLoop() {
 		makeActorList();
 		makeAnimList();
 		makeTextureManager();
-		initBackgroundUI();
-		initForegroundUI();
+		initUILists();
 
 		makeStoneSquare((w->x/2), (w->y/2) - 40, 10);
-
+		poopers = (PoopGuy **)calloc(numPlayers, sizeof(PoopGuy*));	
 		for (int i = 0; i < numPlayers; i++) {
-			PoopGuy* tmp = makePoopPlayer((w->x/2) + (i*4), 1, i);
-			if (i == 0) {
-				pooper = tmp;
-			}
+			poopers[i] = makePoopPlayer((w->x * 0.95) + (i*4), 1, i);
 		}
 		//set up offsets for rendering instances
 		glUseProgram(tileShader);
 		initTileSets();
 		//cloud = makeGhost("resources/cloud.png", 1, 1, 1, tcTrans, tcScale);
-		UI *cloud2 = makeUI("resources/demonghost.png", 0, 1, 1);
-		addBackground(cloud2);
+		Button *demonButt = makeButton("resources/demonghost.png", 0, 2, 1, tmpButtFunc);
+		Button *faceButt = makeButton("resources/faceghost.png", 0, 2, 1, exitMenu);
+		placeUI(demonButt->graphics, 0, 0.5);
+		placeUI(faceButt->graphics, 1, 0.5);
+		pauseMenu = makeMenu(50);
+		addButton(pauseMenu, demonButt);
+		addButton(pauseMenu, faceButt);
+		//addBackground(cloud2);
 		//addForeground(cloud2);
 		makeCloud(10, 50, 20);
 		
@@ -99,7 +103,7 @@ void updateLoop() {
 		GLuint sv = makeSpriteVao(1,1);
 		animAddVao(dirt, sv);
 
-		Anim *stone = makeAnimSheet("resources/rockSheet.png", 1, 6, 1);
+		Anim *stone = makeAnimSheet("resources/rockSheet.png", 1, 15, 1);
 		GLuint ss = makeSpriteVao(1,1);
 		animAddVao(stone, ss);
 		TileSet *dirtTiles = makeTileSet(dirt, cam->frameX, cam->frameY, w->x, w->y);
@@ -107,13 +111,16 @@ void updateLoop() {
 
 		glfwUpdateGamepadMappings(gamecontrollerdb);
 		//free(mappings);
+		god = makeGodPlayer(w->x/2, w->y/2, cam->frameX, cam->frameY);
 		Player *nullPlayer = makePlayer(NULL, -1, NULL);
 		addControl(nullPlayer, "K0G", toggleGod);
-		addControl(nullPlayer, "K0P", togglePause);
+		addControl(nullPlayer, "K0!", togglePauseMenu);//S
+		addControl(nullPlayer, "J07", togglePauseMenu);
 		addControl(nullPlayer, "K0B", toggleDebugDraw);//B for Boxes
 		godPos =  (float*)calloc(2, sizeof(float));
 		godPos[0] = getWorld()->x /2;
 		godPos[1] = getWorld()->y /2;
+		setCenter(cam, godPos);
 		//glUseProgram(texShader);
 		float xSize = 2.0f / frameX;//(float)scr->width / 10000;
 		float ySize = 2.0f / frameY;//(float)scr->height /10000;
@@ -124,39 +131,49 @@ void updateLoop() {
 			0.0, 0.0, 0.0, 1.0
 		};
 		//toggleGod(0, 1);
+		//debugDraw = true;
 		while(!glfwWindowShouldClose(screen->window)) {
 			glfwPollEvents();
 			checkControllerInput();
 			processKeys();
 			if(glfwGetKey(screen->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-				glfwSetWindowShouldClose(screen->window, 1);
+				//glfwSetWindowShouldClose(screen->window, 1);
 			}
 			if (!paused) {
 				AnimListAnimate();
 				actorListDo();
 				groundWater();
-				if (!godMode && pooper != NULL) {
-					setCenter(cam, pooper->me->body->pos);
+				if (!godMode && poopers[0] != NULL) {
+					setCenter(cam, poopers[0]->me->body->pos);
 					//printf("currently at %f, %f\n", pooper->me->body->pos[0], pooper->me->body->pos[1]);
-				} else {
+				} else if (god == NULL) {
 					setCenter(cam, godPos);
 				}
 		
-			glClearColor(0.1, 0.2, 0.4, 1.0);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			if (debugDraw) {
-				drawWorldDebug(w, cam, tMat, sMat, rMat, drawColor, squa);
+				glClearColor(0.1, 0.2, 0.4, 1.0);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				if (debugDraw) {
+					drawWorldDebug(w, cam, tMat, sMat, rMat, drawColor, squa);
+				} else {
+					//glUseProgram(texShader);
+					drawWorld(w, cam);
+				}
+				if (gridOn) {
+					glUseProgram(baseShader);
+					drawGrid(matrix, tMat, sMat, rMat, drawColor, vLi);
+				}
+				renderText("POOPGUY", 25, 25, 1);		
+				glfwSwapBuffers(screen->window);
+			
 			} else {
-				//glUseProgram(texShader);
-				drawWorld(w, cam);
-			}
-			if (gridOn) {
-				glUseProgram(baseShader);
-				drawGrid(matrix, tMat, sMat, rMat, drawColor, vLi);
+				glClearColor(0.1, 0.1, 0.1, 1.0);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				glUseProgram(texShader);
+				drawPause(sMatrix);
+				updateMenu();
+				glfwSwapBuffers(screen->window);
 			}
 			
-			glfwSwapBuffers(screen->window);
-			}
 		}
 		exitGame();
 	}
@@ -307,9 +324,19 @@ void drawGrid(float *mat, int tMat, int sMat, int rMat, int color, GLuint vLi) {
 	}
 }
 
-void togglePause(void *, float poo) {
+void exitMenu() {
+	paused = false;
+	setMenuActive(pauseMenu, false);
+	getMouseBack();
+}
+
+void togglePauseMenu(void *, float poo) {
 	if (poo > 0) {
 		paused = !paused;
+		setMenuActive(pauseMenu, paused);
+		if (!paused) {
+			getMouseBack();
+		}
 	}
 }
 
@@ -322,12 +349,10 @@ void toggleDebugDraw(void *, float poo) {
 void toggleGod(void *, float poo) {
 	if (poo > 0) {
 		printf("toggle god %i\n", godMode);
-		//glUseProgram(getSP(2));
-		//clearData(curTrans, false);
-		//clearData(curRot, true);
 		if (godMode) {
-			if (numPlayers > 0) {
-				setCenter(cam, pooper->me->body->pos);
+			godOff(god);
+			if (poopers[0] != NULL) {
+				setCenter(cam, poopers[0]->me->body->pos);
 			}
 			setFrame(cam, cam->defaultFrameX, cam->defaultFrameY);
 			for (int i = 0; i < getTileCount(); i++) {
@@ -336,13 +361,9 @@ void toggleGod(void *, float poo) {
 			}
 			godMode = false;
 		} else {
-			setCenter(cam, godPos);
-			setFrame(cam, getWorld()->x, getWorld()->y);
-			for (int i = 0; i < getTileCount(); i++) {
-				TileSet *ts = getTile(i);
-				resizeTileSet(ts, getWorld()->x, getWorld()->y);
-			}
 			godMode= true;
+			setGod(god, cam->centerX, cam->centerY, cam->frameX, cam->frameY);
+			godOn(god);
 		}
 
 	}
@@ -350,8 +371,7 @@ void toggleGod(void *, float poo) {
 
 void exitGame() {
 	printf("exiting\n");
-	freeBG();
-	freeFG();
+	freeUILists();
 	deleteAnimList();
 	deleteTextureManager();
 	free(godPos);

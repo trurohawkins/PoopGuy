@@ -163,9 +163,11 @@ char *joyButtString(int jid, int butt, int onoff) {
 	buttString[3] = '\0';
 	ir->input = buttString;
 	ir->val = onoff;
-	printf("button:%s\n", buttString);
+	//printf("button: %i -- %i\n", butt, onoff);
+	printf("%s\n", buttString);
 	linkedList *ci = getCurInput();
 	addToList(&ci, ir);
+	processMenuControllerButtons(butt, onoff);
 	return buttString;
 }
 
@@ -177,6 +179,7 @@ void joyAxeString(int jid, int axes, float val) {
 	axeString[0] = 'A';
 	axeString[1] = jid + 48;
 	axeString[2] = axes + 48;
+	//printf("axe: %i = %f\n", axes, val);
 	//axeString[3] = onoff + 48;
 	axeString[3] = '\0';
 	//printf("%s\n", axeString);
@@ -190,6 +193,7 @@ void joyAxeString(int jid, int axes, float val) {
 	ir->val = val;
 	linkedList *ci = getCurInput();
 	addToList(&ci, ir);
+	processMenuAxes(axes, val);
 }
 
 char *getJoyButtString(int jid, char butt) {

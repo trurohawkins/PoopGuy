@@ -114,8 +114,10 @@ void drawWorld(World *w, Camera *cam) {
 	glUseProgram(texShader);
 	drawBG(sMatrix);
 	drawAnimOrder(back, mat, xSize, ySize);
+	GLuint squa = squareVao2d();
 	if (tileSeen > 0) {
 		glUseProgram(tileShader);
+		glBindVertexArray(getTileVAO());
 		void **tileSets = getContents(&tileList, tileSeen);
 		for (int i = 0; i < tileSeen; i++) {
 			int cur = *((int*)tileSets[i]);
@@ -150,8 +152,8 @@ void tileCell(TileSet *t, float remainder, int x, int y) {
 	World *w = getWorld();
 	int fx = curCam->frameX/2;
 	int fy = curCam->frameY/2;
-	int cx = clamp(curCam->centerX, fx, w->x - fx - 1);
-	int cy = clamp(curCam->centerY, fy, w->y - fy - 1);
+	int cx = clamp(curCam->centerX, fx, w->x - fx);
+	int cy = clamp(curCam->centerY, fy, w->y - fy);
 	int id = getFormID(x, y);
 	//if (getData(ds, x, y, 2) == 1) {
 	if (id == t->typeID) {

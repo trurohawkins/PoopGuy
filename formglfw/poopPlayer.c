@@ -1,18 +1,26 @@
 #include "poopPlayer.h"
 
-void setPalette(int pNum, Anim *a) {
-	if (pNum == 0) {
-		float palette[28] = {0.023529, 0.188235, 0.027451,1, 0.090196, 0.737255, 0.109804,1, 0.098039, 0.811765, 0.121569,1, 0.109804, 0.862745, 0.133333,1, 1.000000, 1.000000, 1.000000,1, 0.098039, 0.772549, 0.117647,1, 0.105882, 0.831373, 0.129412,1};
-		loadPalette(a, palette);
-	} else if (pNum == 1) {
-		float palette[28] = {0.0,0.0,0.0,1,  0.4,0,0.2,1,  0.3,0,0.1,1, 0.8,0,0.2,1,  1,1,1,1,  0.9,0.1,0.2,1, 0.50,0,0,1};
-		loadPalette(a, palette);
-	}
-}
-
-
 PoopGuy *makePoopPlayer(int xp, int yp, int pNum) {
-	PoopGuy *pooper = makePoopGuy(3, 3);
+	PoopGuy *pooper = (PoopGuy *)calloc(1, sizeof(PoopGuy));
+	//pooper->speed = 10;
+	//pooper->maxForce = 10;
+	pooper->me = makeActor(makeForm(0.2, 1, 0.2, 3, 3));
+	pooper->me->body->id = 69;
+	addStat(pooper->me->body, "anim", 0);
+	pooper->move = makeMove();
+	moveVar *mv = (moveVar*)pooper->move->vars;
+	mv->speed = 10;
+	mv->maxForce = 10;
+	Action *grav = makeGravity(pooper->move->vars);
+	pooper->jump = makeJump(pooper->move->vars, grav);
+	pooper->eatPoop = makeStomach(pooper->me->body, 3, 3);
+	pooper->control = makeControl();
+	setControlsMove(pooper->control->vars, pooper->move->vars);
+	addAction(pooper->me, pooper->move);
+	addAction(pooper->me, grav);
+	addAction(pooper->me, pooper->jump);
+	addAction(pooper->me, pooper->eatPoop);
+	addAction(pooper->me, pooper->control);
 	placeForm(xp, yp, pooper->me->body);
 	checkSide(pooper->me->body, 1, 0, true);
 	addActor(pooper->me);
@@ -53,6 +61,7 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum) {
 	setAnim(pooper->me->body, poo);
 
 	Player *p = makePlayer(pooper, pNum, deletePoopGuy);
+	pooper->player = p;
 	//key mouse ocntrols
 	if (p->num == 0) {
 		addControl(p, "K0W", up);
@@ -84,6 +93,14 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum) {
 	makeJoyAxeControl(p, '1', yMove);
 	return pooper;
 }
+
+void deletePoopGuy(void *poop) {
+	PoopGuy *pooper = (PoopGuy*)poop;
+	eatPooVar *ep = (eatPooVar*)(pooper->eatPoop->vars);
+	freeList(&(ep->stomach));
+	free(pooper);
+}
+
 
 void up(void *pg, float val) {
 	PoopGuy *p = (PoopGuy*)pg;	
@@ -155,7 +172,7 @@ void xMove(void *pg, float val) {
 	}
 }
 void yMove(void *pg, float val) {
-	printf("y move val: %f\n", val);
+	//printf("y move val: %f\n", val);
 	if (val > 0) {
 		up(pg, 1);
 	}  else if (val < 0) {
@@ -192,6 +209,17 @@ void jumpStart(void *pg, float val) {
 		startJump(p->me->body, p->jump);
 	}
 }
+
+void setPalette(int pNum, Anim *a) {
+	if (pNum == 0) {
+		float palette[28] = {0.023529, 0.188235, 0.027451,1, 0.090196, 0.737255, 0.109804,1, 0.098039, 0.811765, 0.121569,1, 0.109804, 0.862745, 0.133333,1, 1.000000, 1.000000, 1.000000,1, 0.098039, 0.772549, 0.117647,1, 0.105882, 0.831373, 0.129412,1};
+		loadPalette(a, palette);
+	} else if (pNum == 1) {
+		float palette[28] = {0.0,0.0,0.0,1,  0.4,0,0.2,1,  0.3,0,0.1,1, 0.8,0,0.2,1,  1,1,1,1,  0.9,0.1,0.2,1, 0.50,0,0,1};
+		loadPalette(a, palette);
+	}
+}
+
 
 void setAnimSprite(PoopGuy *pg) {
 	eatPooVar *ep = (eatPooVar*)(pg->eatPoop->vars);

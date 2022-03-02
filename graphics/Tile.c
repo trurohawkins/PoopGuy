@@ -4,9 +4,11 @@ float *translations;
 int dim;
 linkedList *TileSets;
 int tileCount = 0;
+GLuint tileVAO = 0;
 
 void initTileSets() {
 	TileSets = makeList();
+	tileVAO = makeSpriteVao(1, 1);
 }
 
 TileSet *makeTileSet(Anim *a, int xd, int yd, int mx, int my) {
@@ -209,6 +211,10 @@ float dirToRad(int d) {
 	} else if (d == 3) {
 		return 4.71239;
 	}
+}
+
+GLuint getTileVAO() {
+	return tileVAO;
 }
 
 void printData(DrawScreen *ds) {

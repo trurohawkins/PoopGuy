@@ -14,6 +14,7 @@ void deleteAction(Action *action) {
 	free(action->vars);
 	//free(action);//changed because part of list and deleting that list will fre this memory
 }
+
 void defaultAction(Form *a) {
 	printf("I(%i) am acting %i \n", a->id, a->id);
 }

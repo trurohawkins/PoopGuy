@@ -57,10 +57,10 @@ textureSource *findTexture(char *name) {
 textureSource *getTexture(char **name, int num, bool whiteGen) {
 	textureSource *ts = findTexture(*name);//textures always saved as first file
 	if (ts == NULL) {
-		printf("making new texture\n");
+		//printf("making new texture\n");
 		ts = makeTextureFromImages(name, num, whiteGen);
 	} else {
-		printf("no need to make new texture\n");
+		//printf("no need to make new texture\n");
 	}
 	return ts;
 }
@@ -84,7 +84,7 @@ textureSource *makeTexture(char *img, bool single) {
 			makeLayerTexture(ts, data, 0);
 			//separateImgByColor(ts, data, 0, false);
 		} else {
-			printf("single sprite being made to texture\n");
+			//printf("single sprite being made to texture\n");
 			unsigned int tex = genTexture(data, ts->width, ts->height);
 			ts->tex = (unsigned int*)calloc(sizeof(unsigned int), 1);
 			*(ts->tex) = tex;
@@ -95,10 +95,10 @@ textureSource *makeTexture(char *img, bool single) {
 			}
 		}
 		addTexture(ts);
-		printf("number of textures %i\n", ts->numTex);
+		//printf("number of textures %i\n", ts->numTex);
 	} else {
 		free(ts);
-		printf("failed to load texture from file %s\n", img);
+		//printf("failed to load texture from file %s\n", img);
 		ts = 0;
 	}
 	stbi_image_free(data);
@@ -276,7 +276,7 @@ void writeTextureToFile(textureSource *ts, colorLayerInfo *layers) {
 		strcpy(cur, fName);
 		cur[sLen - 4] = (unsigned char)i + 48;
 		strcat(cur, ".png");
-		printf("creating file %s\n", cur);
+		//printf("creating file %s\n", cur);
 		stbi_write_png(cur, ts->width, ts->height, ts->channels, (layers->layers)[i].data, ts->width * ts->channels);	
 		free(cur);
 	}
@@ -287,9 +287,9 @@ void writePalette(textureSource *ts, char *name) {
 	int sLen = strlen(name);
 	char *fName = (char*)calloc(sizeof(char), sLen + 13);
 	strncpy(fName, name, sLen);
-	printf("file name = %s\n");
+	//printf("file name = %s\n");
 	strcat(fName, "Palette0.c");
-	printf("creating palette %s at %s\n", name, fName);
+	//printf("creating palette %s at %s\n", name, fName);
 	FILE* fptr = fopen(fName, "w");
 	char *varName = (char*)calloc(sizeof(char), 16 + strlen(name));
 	strcpy(varName, "float ");

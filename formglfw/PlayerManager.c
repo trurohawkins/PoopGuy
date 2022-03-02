@@ -25,16 +25,21 @@ void processKeys() {
 			while (curPlayer != NULL) {
 				if(curPlayer->data != NULL) {
 					Player *p = (Player*)(curPlayer->data);
-					linkedList *con = p->controls;
-					while (con != NULL) {
-						InpMap *tmp = (InpMap*)con->data;
-						char *c = tmp->input;
-						if (strCompare(inp, c) == true) {
-							tmp->func(p->self, ir->val);
-							break;
-						} 
-						con = con->next;
+
+					if(p->active) { 
+						linkedList *con = p->controls;
+						while (con != NULL) {
+							InpMap *tmp = (InpMap*)con->data;
+							char *c = tmp->input;
+							if (strCompare(inp, c) == true) {
+								//printf("pressed %s matches function %s\n", inp, c);
+								tmp->func(p->self, ir->val);
+								break;
+							} 
+							con = con->next;
+						}
 					}
+
 				}
 				curPlayer = curPlayer->next;
 			}	

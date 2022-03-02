@@ -1,18 +1,6 @@
 #ifndef POOPGUY
 #define POOPGUY
 
-typedef struct PoopGuy {
-	Actor *me;
-	Action *jump;
-	Action *move;
-	Action *eatPoop;
-	Action *control;
-	int speed;
-	int maxForce;
-	char lastInp;
-
-} PoopGuy;
-
 
 PoopGuy *makePoopGuy(int sx, int sy);
 PoopGuy *getPoopGuy();

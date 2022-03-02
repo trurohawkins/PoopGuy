@@ -6,6 +6,7 @@ typedef struct Player {
 	int num;
 	Joypad *joy;
 	void(*delFunc)(void*);
+	bool active;
 } Player;
 
 #include "PlayerManager.h"

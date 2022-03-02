@@ -42,6 +42,7 @@ void setRots(DrawScreen *ds, float rot);
 void setRot(DrawScreen *ds, int x, int y, float rad);
 void tileDataPoo(DrawScreen *ds, DrawScreen *rot);
 float dirToRad(int d);
+GLuint getTileVAO();
 void printData(DrawScreen *ds);
 void setTileSetID(TileSet *t, int id);
 #endif
