@@ -1,7 +1,9 @@
 #include "Text.h"
 textCharacter **alphabet;
 unsigned int VAO,VBO;
-float screenVolume;
+float screenVolume = 0;
+float screenScaleX = 1;
+float screenScaleY = 1;
 float screenScale = 1;
 
 textCharacter *makeTextCharacter(unsigned int texture, int xs, int ys, int xb, int yb, int advance) {
@@ -29,7 +31,7 @@ void initText() {
 	//glUniformMatrix4fv(glGetUniformLocation(textShader, "projection"), 1, GL_FALSE, projection);
 	glUniform4f(glGetUniformLocation(textShader, "textColor"), 0.5, 0.8, 0.2, 0.5);
 	screenVolume = screen->width * screen->height;
-	setOrtho();
+	setOrtho(1);
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft)) {
 		printf("Freetype error couldnt init\n");
@@ -93,15 +95,15 @@ void renderText(char *string, float x, float y, float scale) {
 	glBindVertexArray(VAO);
 	char *c = string;
 	//printf("begin\n");
-	scale *= screenScale;
+	//scale *= screenScale;
 	while (*c != '\0') {
 	//	printf("char: %c\n", *c);
 		textCharacter *ch = alphabet[*c];
-		float xpos = x + ch->xBearing * scale;
-		float ypos = y - (ch->ySize - ch->yBearing) * scale;
+		float xpos = x + (ch->xBearing * scale * screenScaleX);
+		float ypos = y - ((ch->ySize - ch->yBearing) * scale * screenScaleY);
 		//printf("placing at %f, %f\n", xpos, ypos);
-		float w = ch->xSize * scale;
-		float h = ch->ySize * scale;
+		float w = ch->xSize * scale * screenScaleX;
+		float h = ch->ySize * scale * screenScaleY;
 		//printf("w&h %f&%f\n", w, h);
 
 		float vertices[6][4] = {
@@ -122,7 +124,7 @@ void renderText(char *string, float x, float y, float scale) {
 		// render quad
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		//now advancve cursors for next glyph (note that the advance is 1/64 pixels)
-		x += (ch->Advance >> 6) * scale;//bitshift by 6 to get value in pixels (2^6 = 64)
+		x += (ch->Advance >> 6) * scale * screenScaleX;//bitshift by 6 to get value in pixels (2^6 = 64)
 		c++;
 	}
 	glBindVertexArray(0);
@@ -136,54 +138,44 @@ void setTextDrawColor(float *col) {
 }
 
 //called for resizing operations
-void setOrtho() {//float left, float right, float bottom, float top, float near, float far) {
+void setOrtho(float screenScale) {//float left, float right, float bottom, float top, float near, float far) {
 	GLuint textShader = getSP(3);
 	glUseProgram(textShader);
 	Screen *screen = getWindow();
-	float newVolume = screen->width * screen->height;
-	screenScale = sqrt(newVolume / screenVolume);
-	screenVolume = newVolume;
-
 	/*
-	float mid_x = (left + right) / 2; //tt = 0.5
-	float mid_y = (bottom + top) / 2;
-	float mid_z = (near + far) / 2;
-	float projection [] = {
-		1.0, 0.0, 0.0, -mid_x,
-		0.0, 1.0, 0.0, -mid_y,
-		0.0, 0.0, 1.0, -mid_z,
-		0.0, 0.0, 0.0, 1.0
-	};
-	*/
-	mat4 dest;
-	glm_ortho(0, screen->width, 0, screen->height, 0, 1000, dest);
-	/*
-	printf("mat left corner? %f or %f\n", dest[3][0], dest[3][3]);
-
-	float projection [] = {
-		0.001563, 0.0, 0.0, 0.0,
-		0.0, 0.002778, 0.0, 0.0,
-		0.0, 0.0, -1.0, 0.0,
-		-1.0, -1.0, 0.0, 1.0
-	};
-	int index = 0;
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			printf(" %f/", projection[index++]);
-			printf("%f ,", dest[i][j]);
-		}
-		printf("\n");
+	float newVolume = (screen->width * screen->height);
+	if (screenVolume == 0) {
+		screenVolume = newVolume;
+		screenScale = 1;
+	} else {
+		screenScale = newVolume / screenVolume;
+		screenVolume = newVolume;
+	}
+	//screenScale = 1;
+	if (screen->width > screen->height) {
+		screenScaleX = screenScale * ((float)screen->height / screen->width);
+		screenScaleY = screenScale;
+	} else {
+		screenScaleX = screenScale;
+		screenScaleY = screenScale * ((float)screen->width / screen->height);
 	}
 	*/
+	
+	screenScaleX = screenScale;///= 2;// screenScale;
+	screenScaleY = screenScale;///= 2;//screenScale;
+	printf("%f, %f\n", screenScaleX, screenScaleY);
+	mat4 dest;
+	glm_ortho(0, screen->width, 0, screen->height, 0, 1000, dest);
 	glUniformMatrix4fv(glGetUniformLocation(textShader, "projection"), 1, GL_FALSE, &(dest[0][0]));
  			//glm_ortho(0.0f, (float)(screen->width), 0.0f, (float)(screen->height), 0.1, 1000, dest);
 }
 
 void drawText(Text *t, float x, float y) {
 	if (t->centered) {
-		x -= (t->scale * screenScale) * (t->length / 2);
-		y -= t->height * t->scale * screenScale;
+		x -= (t->scale * screenScaleX) * (t->length / 2);
+		y -= t->height * t->scale * screenScaleY;
 	}
+	
 	//printf("drawing %s at %f. %f\n", t->str, x, y);
 	//printf("drawing at scale %f\n", screenScale);
 	float *col = t->color;
@@ -193,10 +185,20 @@ void drawText(Text *t, float x, float y) {
 
 Text *makeText(char *str, float scale, bool centered, float r, float g, float b, float a) {
 	Text *t = (Text*)calloc(sizeof(Text), 1);
-	t->str = (char*)calloc(sizeof(char), strlen(str) + 1);
-	strcpy(t->str, str);
 	t->scale = scale;
 	t->centered = centered;
+	setTextText(t, str);
+	t->color = (float*)calloc(sizeof(float), 4);
+	t->color[0] = r;
+	t->color[1] = g;
+	t->color[2] = b;
+	t->color[3] = a;
+	return t;
+}
+
+void setTextText(Text *t, char *str) {
+	t->str = (char*)calloc(sizeof(char), strlen(str) + 1);
+	strcpy(t->str, str);
 	t->length = 0;
 	t->height = 0;
 	int total = 0;
@@ -208,12 +210,6 @@ Text *makeText(char *str, float scale, bool centered, float r, float g, float b,
 		str++;
 	}
 	t->height /= total;
-	t->color = (float*)calloc(sizeof(float), 4);
-	t->color[0] = r;
-	t->color[1] = g;
-	t->color[2] = b;
-	t->color[3] = a;
-	return t;
 }
 
 void setTextColor(Text *t, float *col) {
@@ -228,3 +224,4 @@ void freeText(Text *t) {
 	free(t);
 }
 
+#include "TextInput.c"

@@ -133,11 +133,63 @@ GLuint makeSpriteVao(float sx, float sy) {
 }
 
 void glfwWindowSizeCallback(GLFWwindow *window, int width, int height) {
+	float scale = sqrt(width * height) / sqrt(curScreen->width * curScreen->height);
 	curScreen->width = width;
 	curScreen->height = height;
 	glViewport(0, 0, curScreen->width, curScreen->height);
-	setOrtho();//for text rendering
+	sizeScreen(curScreen->frame);
+	setOrtho(scale);//for text rendering
 }
+
+void sizeScreen(int frame) {
+	curScreen->frame = frame;
+	float xRatio = 1;
+	float yRatio = 1;
+	float xRatioInv = 1;
+	float yRatioInv = 1;
+	if (curScreen->width > curScreen->height) {
+		xRatio = (float)curScreen->width / curScreen->height;
+		yRatio = 1;
+		xRatioInv = (float)curScreen->height / curScreen->width;
+		yRatioInv = 1;
+	} else {
+		xRatio = 1;
+		yRatio = (float)curScreen->height / curScreen->width;
+		xRatioInv = 1;
+		yRatioInv = (float)curScreen->width / curScreen->height;
+	}
+	/*
+	if (frame * xRatio > curScreen->frameMax) {
+		curScreen->frameX = curScreen->frameMax;
+	} else {
+		curScreen->frameX = frame * xRatio;
+	}
+	if (frame * yRatio > curScreen->frameMax) {
+		curScreen->frameY = curScreen->frameMax;
+	} else {
+		curScreen->frameY = frame * yRatio;
+	}
+	*/
+	if (frame * xRatio > curScreen->frameMax|| frame * yRatio > curScreen->frameMax) {
+		curScreen->frameX = curScreen->frameMax;
+		curScreen->frameY = curScreen->frameMax;
+	} else {
+		curScreen->frameX = frame * xRatio;
+		curScreen->frameY = frame * yRatio;
+	}
+		//curScreen->frameX = frame * xRatio;
+		//curScreen->frameY = frame * yRatio;
+	printf("screen at %i, %i\n", curScreen->frameX, curScreen->frameY);
+	for (int i = 0; i < getTileCount(); i++) {
+		TileSet *ts = getTile(i);
+		resizeTileSet(ts, curScreen->frameX, curScreen->frameY);
+	}
+}
+
+void setScreenMax(int max) {
+	curScreen->frameMax = max;
+}
+
 
 Screen *getWindow() {
 	return curScreen;

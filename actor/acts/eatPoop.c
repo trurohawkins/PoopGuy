@@ -39,7 +39,6 @@ void stomachStuff(Form *f, Action *a) {
 				xc = getEdge(f, 0, d[ep->dir][0]);
 				yc = (f->pos[1] - (1-f->pMod[1]) + ((f->size[1]/2)+1));
 			}
-			//printf("eating at ");
 			for (int x = 0; x < ep->xBite; x++) {
 				for (int y = 0; y < ep->yBite; y++) {
 					//printf(" %i, %i ", xc-x, yc - y);

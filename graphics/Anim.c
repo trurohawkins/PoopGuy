@@ -29,11 +29,26 @@ Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int cols) 
 	Anim *a = (Anim*)calloc(sizeof(Anim), 1);
 	a->drawOrder = 0;
 	a->texture = getTexture(sheet, spriteNum, generated);
+	float tPropX = 1;
+	float tPropY = 1;
 	if (a->texture == NULL) {
 		printf("texture not made well\n");
+		//probably need to free terxture too
+		free(a);
+		return NULL;
+	} else {
+		float cellWidth = a->texture->width / cols;
+		float cellHeight = a->texture->height / rows;
+		if (cellWidth > cellHeight) {
+			tPropX = 1;
+			tPropY = (float)cellHeight / cellWidth;
+		} else {
+			tPropX = (float)cellWidth / cellHeight;
+		}
 	}
-	a->frameX = 1.0f/cols;
-	a->frameY = 1.0f/rows;
+	printf("texture proportion: %f, %f\n", tPropX, tPropY);
+	a->frameX = 1.0/cols;
+	a->frameY = 1.0/rows;
 	a->frame = 0;
 	a->sprite = 0;
 	a->speed = 5;
@@ -46,6 +61,8 @@ Anim *makeAnim(char **sheet, int spriteNum, bool generated, int rows, int cols) 
 	for (int i = 0; i <  rows; i++) {
 		a->length[i] = cols;
 	}
+	a->ratio[0] = tPropX;
+	a->ratio[1] = tPropY;
 	a->scale[0] = 1;
 	a->scale[1] = 1;
 	a->flip[0] = 1;
@@ -95,119 +112,6 @@ Anim *makeAnimSheet(char *baseFile, int numColors, int rows, int cols) {
 	return a;
 }
 
-void getUniformValue(GLuint texShader, char *name, GLuint *dest) {
-	GLuint t = glGetUniformLocation(texShader, name);
-	if (t == -1) {
-		printf("shader doesnt have a var %s\n", name);
-	} else {
-		*dest = t;
-		//printf("got value %u for %s\n", t, name);
-	}
-}
-
-void setTexTrans(GLuint tt) {
-	if (tt == -1) {
-		printf("frag doesnt have a var tcTrans\n");
-	} else {
-		tcTrans = tt;
-	}
-}
-
-void setTexScale(GLuint ts) {
-	if (ts == -1) {
-		printf("frag doesnt have a var tcScale\n");
-	} else {
-		tcScale = ts;
-	}
-}
-
-void setTexColor(GLuint tc) {
-	if (tc == -1) {
-		printf("frag doesnt have a var colorShift\n");
-	} else {
-		tcColor = tc;
-	}
-}
-
-void initTexInts(GLuint texShader) {
-	getUniformValue(texShader, "tcScale", &tcScale);
-	getUniformValue(texShader, "tcTrans", &tcTrans);
-	getUniformValue(texShader, "colorShift", &tcColor);
-	getUniformValue(texShader, "tMat", &spriteTrans);
-	getUniformValue(texShader, "sMat", &spriteScale);
-	getUniformValue(texShader, "rMat", &spriteRot);
-
-	glUseProgram(texShader);
-	float tscMat [] = {
-		//1.0f/6, 0.0, 0.0,
-		//0.0, 1.0f/4, 0.0,
-		1.0, 0.0, 0.0,
-		0.0, 1.0, 0.0,
-		0.0, 0.0, 1.0
-	};
-	float ttcMat [] = {
-		1.0, 0.0, 0.0,
-		0.0, 1.0, 0.0,//-1.0f/4,
-		0.0, 0.0, 1.0,
-	};
-	glUniformMatrix3fv(tcScale, 1, GL_TRUE, tscMat);
-	glUniformMatrix3fv(tcTrans, 1, GL_TRUE, ttcMat);
-	glUniform3f(tcColor, 255, 255, 255);
-	GLuint tileShader = getSP(2);
-	getUniformValue(tileShader, "tcScale", &tcScaleTile);
-	getUniformValue(tileShader, "tcTrans", &tcTransTile);
-	getUniformValue(tileShader, "colorShift", &tcColorTile);
-	getUniformValue(tileShader, "tMat", &spriteTransTile);
-	getUniformValue(tileShader, "sMat", &spriteScaleTile);
-	getUniformValue(tileShader, "rMat", &spriteRotTile);
-}
-
-float rotoToRadian(int d) {
-	if (d == 0) {
-		return 1.5708;
-	} else if (d == 2) {
-		return 4.71239;
-	}
-	return 0;
-}
-
-void freeAnim(Anim *a) {
-	free(a->palette);
-	free(a->length);
-	free(a);
-}
-
-void setScale(Anim *a, int x, int y) {
-	a->scale[0] = x;
-	a->scale[1] = y;
-}
-
-void setOffset(Anim *a, float x, float y) {
-	a->offset[0] = x;
-	a->offset[1] = y;
-}
-
-void setFlipX(Anim *a, int x) {
-	a->flip[0] = x;
-}
-
-void setFlipY(Anim *a, int y) {
-	a->flip[1] = y;
-}
-
-void setRoto(Anim *a, int degree) {
-	a->roto = degree;
-}
-
-void setInvert(Anim *a, int axis, bool flipped) {
-	a->invert[axis] = flipped;
-}
-
-
-void setDrawOrder(Anim *a, int o) {
-	a->drawOrder = o;
-}
-
 void addSprite(Anim *a, int index, int len) {
 	if (index >= 0 && index < a->spriteNum) {
 		a->length[index] = len;
@@ -218,6 +122,22 @@ void animAddVao(Anim *a, unsigned int vao) {
 	a->vao = vao;
 }
 
+/*
+void animGenVao(Anim *a) {
+	if (a->texture == 0) {
+		a->vao = makeSpriteVao(1,1);
+	} else {
+		float tPropX = 1;
+		float tPropY = 1;
+		if (a->texture->width > a->texture->height) {
+			tPropY = (float)a->texture->height / a->texture->width;
+		} else {
+			tPropX = (float)a->texture->width / a->texture->height;
+		}
+		a->vao = makeSpriteVao(tPropX, tPropY);
+	}
+}
+*/
 void animate(Anim *a) {
 	//printf("cur sprite: %i\n", a->sprite);
 	if (a->length[a->sprite] > 0) {
@@ -269,13 +189,24 @@ void setSpriteTexture(Anim *a) {
 }
 
 void drawSprite(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp) {
-
+	Screen *s = getWindow();
+	float xRatio = 1;
+	float yRatio = 1;
+	/*
+	if (s->width > s->height) {
+		xRatio = (float)s->height / s->width;
+		yRatio = 1;
+	} else {
+		xRatio = 1;
+		yRatio = (float)s->width / s->height;
+	}
+*/
 	sMatrix[3] = 0;
 	sMatrix[7] = 0;
 	//sMatrix[0] = xSize * a->scale[0] * convertInvert(f->invert[0]);//a->flip[0];
 	//sMatrix[5] = ySize * a->scale[1] * convertInvert(f->invert[1]);//a->flip[1];
-	sMatrix[0] = xSize * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
-	sMatrix[5] = ySize * a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
+	sMatrix[0] = xRatio * xSize * a->ratio[0] * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
+	sMatrix[5] = yRatio * ySize * a->ratio[1] * a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
 	glUniformMatrix4fv(spriteScale, 1, GL_TRUE, sMatrix);
 	setSpriteTexture(a);
 	sMatrix[3] = (-1 + xSize/2) + ((xp + a->offset[0]) * xSize);// + -a->flip[0] * 0.01f;
@@ -308,10 +239,22 @@ void drawSprite(Anim *a, float *sMatrix, float xSize, float ySize, float xp, flo
 }
 
 void drawUIAnim(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp) {
+	Screen *s = getWindow();
+	float xRatio = 1;
+	float yRatio = 1;
+	if (s->width > s->height) {
+		xRatio =  (float)s->height / s->width;
+		yRatio = 1;
+	} else {
+		xRatio = 1;
+		yRatio =  (float)s->width / s->height;
+	}
+	//printf("ratio: %f, %f, size: %f, %f\n", xRatio, yRatio, xSize, ySize);
 	sMatrix[3] = 0;
 	sMatrix[7] = 0;
-	sMatrix[0] = xSize * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
-	sMatrix[5] = ySize * a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
+	sMatrix[0] = xRatio * xSize * a->ratio[0] * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
+	sMatrix[5] = yRatio * ySize * a->ratio[1] *  a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
+	//printf("UI scale: %f, %f\n", sMatrix[0], sMatrix[5]);
 	glUniformMatrix4fv(spriteScale, 1, GL_TRUE, sMatrix);
 	setSpriteTexture(a);
 	sMatrix[3] = xp;//(-1 + xSize/2) + ((xp + a->offset[0]) * xSize);// + -a->flip[0] * 0.01f;
@@ -353,11 +296,22 @@ void setUpTiles(Anim *a, float *sMatrix, float xSize, float ySize) {
 	};
 	glUniformMatrix4fv(spriteRotTile, 1, GL_TRUE, mat);
 	glUniformMatrix4fv(spriteTransTile, 1, GL_TRUE, mat);
-
+	Screen *s = getWindow();
+	float xRatio = 1;
+	float yRatio = 1;
+	/*
+	if (s->width > s->height) {
+		xRatio = (float)s->height / s->width;
+		yRatio = 1;
+	} else {
+		xRatio = 1;
+		yRatio = (float)s->width / s->height;
+	}
+*/
 	mat[3] = 0;
 	mat[7] = 0;
-	mat[0] = xSize * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
-	mat[5] = ySize * a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
+	mat[0] = xRatio * xSize * a->ratio[0] * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
+	mat[5] = yRatio * ySize * a->ratio[1] * a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
 	glUniformMatrix4fv(spriteScaleTile, 1, GL_TRUE, mat);
 	float tMat [] = {
 		1.0, 0.0, getCoordX(a),
@@ -424,5 +378,120 @@ void loadPalette(Anim *a, float *palette) {
 		a->palette[step+2] = palette[step+2];
 		a->palette[step+3] = palette[step+3];
 	}
+}
+
+void setScale(Anim *a, float x, float y) {
+	a->scale[0] = x;
+	a->scale[1] = y;
+}
+
+void setOffset(Anim *a, float x, float y) {
+	a->offset[0] = x;
+	a->offset[1] = y;
+}
+
+void setFlipX(Anim *a, int x) {
+	a->flip[0] = x;
+}
+
+void setFlipY(Anim *a, int y) {
+	a->flip[1] = y;
+}
+
+void setRoto(Anim *a, int degree) {
+	a->roto = degree;
+}
+
+void setInvert(Anim *a, int axis, bool flipped) {
+	a->invert[axis] = flipped;
+}
+
+
+void setDrawOrder(Anim *a, int o) {
+	a->drawOrder = o;
+}
+
+
+void getUniformValue(GLuint texShader, char *name, GLuint *dest) {
+	GLuint t = glGetUniformLocation(texShader, name);
+	if (t == -1) {
+		printf("shader doesnt have a var %s\n", name);
+	} else {
+		*dest = t;
+		//printf("got value %u for %s\n", t, name);
+	}
+}
+
+void setTexTrans(GLuint tt) {
+	if (tt == -1) {
+		printf("frag doesnt have a var tcTrans\n");
+	} else {
+		tcTrans = tt;
+	}
+}
+
+void setTexScale(GLuint ts) {
+	if (ts == -1) {
+		printf("frag doesnt have a var tcScale\n");
+	} else {
+		tcScale = ts;
+	}
+}
+
+void setTexColor(GLuint tc) {
+	if (tc == -1) {
+		printf("frag doesnt have a var colorShift\n");
+	} else {
+		tcColor = tc;
+	}
+}
+
+void initTexInts() {
+	GLuint texShader = getSP(1);
+	getUniformValue(texShader, "tcScale", &tcScale);
+	getUniformValue(texShader, "tcTrans", &tcTrans);
+	getUniformValue(texShader, "colorShift", &tcColor);
+	getUniformValue(texShader, "tMat", &spriteTrans);
+	getUniformValue(texShader, "sMat", &spriteScale);
+	getUniformValue(texShader, "rMat", &spriteRot);
+
+	glUseProgram(texShader);
+	float tscMat [] = {
+		//1.0f/6, 0.0, 0.0,
+		//0.0, 1.0f/4, 0.0,
+		1.0, 0.0, 0.0,
+		0.0, 1.0, 0.0,
+		0.0, 0.0, 1.0
+	};
+	float ttcMat [] = {
+		1.0, 0.0, 0.0,
+		0.0, 1.0, 0.0,//-1.0f/4,
+		0.0, 0.0, 1.0,
+	};
+	glUniformMatrix3fv(tcScale, 1, GL_TRUE, tscMat);
+	glUniformMatrix3fv(tcTrans, 1, GL_TRUE, ttcMat);
+	glUniform3f(tcColor, 255, 255, 255);
+	GLuint tileShader = getSP(2);
+	getUniformValue(tileShader, "tcScale", &tcScaleTile);
+	getUniformValue(tileShader, "tcTrans", &tcTransTile);
+	getUniformValue(tileShader, "colorShift", &tcColorTile);
+	getUniformValue(tileShader, "tMat", &spriteTransTile);
+	getUniformValue(tileShader, "sMat", &spriteScaleTile);
+	getUniformValue(tileShader, "rMat", &spriteRotTile);
+}
+
+float rotoToRadian(int d) {
+	if (d == 0) {
+		return 1.5708;
+	} else if (d == 2) {
+		return 4.71239;
+	}
+	return 0;
+}
+
+void freeAnim(Anim *a) {
+	free(a->palette);
+	free(a->length);
+	free(a);
 }
 

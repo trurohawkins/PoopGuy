@@ -13,7 +13,11 @@ void arrayToFile(char *txt, int **array)
 	fptr = fopen(txt, "w");
 
 	if (fptr != NULL) {
-		fwrite(array, sizeof(int), sizeX*sizeY, fptr);
+		for (int i = 0; i < sizeX; i++) {
+			fwrite(array[i], sizeof(int), sizeY, fptr);
+
+		}
+		//fwrite(array, sizeof(int), sizeX*sizeY, fptr);
 	}
 		fseek(fptr, 0, SEEK_SET);
 		fclose(fptr);
@@ -34,12 +38,16 @@ int **fileToArray(char *txt) {
 	fptr = fopen(txt, "r");
 
 	if (fptr != NULL) {
-		fread(array, sizeof(int), sizeX*sizeY, fptr);	
+		for (int i = 0; i < sizeX; i++) {
+			fread(array[i], sizeof(int), sizeY, fptr);
+		}
+		//fread(array, sizeof(int), sizeX*sizeY, fptr);	
 		fseek(fptr, 0, SEEK_SET);
 		fclose(fptr);
 	}
 	return array;
 }
+
 int** genMap(int *Seedstringd) {
     // Declare map array
     int sizeX = theWorld->x;
@@ -102,7 +110,6 @@ int** genRain( int **map) {
 
 	int satVal = 9;
 	int inc = 11;
-
 	for (int x =0; x < sizeX; x++) {
 		blocksum = 0;
 		for(int y= sizeY-2; y > -1; y--) {
@@ -130,4 +137,30 @@ void genWorld(int **map) {
 			} 
 		}
 	}	
+}
+
+int **worldToMap() {
+	int sizeX = theWorld->x;
+	int sizeY = theWorld->y;
+	int **map = (int**) calloc(sizeX, sizeof(int*));
+
+	for (int x = 0; x < sizeX; x++) {
+		map[x] = (int*) calloc(sizeY , sizeof(int));
+		for(int y = 0; y < sizeY; y++) {
+			Cell *cur = theWorld->map[x][y];
+			Form **residents = getCellContents(cur);
+			if (residents != NULL) {
+				Form *guy = checkSolidForm(cur);
+				if (isFormCenter(guy, x, y)) {
+					int val = guy->id;
+					if (guy->id == 10) {
+						int mod = *(getStat(guy, "moisture")) * 10;
+						val = clamp(val + mod, 10, 19);
+					}
+					map[x][y] = val;
+				}
+			}
+		}
+	}
+	return map;
 }

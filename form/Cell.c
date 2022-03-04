@@ -82,6 +82,57 @@ Form **getCellContents(Cell *c) {
 	return content;
 }
 
+bool writeCell(char *file, Cell *c) {
+	linkedList *cur = c->within;
+	int count = 0;
+	int *arr = (int*)calloc(c->count, sizeof(int));
+	while (cur != NULL) {
+		if (cur->data != NULL) {
+			Form *f = (Form*)cur->data;
+			if (isFormCenter(f, c->pos[0], c->pos[1])) {
+				/*
+				if (f->id == 69) {
+					int cx = (int)floor(f->pos[0]);
+					int cy = (int)floor(f->pos[1]);
+					printf("%i, %i got poopguy at %i, %i\n", data[1], data[2], cx, cy);
+				}
+				*/
+				FormRecipe *r = getRecipe(f->id);
+				if (r) {
+					if (f->id == 0) {
+						printf("saving poop guy at %i, %i\n", c->pos[0], c->pos[1]);
+					}
+					arr[count] = r->saveFunc(f);
+					count++;
+				}
+			}	
+		}
+		cur = cur->next;
+	}
+	if (count > 0) {
+		int *data = (int*)calloc(3 + count, sizeof(int));
+		data[0] = count;
+		data[1] = c->pos[0];
+		data[2] = c->pos[1];
+		for (int i = 3; i < 3 + count; i++) {
+			data[i] = arr[i-3];
+		}
+		//printf("wriitng Cell: %i, %i, count: %i\n", data[1], data[2], data[0]);
+		writeBinaryInt(file, data, 3 + count);
+		free(data);
+	}
+	free(arr);
+	return count > 0;
+	/*
+	data = readBinaryInt(file, 3 + c->count);
+	for (int i = 0; i < 3 + c->count; i++) {
+		printf(" - %i - ", data[i]);
+	}
+	printf("\n");
+	free(data);
+	*/
+}
+
 void printCell(Cell *c) {
 	printf("printing Cell %i, %i\n", c->pos[0], c->pos[1]);
 	if (c->within != 0) {

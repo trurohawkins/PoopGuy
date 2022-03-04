@@ -15,6 +15,7 @@ void removeFromCell(Cell *c, Form *f);
 Form *getSolidForm(Cell *c);
 Form *checkSolidForm(Cell *c);
 Form **getCellContents(Cell *c);
+bool writeCell(char *file, Cell *c);
 void printCell(Cell *c);
 void freeCell(Cell *c);
 

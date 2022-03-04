@@ -17,6 +17,7 @@ TileSet *makeTileSet(Anim *a, int xd, int yd, int mx, int my) {
 	ts->typeID = -1;
 	GLuint tileShader = getSP(2);
 	glUseProgram(tileShader);
+	printf("diemnsions recieved %i, %i\n", xd, yd);
 	ts->color = makeDrawScreen(xd, yd, mx, my, 1, 4, true);
 	ts->trans = makeDrawScreen(xd, yd, mx, my, 3, 3, false);
 	ts->rot = makeDrawScreen(xd, yd, mx, my, 4, 4, true);
@@ -50,8 +51,16 @@ int getTileCount() {
 
 DrawScreen *makeDrawScreen(int dimensionX ,int dimensionY, int maxDimensionX ,int maxDimensionY, int location, int stride, bool base) {
 	DrawScreen *ds = (DrawScreen*)calloc(sizeof(DrawScreen), 1);
+	if (dimensionX > maxDimensionX) {
+		dimensionX = maxDimensionX;
+	}
+	if (dimensionY > maxDimensionY) {
+		dimensionY = maxDimensionY;
+	}
 	ds->dimensionX = dimensionX;// + 1;
 	ds->dimensionY = dimensionY;// + 1;
+	//printf("tile set at %i, %i\n", dimensionX, dimensionY);
+	ds->size = dimensionX * dimensionY;
 	ds->maxX = maxDimensionX;
 	ds->maxY = maxDimensionY;
 	ds->data = (float*)calloc(sizeof(float), maxDimensionX * maxDimensionY * stride);
@@ -76,8 +85,13 @@ void initializeData(DrawScreen *ds, bool base) {
 	} else {
 		float sizeX = 2.0/ds->dimensionX;
 		float sizeY = 2.0/ds->dimensionY;
+		float dim = sqrt(ds->dimensionX * ds->dimensionY);
+		float size = 2.0 / dim;
+		printf("sizes %f, %f -=- %f \n", sizeX, sizeY, size);
 		for (int y = -ds->dimensionY; y < ds->dimensionY; y+=2) { 
 			for (int x = -ds->dimensionX; x < ds->dimensionX; x+=2) {
+//		for (int y = -dim; y < dim; y+=2) { 
+//			for (int x = -dim; x < dim; x+=2) {
 				(ds->data)[index++]	= (sizeX/2) + ((float)x / ds->dimensionX);
 				(ds->data)[index++]	= (sizeY/2) + ((float)y / ds->dimensionY);
 				for (int i = 0; i < ds->stride-2; i++) {
@@ -98,6 +112,15 @@ void setScreenVBO(DrawScreen *ds) {
 
 void resizeDrawScreen(DrawScreen *ds, int newSizeX, int newSizeY, bool base) {
 	if (newSizeX > 0 && newSizeX <= ds->maxX && newSizeY > 0 && newSizeY <= ds->maxY) {
+	/*
+		if (newSizeX > ds->maxX || newSizeY > ds->maxY) {
+			ds->dimensionX = ds->maxX;
+			ds->dimensionY = ds->maxY;
+		} else {
+			ds->dimensionX = newSizeX;
+			ds->dimensionY = newSizeY;
+		}
+		*/
 		ds->dimensionX = newSizeX;
 		ds->dimensionY = newSizeY;
 		initializeData(ds, base);

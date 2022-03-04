@@ -7,6 +7,7 @@ typedef struct Camera {
 	int centerY;
 	int defaultFrameX;
 	int defaultFrameY;
+	float size;
 } Camera;
 
 Camera *makeCamera();

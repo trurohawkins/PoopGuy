@@ -7,10 +7,16 @@
 #include "Camera.h"
 #include "DrawWorld.h"
 
+int mainMenu();
+char *getFileName();
 void updateLoop();
+void playGame();
+void quitGame();
+void saveGame();
+void loadGame();
+void newGame();
 //void drawWorld2(World *w);
-void drawWorldOld(World *w, int tMat, int sMat, int rMat, int color, GLuint squa);
-void drawGrid(float *mat, int tMat, int sMat,  int rMat, int color, GLuint vLi);
+//void drawGrid(float *mat, int tMat, int sMat,  int rMat, int color, GLuint vLi);
 //void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 //void setCenter(float cp[2]);
 //void setFrame(int x, int y);
@@ -20,5 +26,6 @@ void togglePauseMenu(void *,float val);
 void toggleDebugDraw(void *,float val);
 void toggleGod(void *,float);
 void exitGame();
+void saveMap();
 void exitMenu();
 #endif

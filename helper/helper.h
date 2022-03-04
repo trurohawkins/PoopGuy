@@ -7,7 +7,6 @@
 #include<stdbool.h>
 #include<string.h>
 #include <math.h>
-#include "list.h"
 //#include "file.h"
 
 void initDirections();
@@ -30,4 +29,7 @@ bool strCompare(char *str1, char *str2);
 void printArray(int**, int, int);
 bool compareColor(void *c1, void *c2);
 int decPlace(int d);
+
+#include "list.h"
+#include "binaryWriter.h"
 #endif

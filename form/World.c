@@ -168,10 +168,12 @@ void freeWorld() {
 	freeDirections();
 }
 
-Form *makeDirt(float moist) {
+Form *makeDirt(int moist) {
 	Form *d = makeForm(0.7, 0.3, 0.1, 1, 1);
-	d->id = 10;
-	addStat(d, "moisture", moist * 0.1);
+	d->id = 1 * getRecipePow();
+	int cPow = (moist / getRecipePow()) * getRecipePow();
+	float mVal = moist - cPow;
+	addStat(d, "moisture", mVal * 0.1);
 	addStat(d, "hydroK", 1);
 	float tileVal = 0 + randPercent();//randpercent used as remainer to determine which tile to use for this block
 	addStat(d, "tile", tileVal);//or anim
@@ -179,14 +181,26 @@ Form *makeDirt(float moist) {
 	return d; //makeForm(0.7, 0.3, 0.1, 0, 0);
 }
 
-Form *makeStone() {
+int saveDirt(Form *d) {
+	int id = d->id;
+	id = clamp(id += *getStat(d, "moisture") * 10, 10, 19);
+	//printf("dirt w/%f becomes %i\n", *getStat(d,"moisture"), id);
+	return id;
+}
+
+Form *makeStone(int null) {
 	Form *s = makeForm(0.2, 0.3, 0.4, 1, 1);
-	s->id = 20;
+	s->id = 2 * getRecipePow();
 	addStat(s, "moisture", 0);
 	addStat(s, "hydroK", 1);
 	addStat(s, "tile", 1);//or anim
 	//addToList(&(theWorld->terrain), d);
 	return s; //makeForm(0.7, 0.3, 0.1, 0, 0);
+}
+
+int saveForm(Form *f) {
+	//printf("saving form\n");
+	return f->id;
 }
 
 void makeInert() {
@@ -217,7 +231,7 @@ void makeStoneSquare(int x, int y, int z) {
 	//addToList(&(theWorld->terrain), b);
 	for (int i = 1; i < z ; i++) {
 		for (int j = 1; j < z ; j++) {
-			TYPE *b = makeStone() ;
+			TYPE *b = makeStone(0) ;
 			placeForm( x + i, y + j, b) ;
 		}
 	}
@@ -266,28 +280,64 @@ void dirtFloor(int height) {
 	}
 }
 
-/*
-int sumArr(int **array, int x, int y) {
-
-	int sum = 0;
-
-	for (int i = 0; i < x; i +=1) {
-		for (int j = 0; j < y; j +=1) {
-			sum +=array[i][j];
+void writeWorld(char *file) {
+	//resets file to overwrite previous data
+	int xs = theWorld->x;
+	int ys = theWorld->y;
+	FILE *fptr = fopen(file, "wb");
+	int sizes[2] = {xs, ys};
+	fwrite(sizes, sizeof(int), 2, fptr);
+	fclose(fptr);	
+	
+	int count = 0;
+	for (int x = 0; x < xs; x++) {
+		for (int y = 0; y < ys; y++) {
+			Cell *cur = theWorld->map[x][y];
+			if (cur->count > 0) {
+				if (writeCell(file, cur)) {
+					count++;
+				}
+			}
 		}
 	}
-
-	return sum;
+	//loadWorld(file);
 }
 
-void showArr(int **array, int x, int y) {
+bool loadWorld(char *file) {
+	FILE *fptr = fopen(file, "rb");
+	if (fptr != NULL) {
+		int *size = readBinaryInt(fptr, 2);
+		makeWorld(size[0], size[1]);
+		int *cellCount = (int*)calloc(sizeof(int), 1);
+		//for (int i = 0; i < count; i++) {
+		while (fread(cellCount, sizeof(int), 1, fptr) > 0) {
+			//int *cellCount = readBinaryInt(fptr, 1);
+			int *pos = readBinaryInt(fptr, 2);
+			int *residents = readBinaryInt(fptr, *cellCount);
+			Cell *cur = theWorld->map[pos[0]][pos[1]];
 
-
-	for (int i = 0; i < x; i +=1) {
-		for (int j = 0; j < y; j +=1) {
-			printf(" %i ", array[i][j]);
+			for (int j = 0; j < *cellCount; j++) {
+				if (residents[j] < 10) {
+					printf("cell at %i, %i, count = %i: ", pos[0], pos[1], *cellCount);
+					printf("%i, \n", residents[j]);
+				}
+				FormRecipe *r = getRecipe(residents[j]);
+				if (r) {
+					placeForm(pos[0], pos[1], r->makeFunc(residents[j]));
+				}
+				/*
+				if (residents[j] == 10) {
+					//addToCell(cur, makeDirt(0));
+					placeForm(pos[0], pos[1], makeDirt(0));
+				}
+				*/
+			}
+			free(pos);
+			free(residents);
 		}
-		printf( "\n" );
+		free(cellCount);
+		fclose(fptr);
+		return true;
 	}
+	return false;
 }
-*/

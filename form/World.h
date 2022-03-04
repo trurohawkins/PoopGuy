@@ -21,10 +21,14 @@ Form *checkForm(int x, int y);
 Form *takeForm(int x, int y);
 Form *removeForm(Form *f);
 void freeWorld();
-Form *makeDirt(float);
-Form *makeStone();
+Form *makeDirt(int);
+int saveDirt(Form *d);
+Form *makeStone(int);
+int saveForm(Form *f);
 void dirtFloor(int height);
 void makeSquare(int x, int y, int z);
 void makeStoneSquare(int x, int y, int z);
 void makeCircle(int x, int y, int r);
+void writeWorld(char *file);
+bool loadWorld(char *file);
 #endif

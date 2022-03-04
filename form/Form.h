@@ -25,6 +25,7 @@ void makeInert();
 void printForm(void *f);
 int compareForms(Form *f1, Form *f2);
 bool checkFormIsSolid(void *form);
+bool isFormCenter(Form *f, int x, int y);
 /*
 void setRoto(Form *f, int degree);
 void setInvert(Form *f, int axis, bool flipped);
@@ -35,4 +36,5 @@ void setInvert(Form *f, int axis, bool flipped);
 #include "Cell.h"
 #include "World.h"
 #include "Value.h"
+#include "FormSpawner.h"
 #endif

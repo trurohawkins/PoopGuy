@@ -1,11 +1,19 @@
 #include "poopPlayer.h"
+int maxPoopers = 2;
+PoopGuy **poopers = 0;
+int numPoopers = 2;
+int curPoopers = 0;
 
-PoopGuy *makePoopPlayer(int xp, int yp, int pNum) {
+void initPoopers() {
+	poopers = (PoopGuy**)calloc(maxPoopers, sizeof(PoopGuy));
+}
+
+Form *makePoopPlayer(int pNum) {
 	PoopGuy *pooper = (PoopGuy *)calloc(1, sizeof(PoopGuy));
 	//pooper->speed = 10;
 	//pooper->maxForce = 10;
 	pooper->me = makeActor(makeForm(0.2, 1, 0.2, 3, 3));
-	pooper->me->body->id = 69;
+	pooper->me->body->id = pNum;
 	addStat(pooper->me->body, "anim", 0);
 	pooper->move = makeMove();
 	moveVar *mv = (moveVar*)pooper->move->vars;
@@ -21,8 +29,8 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum) {
 	addAction(pooper->me, pooper->jump);
 	addAction(pooper->me, pooper->eatPoop);
 	addAction(pooper->me, pooper->control);
-	placeForm(xp, yp, pooper->me->body);
-	checkSide(pooper->me->body, 1, 0, true);
+	//placeForm(xp, yp, pooper->me->body);
+	//checkSide(pooper->me->body, 1, 0, true);
 	addActor(pooper->me);
 	char *baseFile = "resources/poopGuySpriteSheet.png"; 
 	int numColors = 7;
@@ -91,7 +99,12 @@ PoopGuy *makePoopPlayer(int xp, int yp, int pNum) {
 	makeJoyAxeControl(p, '4', toggleEat);
 	makeJoyAxeControl(p, '0', xMove);
 	makeJoyAxeControl(p, '1', yMove);
-	return pooper;
+	poopers[curPoopers++] = pooper;
+	return pooper->me->body;
+}
+
+int savePoopPlayer(Form *f) {
+	return f->id;
 }
 
 void deletePoopGuy(void *poop) {
@@ -250,3 +263,14 @@ void setAnimSprite(PoopGuy *pg) {
 	}
 }
 
+void freePoopers() {
+	free(poopers);
+}
+
+PoopGuy **getPoopers() {
+	return poopers;
+}
+
+int getNumPoopers() {
+	return numPoopers;
+}

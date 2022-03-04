@@ -14,7 +14,9 @@ typedef struct PoopGuy {
 	Player *player;
 } PoopGuy;
 
-PoopGuy *makePoopPlayer (int xp, int yp, int pNum);
+void initPoopers();
+Form *makePoopPlayer (int pNum);
+int savePoopPlayer(Form *f);
 void deletePoopGuy(void *);
 void up(void *pg, float val);
 void left(void *pg, float val);
@@ -28,4 +30,7 @@ void jumpStart(void *pg, float val);
 
 void setPalette(int pNum, Anim *a);
 void setAnimSprite(PoopGuy *pg);
+void freePoopers();
+PoopGuy **getPoopers();
+int getNumPoopers();
 #endif

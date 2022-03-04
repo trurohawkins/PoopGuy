@@ -13,6 +13,7 @@ GOD *makeGodPlayer(float px, float py, int fx, int fy) {
 	g->frame[1] = fy;
 	g->speed = 1;
 	g->world = getWorld();
+	/*
 	if (g->world->y > g->world->x) {
 		g->zoomSpeedX = 2;
 		g->zoomSpeedY = 2 * g->world->y / g->world->x;
@@ -23,6 +24,8 @@ GOD *makeGodPlayer(float px, float py, int fx, int fy) {
 		g->zoomSpeedX = 2;
 		g->zoomSpeedY = 2;
 	}
+	*/
+	g->zoomSpeedX = 2;
 	//printf("zoom speeds: %i, %i\n", g->zoomSpeedX, g->zoomSpeedY);
 	g->cam = getDefaultCam();
 
@@ -143,25 +146,29 @@ void moveGodView(Form * v, Action *a) {
 		return;
 	}
 	if (god->zoom[0]) {
-		if (god->frame[0] + god->zoomSpeedX < god->world->x && god->frame[1] + god->zoomSpeedY < god->world->y) {
+		
+		//if (god->frame[0] + god->zoomSpeedX < god->world->x && god->frame[1] + god->zoomSpeedY < god->world->y) {
+		if (god->frame[0] + god->zoomSpeedX < god->world->x) {
 			god->frame[0] += god->zoomSpeedX;
-			god->frame[1] += god->zoomSpeedY;
+			printf("frame: %i\n", god->frame[0]);
+			//god->frame[1] += god->zoomSpeedY;
 		} else {
 			god->frame[0] = god->world->x;
-			god->frame[1] = god->world->y;
+			//god->frame[1] = god->world->y;
+			/*
 			god->pos[0] = god->world->x/2;
 			god->pos[1] = god->world->y/2;
 			setCenter(god->cam, god->pos);
-
+*/
 		}
 		godSetFrame(god);
 	} else if (god->zoom[1]) {
-		if (god->frame[0] - god->zoomSpeedX > minDist * god->zoomSpeedX && god->frame[1] - god->zoomSpeedY > minDist * god->zoomSpeedY) {
+		if (god->frame[0] - god->zoomSpeedX > minDist * god->zoomSpeedX) {// && god->frame[1] - god->zoomSpeedY > minDist * god->zoomSpeedY) {
 			god->frame[0] -= god->zoomSpeedX;
-			god->frame[1] -= god->zoomSpeedY;
+			//god->frame[1] -= god->zoomSpeedY;
 		} else {
 			god->frame[0] = minDist * god->zoomSpeedX;
-			god->frame[1] = minDist * god->zoomSpeedY;
+			//god->frame[1] = minDist * god->zoomSpeedY;
 		}
 		godSetFrame(god);
 	}
@@ -187,9 +194,12 @@ void godOn(GOD *g) {
 }
 
 void godSetFrame(GOD* god) {
-	setFrame(god->cam, god->frame[0], god->frame[1]);
+	//setFrame(god->cam, god->frame[0], god->frame[1]);
+	sizeScreen(god->frame[0]);
+	/*
 	for (int i = 0; i < getTileCount(); i++) {
 		TileSet *ts = getTile(i);
 		resizeTileSet(ts, god->frame[0], god->frame[1]);
 	}
+	*/
 }

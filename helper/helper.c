@@ -1,5 +1,5 @@
 #include "helper.h"
-#include "list.c"
+
 //#include "file.c"
 int **dirs;
 int **dir8;
@@ -226,4 +226,6 @@ int decPlace(int d) {
 	}
 	return num;
 }
+#include "list.c"
+#include "binaryWriter.c"
 

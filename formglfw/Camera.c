@@ -15,6 +15,7 @@ void initCamera(int x, int y) {
 	defaultCam = makeCamera();
 	defaultCam->defaultFrameX = defaultCam->frameX = x;	
 	defaultCam->defaultFrameY = defaultCam->frameY = y;	
+	setFrame(defaultCam, x ,y);
 	printf("camera initialized %i, %i\n", defaultCam->frameX, defaultCam->frameY);
 }
 
@@ -30,6 +31,7 @@ void setCenter(Camera *c, float cp[2]) {
 void setFrame(Camera *c, int x, int y) {
 	c->frameX = x;
 	c->frameY = y;
+//	printf("screen frame %i, %i\n", s->frameX, s->frameY);
 }
 
 

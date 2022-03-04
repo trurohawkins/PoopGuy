@@ -7,6 +7,7 @@ typedef struct DrawScreen {
 	int dimensionY;
 	int maxX;
 	int maxY;
+	float size;
 	int stride;
 	GLuint vbo;
 	int location;

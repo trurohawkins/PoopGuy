@@ -2,7 +2,7 @@
 Form *inert;
 Form *makeForm(float r, float g, float b, float wid, float len) {
 	Form *newForm = (Form *)calloc(1, sizeof(Form));
-	newForm->id = 0;
+	newForm->id = -1;
 	newForm->pos[0] = -1;
 	newForm->pos[1] = -1;
 	newForm->color[0] = r;
@@ -157,6 +157,15 @@ bool checkFormIsSolid(void *form) {
 	}
 }
 
+bool isFormCenter(Form *f, int x, int y) {
+	//if (f->size[0] <= 1 && f->size[1] <= 1) {
+	if ((int)floor(f->pos[0]) == x && (int)floor(f->pos[1] == y)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 void printForm(void *form) {
 	Form *f = (Form*)form;
 	printf("form id: %i size:%i, %i\n", f->id, f->size[0], f->size[1]);
@@ -174,6 +183,7 @@ void setStat(Form *f, float stat) {
 #include "World.c"
 #include "Value.c"
 #include "Cell.c"
+#include "FormSpawner.c"
 #include "../actor/Action.c"
 #include "../actor/Actor.c"
 #include "../actor/acts/control.c"
