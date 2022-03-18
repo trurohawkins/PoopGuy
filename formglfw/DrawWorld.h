@@ -7,6 +7,9 @@ typedef struct AnimOrder {
 } AnimOrder;
 
 void initWorldDrawing();
+void calculateFrameData();
+void setCenter(float cp[2]);
+void setWorldFrame();
 void drawWorld(World *w);
 void tileCell(TileSet *t, float remainder, int x, int y);
 AnimOrder *makeAnimOrder(int order);
@@ -15,4 +18,6 @@ void drawAnimOrder(AnimOrder *ao, float *sMatrix, float xSize, float ySize);
 void freeAnimOrder(AnimOrder *ao);
 void drawWorldDebug(World *w);
 void drawGrid();
+float getCenterX();
+float getCenterY();
 #endif

@@ -62,6 +62,7 @@ float getCoordX(Anim *a);
 float getCoordY(Anim *a);
 void setSpriteTexture(Anim *a);
 void drawSprite(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp);
+void drawAnim(Anim *a, float *sMatrix, float xSize, float ySize);
 void drawUIAnim(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp);
 void setUpTiles(Anim *a, float *sMatrix, float xSize, float ySize);
 void drawTiles(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp);

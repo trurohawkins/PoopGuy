@@ -107,9 +107,12 @@ void drawUI(UI *ui) {
 	};
 		Screen *s = getWindow();
 	glUseProgram(getSP(1));
-	//printf("UI size %f, %f\n", ui->xSize, ui->ySize);
 	float xSize = ui->xSize;
 	float ySize = ui->ySize;
+	float xRatio = 2.0f / s->frameX;//(float)s->frameX / s->frame;//(float)scr->width / 10000;
+	float yRatio =  2.0f / s->frameY;//(float)s->frameY / s->frame;//(float)scr->height /10000;
+	//printf("UI size %f, %f, ratio: %f, %f\n", ui->xSize, ui->ySize, xRatio, yRatio);
+
 	/*
 	if (s->width > s->height) {
 		xSize = (float)s->height / s->width;
@@ -119,7 +122,9 @@ void drawUI(UI *ui) {
 		ySize = (float)s->width / s->height;
 	}
 	*/
-	drawUIAnim(ui->a, matrix,  xSize, ySize, ui->xp, ui->yp);
+	drawUIAnim(ui->a, matrix, xRatio, yRatio, ui->xp, ui->yp);
+	//drawSprite(ui->a, matrix, xRatio, yRatio, ui->xp, ui->yp);
+	//drawUIAnim(ui->a, matrix, xSize, ySize, ui->xp, ui->yp);
 	//printf("%f, %f\n", xSize, ySize);
 	if (ui->text) {
 		float xp = ((1 + ui->xp + ui->text->xOffset)/2) * s->width ;//(-0.5 * s->width) + (ui->xp  * s->width);

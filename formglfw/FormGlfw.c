@@ -6,8 +6,6 @@
 #include "../controllerDB.c"
 
 Camera *cam;
-float centerX;
-float centerY;
 int frameX = 50;
 int frameY = 50;
 int defaultFrameY = -1;
@@ -171,7 +169,6 @@ void updateLoop() {
 	godPos =  (float*)calloc(2, sizeof(float));
 	godPos[0] = getWorld()->x /2;
 	godPos[1] = getWorld()->y /2;
-	setCenter(cam, godPos);
 	while(!glfwWindowShouldClose(screen->window)) {
 		glfwPollEvents();
 		checkControllerInput();
@@ -184,10 +181,10 @@ void updateLoop() {
 			actorListDo();
 			groundWater();
 			if (!godMode && poopers[0] != NULL) {
-				setCenter(cam, poopers[0]->me->body->pos);
+				setCenter(poopers[0]->me->body->pos);
 				//printf("currently at %f, %f\n", pooper->me->body->pos[0], pooper->me->body->pos[1]);
 			} else if (god == NULL) {
-				setCenter(cam, godPos);
+				setCenter(godPos);
 			}
 			//printf("poopguy index: %i\n",((Anim*)poopers[0]->me->body->anim)->sprite);	
 			glClearColor(0.1, 0.2, 0.4, 1.0);
@@ -272,14 +269,14 @@ void toggleGod(void *, float poo) {
 		if (godMode) {
 			godOff(god);
 			if (poopers[0] != NULL) {
-				setCenter(cam, poopers[0]->me->body->pos);
+				setCenter(poopers[0]->me->body->pos);
 			}
 			sizeScreen(defaultFrame);
 			godMode = false;
 		} else {
 			Screen *screen = getWindow();
 			godMode= true;
-			setGod(god, cam->centerX, cam->centerY, screen->frameX, screen->frameY);
+			setGod(god, getCenterX(), getCenterY(), screen->frame, screen->frameY);
 			godOn(god);
 		}
 

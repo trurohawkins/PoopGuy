@@ -113,7 +113,7 @@ textureSource *makeTextureFromImages(char **imgs, int num, bool whiteGen) {
 		return makeTexture(*imgs, false);
 	}
 	textureSource *ts = (textureSource*)calloc(sizeof(textureSource), 1);
-	printf("was it white generated? %i\n", whiteGen);
+	//printf("was it white generated? %i\n", whiteGen);
 	if (!whiteGen) {
 		stbi_set_flip_vertically_on_load(true);
 	} else {

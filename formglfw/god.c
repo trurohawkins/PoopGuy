@@ -116,7 +116,7 @@ void moveGodView(Form * v, Action *a) {
 		} else {
 			god->pos[0] = god->world->x - god->cam->frameX/2; 
 		}
-		setCenter(god->cam, god->pos);
+		setCenter(god->pos);
 
 	} else if (god->move[0] < 0) {
 		if (god->pos[0] - god->speed > god->cam->frameX / 2) {
@@ -124,7 +124,7 @@ void moveGodView(Form * v, Action *a) {
 		} else {
 			god->pos[0] = god->cam->frameX / 2;
 		}
-		setCenter(god->cam, god->pos);
+		setCenter(god->pos);
 	}
 	if (god->move[1] > 0) {
 		if (god->pos[1] + god->speed < god->world->y - god->cam->frameY/2) {
@@ -132,14 +132,14 @@ void moveGodView(Form * v, Action *a) {
 		} else {
 			god->pos[1] = god->world->y - god->cam->frameY/2;
 		}
-		setCenter(god->cam, god->pos);
+		setCenter(god->pos);
 	} else if (god->move[1] < 0) {
 		if (god->pos[1] - god->speed > god->cam->frameY / 2) {
 			god->pos[1] -= god->speed;
 		} else {
 			god->pos[1] = god->cam->frameY /2;
 		}
-		setCenter(god->cam, god->pos);
+		setCenter(god->pos);
 	}
 
 	if (god->zoom[0] && god->zoom[1]) {
@@ -158,7 +158,7 @@ void moveGodView(Form * v, Action *a) {
 			/*
 			god->pos[0] = god->world->x/2;
 			god->pos[1] = god->world->y/2;
-			setCenter(god->cam, god->pos);
+			setCenter(god->pos);
 */
 		}
 		godSetFrame(god);
@@ -184,12 +184,13 @@ void setGod(GOD *god, float px, float py, int fx, int fy) {
 	god->frame[1] = fy;
 	god->pos[0] = px;
 	god->pos[1] = py;
+	printf("god's pos: %f,%f\n", px, py);
 }
 
 void godOn(GOD *g) {
 	//addPlayer(g->p);
 	g->p->active = true;
-	setCenter(g->cam, g->pos);
+	setCenter(g->pos);
 	godSetFrame(g);
 }
 

@@ -15,8 +15,8 @@ int main(int argc, char **argv) {
 	initDirections();
 	int worldX = 100;
 	int worldY = 100;
-	int windowX = 30;
-	int windowY = 30;
+	int windowX = 200;
+	int windowY = 200;
 /*
 	int arr[3] = {1, 2, 3};
 	writeBinaryInt("poo.bin", arr, 3);
@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
 		//map = fileToArray("mapSave.txt");//
 		//printArray(map, worldX, worldY);
 	}
-
+	setCamFunction(calculateFrameData);
 	updateLoop();
 	return 0;
 }

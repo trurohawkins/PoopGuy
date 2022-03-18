@@ -8,7 +8,7 @@ GLuint baseShaderProgram;
 GLuint textureShaderProgram;
 GLuint tileShaderProgram;
 GLuint textShaderProgram;
-
+void (*camFunc)(void) = 0;
 
 int initializeGLFW() {
 	if (!glfwInit()) {
@@ -147,6 +147,7 @@ void sizeScreen(int frame) {
 	float yRatio = 1;
 	float xRatioInv = 1;
 	float yRatioInv = 1;
+	/*
 	if (curScreen->width > curScreen->height) {
 		xRatio = (float)curScreen->width / curScreen->height;
 		yRatio = 1;
@@ -158,7 +159,6 @@ void sizeScreen(int frame) {
 		xRatioInv = 1;
 		yRatioInv = (float)curScreen->width / curScreen->height;
 	}
-	/*
 	if (frame * xRatio > curScreen->frameMax) {
 		curScreen->frameX = curScreen->frameMax;
 	} else {
@@ -170,19 +170,25 @@ void sizeScreen(int frame) {
 		curScreen->frameY = frame * yRatio;
 	}
 	*/
-	if (frame * xRatio > curScreen->frameMax|| frame * yRatio > curScreen->frameMax) {
+	/*
+	if (frame * xRatio > curScreen->frameMax || frame * yRatio > curScreen->frameMax) {
 		curScreen->frameX = curScreen->frameMax;
 		curScreen->frameY = curScreen->frameMax;
 	} else {
 		curScreen->frameX = frame * xRatio;
 		curScreen->frameY = frame * yRatio;
 	}
-		//curScreen->frameX = frame * xRatio;
-		//curScreen->frameY = frame * yRatio;
+	*/
+	curScreen->frameX = frame * xRatio;
+	curScreen->frameY = frame * yRatio;
 	printf("screen at %i, %i\n", curScreen->frameX, curScreen->frameY);
+	//printf("screen at %f, %f\n", (float)curScreen->frameX/ frame, (float)curScreen->frameY/frame);
 	for (int i = 0; i < getTileCount(); i++) {
 		TileSet *ts = getTile(i);
 		resizeTileSet(ts, curScreen->frameX, curScreen->frameY);
+	}
+	if (camFunc != 0) {
+		camFunc();
 	}
 }
 
@@ -205,4 +211,9 @@ GLuint getSP(int shader) {
 	} else {
 		return textShaderProgram;
 	}
+}
+
+void setCamFunction(void (*newFunc)(void)){
+	camFunc = newFunc;
+	camFunc();
 }

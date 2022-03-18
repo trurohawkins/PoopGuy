@@ -13,6 +13,6 @@ typedef struct Camera {
 Camera *makeCamera();
 void initCamera(int x, int y);
 Camera *getDefaultCam();
-void setCenter(Camera *c, float cp[2]);
+//void setCenter(Camera *c, float cp[2]);
 void setFrame(Camera *c, int x, int y);
 #endif

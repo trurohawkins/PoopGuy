@@ -83,17 +83,19 @@ void initializeData(DrawScreen *ds, bool base) {
 			}
 		}
 	} else {
+		float screenPortion = 2;//2 full screen -1 -> 1
 		float sizeX = 2.0/ds->dimensionX;
 		float sizeY = 2.0/ds->dimensionY;
 		float dim = sqrt(ds->dimensionX * ds->dimensionY);
-		float size = 2.0 / dim;
-		printf("sizes %f, %f -=- %f \n", sizeX, sizeY, size);
-		for (int y = -ds->dimensionY; y < ds->dimensionY; y+=2) { 
-			for (int x = -ds->dimensionX; x < ds->dimensionX; x+=2) {
-//		for (int y = -dim; y < dim; y+=2) { 
-//			for (int x = -dim; x < dim; x+=2) {
-				(ds->data)[index++]	= (sizeX/2) + ((float)x / ds->dimensionX);
-				(ds->data)[index++]	= (sizeY/2) + ((float)y / ds->dimensionY);
+		printf("dimension star %f\n", (sizeX/screenPortion) + ((float)-ds->dimensionX / ds->dimensionX));
+		printf("poo %f\n", sizeX/2);
+		//printf("sizes %f, %f -=- %f \n", sizeX, sizeY, size);
+		for (int y = -ds->dimensionY; y < ds->dimensionY; y+=2) {//screenPortion) { 
+			for (int x = -ds->dimensionX; x < ds->dimensionX; x+=2) {//screenPortion) {
+//		for (int y = -dim; y < dim; y+=screenPortion) { 
+//			for (int x = -dim; x < dim; x+=screenPortion) {
+				(ds->data)[index++]	= (sizeX/2) + (((float)x / ds->dimensionX)/2);
+				(ds->data)[index++]	= (sizeY/2) + (((float)y / ds->dimensionY)/2);
 				for (int i = 0; i < ds->stride-2; i++) {
 					(ds->data)[index++] = 1;	
 				}

@@ -22,12 +22,6 @@ void initCamera(int x, int y) {
 Camera *getDefaultCam() {
 	return defaultCam;
 }
-
-void setCenter(Camera *c, float cp[2]) {
-	c->centerX = cp[0];
-	c->centerY = cp[1];
-}
-
 void setFrame(Camera *c, int x, int y) {
 	c->frameX = x;
 	c->frameY = y;
