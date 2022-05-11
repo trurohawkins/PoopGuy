@@ -1,5 +1,5 @@
 #include "poopPlayer.h"
-int maxPoopers = 2;
+int maxPoopers = 0;
 PoopGuy **poopers = 0;
 int numPoopers = 2;
 int curPoopers = 0;
@@ -63,7 +63,7 @@ Form *makePoopPlayer(int pNum) {
 	for (int i = 1; i < 4; i++) {
 		addSprite(poo, i, 6);
 	}
-	setOffset(poo, 0.0, -0.3);//so he overlaps ground makes it look like hes waalking
+	//setOffset(poo, 0.0, -0.3);//so he overlaps ground makes it look like hes waalking
 	GLuint spriteVao = makeSpriteVao(1, 1);
 	animAddVao(poo, spriteVao);//makeSpriteVao(1, 1));
 	setAnim(pooper->me->body, poo);

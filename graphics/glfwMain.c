@@ -10,7 +10,7 @@ GLuint tileShaderProgram;
 GLuint textShaderProgram;
 void (*camFunc)(void) = 0;
 
-int initializeGLFW() {
+int initializeGLFW(int windowX, int windowY) {
 	if (!glfwInit()) {
 		fprintf(stderr, "ERROR: could not start GLFW3\n");
 		return 1;
@@ -25,19 +25,24 @@ int initializeGLFW() {
 
 	//window = glfwCreateWindow(screenWidth, screenHeight, "poop", glfwGetPrimaryMonitor(), NULL); full screen
 	//window = glfwCreateWindow(screenWidth, screenHeight, "poop", NULL, NULL);
-	GLFWwindow *window = glfwCreateWindow(screenWidth, screenHeight, "poop", NULL, NULL);
+//	GLFWwindow *window = glfwCreateWindow(screenWidth, screenHeight, "poop", NULL, NULL);
+	GLFWwindow *window = glfwCreateWindow(windowX, windowY, "poop", NULL, NULL);
+
 	if (window == NULL) {
 		fprintf(stderr, "ERROR: could not open window with GLFW3\n");
 		glfwTerminate();
 		return 1;
 	} else {
-		glfwSetWindowSizeCallback(window, glfwWindowSizeCallback);
+		glfwMakeContextCurrent(window);
 		curScreen = (Screen*)calloc(sizeof(Screen), 1);
 		curScreen->window = window;
 		curScreen->width = screenWidth;
 		curScreen->height = screenHeight;
+		curScreen->xRatio = 1;
+		curScreen->yRatio = 1;
+		//glfwWindowSizeCallback(window, screenWidth, screenHeight);
+		glfwSetWindowSizeCallback(window, glfwWindowSizeCallback);
 	}
-	glfwMakeContextCurrent(window);
 	gladLoadGL();
 	int major, minor, rev;
 	glfwGetVersion(&major, &minor, &rev);
@@ -55,8 +60,9 @@ int initializeGLFW() {
 	tileShaderProgram = makeShaderProgram(textureVS, textureFS);
 	//textShaderProgram = makeShaderProgramFile("graphics/shaders/textVS.glsl", "graphics/shaders/textFS.glsl");
 	textShaderProgram = makeShaderProgram(textVS, textFS);
-
+	//initCamera();
 }
+
 
 GLuint squareVao2d() {
 	float square[12] = {
@@ -133,6 +139,7 @@ GLuint makeSpriteVao(float sx, float sy) {
 }
 
 void glfwWindowSizeCallback(GLFWwindow *window, int width, int height) {
+	printf("resizing\n");
 	float scale = sqrt(width * height) / sqrt(curScreen->width * curScreen->height);
 	curScreen->width = width;
 	curScreen->height = height;
@@ -147,7 +154,6 @@ void sizeScreen(int frame) {
 	float yRatio = 1;
 	float xRatioInv = 1;
 	float yRatioInv = 1;
-	/*
 	if (curScreen->width > curScreen->height) {
 		xRatio = (float)curScreen->width / curScreen->height;
 		yRatio = 1;
@@ -159,6 +165,9 @@ void sizeScreen(int frame) {
 		xRatioInv = 1;
 		yRatioInv = (float)curScreen->width / curScreen->height;
 	}
+	curScreen->xRatio = xRatio;
+	curScreen->yRatio = yRatio;
+	/*
 	if (frame * xRatio > curScreen->frameMax) {
 		curScreen->frameX = curScreen->frameMax;
 	} else {
@@ -169,31 +178,19 @@ void sizeScreen(int frame) {
 	} else {
 		curScreen->frameY = frame * yRatio;
 	}
-	*/
-	/*
-	if (frame * xRatio > curScreen->frameMax || frame * yRatio > curScreen->frameMax) {
-		curScreen->frameX = curScreen->frameMax;
-		curScreen->frameY = curScreen->frameMax;
-	} else {
-		curScreen->frameX = frame * xRatio;
-		curScreen->frameY = frame * yRatio;
-	}
-	*/
 	curScreen->frameX = frame * xRatio;
 	curScreen->frameY = frame * yRatio;
+
 	printf("screen at %i, %i\n", curScreen->frameX, curScreen->frameY);
+	*/
 	//printf("screen at %f, %f\n", (float)curScreen->frameX/ frame, (float)curScreen->frameY/frame);
-	for (int i = 0; i < getTileCount(); i++) {
-		TileSet *ts = getTile(i);
-		resizeTileSet(ts, curScreen->frameX, curScreen->frameY);
-	}
 	if (camFunc != 0) {
 		camFunc();
 	}
 }
 
 void setScreenMax(int max) {
-	curScreen->frameMax = max;
+	//curScreen->frameMax = max;
 }
 
 

@@ -9,6 +9,7 @@ out vec2 TexCoord;
 uniform mat4 tMat;
 uniform mat4 rMat;
 uniform mat4 sMat;
+unfirom mat4 Cam;
 uniform mat3 tcScale;
 uniform mat3 tcTrans;
 uniform vec2 texCoordShift;
@@ -16,7 +17,7 @@ uniform vec2 texCoordShift;
 
 void main()
 {
-gl_Position = tMat * sMat * rMat * vec4(aPos, 1.0);
+gl_Position = Cam *tMat * sMat * rMat * vec4(aPos, 1.0);
 ourColor = aColor;
 vec3 Tex =  tcTrans * tcScale * vec3(aTexCoord, 1.0);
 TexCoord = vec2(Tex.x, Tex.y);

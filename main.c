@@ -13,10 +13,12 @@ int main(int argc, char **argv) {
 	}
 	srand(time(NULL));
 	initDirections();
-	int worldX = 100;
-	int worldY = 100;
-	int windowX = 200;
-	int windowY = 200;
+	int worldY = 300;
+	int worldX = 300; 
+	int windowX = 100;
+	int windowY = 100;
+	int frameX = 4;
+	int frameY = 4;
 /*
 	int arr[3] = {1, 2, 3};
 	writeBinaryInt("poo.bin", arr, 3);
@@ -30,10 +32,9 @@ int main(int argc, char **argv) {
 		}
 	}
 	\*/
-	initializeGLFW();
-	setScreenMax(worldX);
-	sizeScreen(windowX);
-	initCamera(windowX, windowY);
+	initializeGLFW(windowX, windowY);
+	//setScreenMax(worldX);
+	//sizeScreen(windowX);
 	glfwSetJoystickCallback(joystickCallback);
 	initJoyList();
 	initText();
@@ -43,7 +44,6 @@ int main(int argc, char **argv) {
 	initUILists();
 	makePlayerManager();
 	makeAnimList();
-	initWorldDrawing();
 	initTileSets();
 
 	initRecipes(3, 10);
@@ -71,12 +71,13 @@ int main(int argc, char **argv) {
 		makeWorld(worldX, worldY);
 		printf("generating world\n");
 		int **map = genMap(Seedstring);
-		genRain(map);
-		genWorld(map);
+		//genRain(map);
+		//genWorld(map);
+		fillWorld();
 		//arrayToFile("mapSave.txt", map);
 		freeMap(map);
-		int xPos = (worldX * 0.8);
-		int yPos = 1;
+		int xPos = (worldX * 0.5);
+		int yPos = worldY / 2;
 		for (int i = 0; i < getNumPoopers(); i++) {
 			placeForm(xPos + (i*4),  yPos, makePoopPlayer(i));
 			//poopers[i] = makePoopPlayer(xPos + (i*4), 1, i);
@@ -86,7 +87,10 @@ int main(int argc, char **argv) {
 		//map = fileToArray("mapSave.txt");//
 		//printArray(map, worldX, worldY);
 	}
-	setCamFunction(calculateFrameData);
+	//setCamFunction(calculateFrameData);
+	initWorldView(frameX, frameY);
+	initWorldDrawing();
+	setCamFunction(resizeScreen);
 	updateLoop();
 	return 0;
 }

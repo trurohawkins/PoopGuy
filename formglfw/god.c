@@ -3,16 +3,21 @@
 GOD *makeGodPlayer(float px, float py, int fx, int fy) {
 	GOD *g = (GOD*)calloc(1, sizeof(GOD));
 	g->p = makePlayer(g, 0, freeGod);
-	g->pos = (float*)calloc(2, sizeof(float));
-	(g->pos)[0] = px;
-	(g->pos)[1] = py;
+	g->p->active = false;
+	g->cam = getDefaultView();
+	g->pos = (int*)calloc(2, sizeof(int));
+	(g->pos)[0] = px;// * g->cam->scalePower;
+	(g->pos)[1] = py;// * g->cam->scalePower;
+	//printf("godf poss starting at %i, %i\n", g->pos[0], g->pos[1]);
 	g->move = (short*)calloc(2, sizeof(short));
 	g->zoom = (bool*)calloc(2, sizeof(bool));
 	g->frame = (int*)calloc(2, sizeof(int));
 	g->frame[0] = fx;
 	g->frame[1] = fy;
-	g->speed = 1;
+	g->speed = 1;// * g->cam->scalePower;
 	g->world = getWorld();
+	g->maxZoom = max(g->world->x, g->world->y) * 3;
+	g->minZoom = 2;
 	/*
 	if (g->world->y > g->world->x) {
 		g->zoomSpeedX = 2;
@@ -25,9 +30,8 @@ GOD *makeGodPlayer(float px, float py, int fx, int fy) {
 		g->zoomSpeedY = 2;
 	}
 	*/
-	g->zoomSpeedX = 2;
+	g->zoomSpeedX = 1;
 	//printf("zoom speeds: %i, %i\n", g->zoomSpeedX, g->zoomSpeedY);
-	g->cam = getDefaultCam();
 
 	Actor *god = makeActor(NULL);
 	Action *move = makeAction(&moveGodView, g);
@@ -60,7 +64,7 @@ void zoomOut(void *v, float f) {
 	}
 }
 
-int minDist = 10;
+int minDist = 4;
 
 void zoomIn(void *v, float f) {
 	GOD* god = (GOD*)v;
@@ -107,71 +111,79 @@ void camRight(void *v, float f) {
 	}
 }
 
+int counter = 0;
+int speedInterval = 5;
 //
 void moveGodView(Form * v, Action *a) {
+	if (counter < speedInterval) {
+		counter++;
+		return;
+	} else {
+		counter = 0;
+	}
 	GOD* god = (GOD*)(a->vars);
 	if (god->move[0] > 0) {
-		if (god->pos[0] + god->speed < god->world->x - god->cam->frameX/2 ) {
+		if (god->pos[0] + god->speed < god->world->x * god->cam->scalePower) {// - god->cam->frameX/2 ) {
 			god->pos[0] += god->speed;
 		} else {
-			god->pos[0] = god->world->x - god->cam->frameX/2; 
+			god->pos[0] = god->world->x * god->cam->scalePower;// - god->cam->frameX/2; 
 		}
-		setCenter(god->pos);
+		//setCenter(god->cam, god->pos[0], god->pos[1]);
 
 	} else if (god->move[0] < 0) {
-		if (god->pos[0] - god->speed > god->cam->frameX / 2) {
+		if (god->pos[0] - god->speed > 0) {//god->cam->frameX / 2) {
 			god->pos[0] -= god->speed;
 		} else {
-			god->pos[0] = god->cam->frameX / 2;
+			god->pos[0] = 0;//god->cam->frameX / 2;
 		}
-		setCenter(god->pos);
+		//setCenter(god->cam, god->pos[0], god->pos[1]);
 	}
 	if (god->move[1] > 0) {
-		if (god->pos[1] + god->speed < god->world->y - god->cam->frameY/2) {
+		if (god->pos[1] + god->speed < god->world->y * god->cam->scalePower ) {// - god->cam->frameY/2) {
 			god->pos[1] += god->speed;
 		} else {
-			god->pos[1] = god->world->y - god->cam->frameY/2;
+			god->pos[1] = god->world->y * god->cam->scalePower;// - god->cam->frameY/2;
 		}
-		setCenter(god->pos);
+		//setCenter(god->cam, god->pos[0], god->pos[1]);
 	} else if (god->move[1] < 0) {
-		if (god->pos[1] - god->speed > god->cam->frameY / 2) {
+		if (god->pos[1] - god->speed > 0) {//god->cam->frameY / 2) {
 			god->pos[1] -= god->speed;
 		} else {
-			god->pos[1] = god->cam->frameY /2;
+			god->pos[1] = 0;//god->cam->frameY /2;
 		}
-		setCenter(god->pos);
+		//setCenter(god->cam, god->pos[0], god->pos[1]);
 	}
-
-	if (god->zoom[0] && god->zoom[1]) {
+	if (!god->p->active){// || (god->zoom[0] && god->zoom[1])) {
 		return;
 	}
 	if (god->zoom[0]) {
 		
 		//if (god->frame[0] + god->zoomSpeedX < god->world->x && god->frame[1] + god->zoomSpeedY < god->world->y) {
-		if (god->frame[0] + god->zoomSpeedX < god->world->x) {
+		if (god->frame[0] + god->zoomSpeedX < god->maxZoom) {
 			god->frame[0] += god->zoomSpeedX;
-			printf("frame: %i\n", god->frame[0]);
+			//printf("frame: %i\n", god->frame[0]);
 			//god->frame[1] += god->zoomSpeedY;
 		} else {
-			god->frame[0] = god->world->x;
+			god->frame[0] = god->maxZoom;//world->x;
 			//god->frame[1] = god->world->y;
 			/*
 			god->pos[0] = god->world->x/2;
 			god->pos[1] = god->world->y/2;
-			setCenter(god->pos);
+			setCenter(god->cam, god->pos[0], god->pos[1]);
 */
 		}
 		godSetFrame(god);
 	} else if (god->zoom[1]) {
-		if (god->frame[0] - god->zoomSpeedX > minDist * god->zoomSpeedX) {// && god->frame[1] - god->zoomSpeedY > minDist * god->zoomSpeedY) {
+		if (god->frame[0] - god->zoomSpeedX > god->minZoom) {//minDist * god->zoomSpeedX) {// && god->frame[1] - god->zoomSpeedY > minDist * god->zoomSpeedY) {
 			god->frame[0] -= god->zoomSpeedX;
 			//god->frame[1] -= god->zoomSpeedY;
 		} else {
-			god->frame[0] = minDist * god->zoomSpeedX;
+			god->frame[0] = god->minZoom;//minDist * god->zoomSpeedX;
 			//god->frame[1] = minDist * god->zoomSpeedY;
 		}
 		godSetFrame(god);
 	}
+	godSetFrame(god);
 }
 
 void godOff(GOD *god) {
@@ -184,19 +196,29 @@ void setGod(GOD *god, float px, float py, int fx, int fy) {
 	god->frame[1] = fy;
 	god->pos[0] = px;
 	god->pos[1] = py;
-	printf("god's pos: %f,%f\n", px, py);
+	//printf("god's pos: %f,%f\n", px, py);
 }
 
 void godOn(GOD *g) {
 	//addPlayer(g->p);
 	g->p->active = true;
-	setCenter(g->pos);
+	//g->pos[0] = g->world->x / 2;
+	//g->pos[1] = g->world->y / 2;
+	//setCenter(g->cam, g->pos[0], g->pos[1]);
 	godSetFrame(g);
 }
 
 void godSetFrame(GOD* god) {
 	//setFrame(god->cam, god->frame[0], god->frame[1]);
-	sizeScreen(god->frame[0]);
+	//sizeScreen(god->frame[0]);
+	//printf("god frame %i, %i\n", god->frame[0], god->frame[1]);
+	if (god->cam->frame != god->frame[0] || god->pos[0] * god->cam->scalePower != god->cam->centerX || god->pos[1] * god->cam->scalePower != god->cam->centerY) {
+		setCenter(god->cam, god->pos[0], god->pos[1]);//god->frame[0]/2, god->frame[1]/2);//(god->world->x)/2, (god->world->y)/2);
+		setFrame(god->cam, god->frame[0]);
+		//printf("cam %i, %i -> god pos %i, %i\n",god->cam->centerX, god->cam->centerY, god->pos[0], god->pos[1]);
+		//resizeScreen();
+		//god->pos[0] wv->centerX
+	}
 	/*
 	for (int i = 0; i < getTileCount(); i++) {
 		TileSet *ts = getTile(i);

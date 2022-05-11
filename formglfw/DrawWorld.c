@@ -1,11 +1,10 @@
 #include "DrawWorld.h"
-Camera *curCam = 0;
+WorldView *curView = 0;
 int tMat, rMat, sMat, drawColor;
 GLuint square, line;
-float frame[4];
-float centerX, centerY;
 
 void initWorldDrawing() {
+printf("initiating world drawing\n");
 	GLuint baseShader = getSP(0);
 	if (baseShader != 0) {
 		tMat = glGetUniformLocation(baseShader, "tMat");
@@ -25,40 +24,11 @@ void initWorldDrawing() {
 			printf("frag doesnt have a var drawColor\n");
 		}
 	}
-	curCam = getDefaultCam();
+	curView = getDefaultView();
 	square = squareVao2d();
 	line = lineVao2d(0);
 }
 
-void setCenter(float cp[2]) {
-	centerX = cp[0];
-	centerY = cp[1];
-	calculateFrameData();
-}
-
-
-void calculateFrameData() {
-	World *w = getWorld();
-	Screen *s = getWindow();
-	float fx = (float)s->frameX/2;
-	float fy = (float)s->frameY/2;
-
-	
-	float cx = clampF(centerX, fx, w->x - fx);
-	float cy = clampF(centerY, fy, w->y - fy);
-	frame[0] = cx-fx;
-	frame[1] = cy-fy;
-	if (s->frameX >= w->x || s->frameY >= w->y) {
-		centerX = w->x/2;
-		centerY = w->y/2;
-		cx = w->x/2;
-		cy = w->y/2;
-		frame[0] = 0;
-		frame[1] = 0;
-	}
-	frame[2] = 2.0f / s->frameX;//(float)scr->width / 10000;
-	frame[3] = 2.0f / s->frameY;//(float)scr->height /10000;
-}
 
 void drawWorld(World *w) {
 	Screen *s = getWindow();
@@ -77,10 +47,10 @@ void drawWorld(World *w) {
 	glUseProgram(tileShader);
 	int tileSeen = 0;
 	//printf("\n\n");
-	for (int x = 0; x < s->frameX && x < w->x; x++) {
-		for (int y = 0; y < s->frameY && y < w->y; y++) {
-			int xp = x + frame[0];
-			int yp = y + frame[1];
+	for (int x = 0; x < ceil(curView->frameX) + 0 && x < w->x; x++) {
+		for (int y = 0; y < ceil(curView->frameY) && y < w->y; y++) {
+			int xp = x + curView->buffX;
+			int yp = y + curView->buffY;
 			if (xp >= 0 && xp < w->x && yp >= 0 && yp < w->y) {
 				Cell *cur = w->map[xp][yp];
 				Form** residents = getCellContents(cur);
@@ -89,8 +59,8 @@ void drawWorld(World *w) {
 						//if (residents != NULL) {
 						Form *f = residents[i];
 						if (f != NULL) {
-							float xfp = f->pos[0] - (int)frame[0];//x + frame[0];
-							float yfp = f->pos[1] - (int)frame[1];
+							float xfp = f->pos[0] - (int)curView->buffX;// - curView->offsetX;//x + frame[0];
+							float yfp = f->pos[1] - (int)curView->buffY;// - curView->offsetY;
 							float *tile = getStat(f, "tile");
 							//printf("- %i -\n", f->id);
 							if (tile != NULL) {
@@ -128,11 +98,8 @@ void drawWorld(World *w) {
 								//printf(" %i ", 1);
 								//editTranslations(x, y, 0);
 							} else {
-								//editData(ds, x, y, 0, 2);
-								//printf(" %i ", 0);
- 								if (f->anim != NULL && (xp == (int)(floor(f->pos[0])) && yp == (int)(floor(f->pos[1])))) {
-									//printf("form at %f, %f\n", xfp, yfp);
-									//printf("adding  %i, %i\n", x, y);
+								// check if weve seen form, not for center, incse form's center isn't on screen
+ 								if (f->anim != NULL) {// && (xp == (int)(floor(f->pos[0])) && yp == (int)(floor(f->pos[1])))) {
 									Anim *a = (Anim*)f->anim;
 									if (a->drawOrder > 0) {
 										addFormToAnim(front, f, 0, xfp, yfp);
@@ -164,7 +131,7 @@ void drawWorld(World *w) {
 	};
 	glUseProgram(texShader);
 	drawBG(sMatrix);
-	drawAnimOrder(back, mat, frame[2], frame[3]);
+	drawAnimOrder(back, mat, curView->objSX, curView->objSY);
 	GLuint squa = squareVao2d();
 	if (tileSeen > 0) {
 		glUseProgram(tileShader);
@@ -175,21 +142,21 @@ void drawWorld(World *w) {
 			//printf("drawing set for %i\n", cur);
 			TileSet *tmp = getTile(cur);
 			setTileVBO(tmp);
-			setUpTiles(tmp->set, sMatrix, frame[2], frame[3]);
+			setUpTiles(tmp->set, sMatrix, curView->objSX, curView->objSY);
 			//tileData(tmp, w);
 			bindData(tmp->trans);
 			bindData(tmp->rot);
 			bindData(tmp->color);
 			bindData(tmp->texture);
-			glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, s->frameX * s->frameY);
+			glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, (ceil(curView->frameX)+0) * ceil(curView->frameY));
 		}
 		free(tileSets);
 	}
 	freeList(&tileList);
 	glUseProgram(texShader);
 	//bindVertexArray(squa);
-	drawAnimOrder(mid, mat, frame[2], frame[3]);
-	drawAnimOrder(front, mat, frame[2], frame[3]);
+	drawAnimOrder(mid, mat, curView->objSX, curView->objSY); 
+	drawAnimOrder(front, mat, curView->objSX, curView->objSY);
 	freeAnimOrder(back);
 	freeAnimOrder(front);
 	freeAnimOrder(mid);
@@ -205,8 +172,8 @@ void tileCell(TileSet *t, float remainder, int x, int y) {
 	/*
 	int fx = s->frameX/2;
 	int fy = s->frameY/2;
-	int cenX = curCam->centerX;
-	int cenY = curCam->centerY;
+	int cenX = curView->centerX;
+	int cenY = curView->centerY;
 	if (s->frameX >= w->x || s->frameY >= w->y) {
 		cenX = w->x/2;
 		cenY = w->y/2;
@@ -303,10 +270,10 @@ void tileCell(TileSet *t, float remainder, int x, int y) {
 		//printf("mostOpen: %i and startSide: %i\n", mostOpen, startSide);
 		float texVal = (t->set->spriteNum-1 - mostOpen) * (t->set->frameY)+1; 
 		float texValX = (int)(round(remainder * (t->set->length[0] - 1))) * t->set->frameX;
-		editData(ds, x - (int)frame[0], y - (int)frame[1], texVal, 1);
+		editData(ds, x - (int)curView->buffX, y - (int)curView->buffY, texVal, 1);
 		//printf("X value: %f\n", getData(ds, x - frame[0], y - frame[1], 2));
-		editData(ds, x -(int)frame[0], y - (int)frame[1], texValX, 2);
-		setRot(rot, x - (int)frame[0], y - (int)frame[1], dirToRad(startSide));
+		editData(ds, x -(int)curView->buffX, y - (int)curView->buffY, texValX, 2);
+		setRot(rot, x - (int)curView->buffX, y - (int)curView->buffY, dirToRad(startSide));
 	}
 }
 
@@ -320,6 +287,10 @@ AnimOrder *makeAnimOrder(int order) {
 void addFormToAnim(AnimOrder *ao, Form *f, Anim *anim, float x, float y) {
 	if (anim == NULL) {
 		anim = (Anim*)f->anim;
+	}
+	if (cmpList(&(ao->anims), anim, compareAnims)) {
+		//printf("anim already on list not adding\n");
+		return;
 	}
 	
 	addToList(&(ao->anims), anim);
@@ -373,13 +344,14 @@ void drawWorldDebug(World *w) {
 			0.0, 0.0, 0.0, 1.0
 		};
 	GLuint baseShader = getSP(0);//makeShaderProgram("graphicsSource/matVS.glsl", "graphicsSource/simpFS.glsl");
+	/*
 	Screen *s = getWindow();
 	int fx = s->frameX/2;
 	int fy = s->frameY/2;
-	//int cx = clamp(curCam->centerX, fx, w->x - fx);
-	//int cy = clamp(curCam->centerY, fy, w->y - fy);
-	int cenX = curCam->centerX;
-	int cenY = curCam->centerY;
+	//int cx = clamp(curView->centerX, fx, w->x - fx);
+	//int cy = clamp(curView->centerY, fy, w->y - fy);
+	int cenX = curView->centerX;
+	int cenY = curView->centerY;
 	if (s->frameX >= w->x || s->frameY >= w->y) {
 		cenX = w->x/2;
 		cenY = w->y/2;
@@ -396,32 +368,34 @@ void drawWorldDebug(World *w) {
 		yRatio = (float)s->width / s->height;
 	}
 	
-	float xSize = 2.0f / s->frameX;//curCam->frameX;//(float)scr->width / 10000;
-	float ySize = 2.0f / s->frameY;//curCam->frameY;//(float)scr->height /10000;
+	float xSize = 2.0f / s->frameX;//curView->frameX;//(float)scr->width / 10000;
+	float ySize = 2.0f / s->frameY;//curView->frameY;//(float)scr->height /10000;
 	//float xSize = (float)s->frameX / s->frame;//(float)scr->width / 10000;
 	//float ySize =  (float)s->frameY / s->frame;//(float)scr->height /10000;
-
+*/
 	glUseProgram(baseShader);
 	glUniformMatrix4fv(rMat, 1, GL_TRUE, rMatrix);
-	mat[0] = frame[2];
-	mat[5] = frame[3];
+	mat[0] = curView->objSX;
+	mat[5] = curView->objSY;
 	//printf("scale %f, %f\n", frame[2], frame[3]);
 	glUniformMatrix4fv(sMat, 1, GL_TRUE, mat);
 	glBindVertexArray(square);
 	mat[0] = 1;
 	mat[5] = 1;
-	for (int x = 0; x < s->frameX; x++) {
-		mat[3] = (-1 + frame[2]/2) + (x * frame[2]);
-		for (int y = 0; y < s->frameY; y++) {
-			int xp = x + frame[0];//(cx-fx);
-			int yp = y + frame[1];//(cy-fy);
+	float startX = -1 - (curView->objSX/2);
+	float startY = -1 - (curView->objSY/2);
+	for (int x = 0; x < curView->frameX; x++) {
+		mat[3] = (startX + curView->objSX) + (x * curView->objSX);
+		for (int y = 0; y < curView->frameY; y++) {
+			int xp = x + curView->buffX;// frame[0];//(cx-fx);
+			int yp = y + curView->buffY;//frame[1];//(cy-fy);
 			if (xp >= 0 && xp < w->x && yp >= 0 && yp < w->y) {
 				Form *f = checkSolidForm(w->map[xp][yp]);
 				if (f != NULL) {
 					//float xfp = f->pos[0] - (cx-fx);//x + (cx-fx);
 					//float yfp = f->pos[1] - (cy-fy);
 					//glBindVertexArray(squa);
-					mat[7] = (-1 + frame[3]/2) + (y * frame[3]);	
+					mat[7] = (startY + curView->objSY) + (y * curView->objSY);	
 					glUniformMatrix4fv(tMat, 1, GL_TRUE, mat);
 					float *m = getStat(f, "moisture");
 					if (m != NULL) {
@@ -445,11 +419,11 @@ void drawWorldDebug(World *w) {
 void drawGrid() {
 	Screen *s = getWindow();
 	glUseProgram(getSP(0));
-	float xSize = 2.0f / s->frameX;//(float)scr->width / 10000;
-	float ySize = 2.0f / s->frameY;//(float)scr->height /10000;
+	float xSize = curView->objSX;//2.0f / curView->frameX;//(float)scr->width / 10000;
+	float ySize = curView->objSY;//2.0f / curView->frameY;//(float)scr->height /10000;
 		float matrix[] = {
-			1.0, 0.0, 0.0, 0.0,
-			0.0, 1.0, 0.0, 0.0,
+			2.0, 0.0, 0.0, 0.0,
+			0.0, 2.0, 0.0, 0.0,
 			0.0, 0.0, 1.0, 0.0,
 			0.0, 0.0, 0.0, 1.0
 		};
@@ -458,7 +432,7 @@ void drawGrid() {
 	glUniformMatrix4fv(rMat, 1, GL_TRUE, matrix);
 	glUniform4f(drawColor, 0, 0, 0, 0.4);
 	glBindVertexArray(line);
-	for (int x = 0; x < s->frameX; x++) {
+	for (int x = 0; x < curView->frameX; x++) {
 		matrix[3] = -1 + (x * xSize);
 		glUniformMatrix4fv(tMat, 1, GL_TRUE, matrix);
 		glDrawArrays(GL_LINES, 0, 2);	
@@ -472,7 +446,7 @@ void drawGrid() {
 		0.0, 0.0, 0.0, 1.0
 	};
 	glUniformMatrix4fv(rMat, 1, GL_TRUE, rMatrix);
-	for (int y = 0; y < s->frameY; y++) {
+	for (int y = 0; y < curView->frameY; y++) {
 		matrix[7] = -1 + (y * ySize);
 		glUniformMatrix4fv(tMat, 1 ,GL_TRUE, matrix);
 		glDrawArrays(GL_LINES, 0, 2);
@@ -480,9 +454,9 @@ void drawGrid() {
 }
 
 float getCenterX() {
-	return centerX;
+	return curView->centerX;
 }
 
 float getCenterY() {
-	return centerY;
+	return curView->centerY;
 }

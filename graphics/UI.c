@@ -77,10 +77,12 @@ void addButtonText(Button *butt, Text *t) {
 }
 
 void addButtonSubColor(Button *butt, float r, float g, float b, float a) {
-	butt->textCol2[0] = r;
-	butt->textCol2[1] = g;
-	butt->textCol2[2] = b;
-	butt->textCol2[3] = a;
+	if (butt->textCol2) {
+		butt->textCol2[0] = r;
+		butt->textCol2[1] = g;
+		butt->textCol2[2] = b;
+		butt->textCol2[3] = a;
+	}
 }
 
 Button *makeButton(char *baseFile, int numColors, int rows, int cols, void(*func)(void)) {
@@ -105,13 +107,14 @@ void drawUI(UI *ui) {
 		0.0, 0.0, 1.0, 0.0,
 		0.0, 0.0, 0.0, 1.0
 	};
-		Screen *s = getWindow();
+	Screen *s = getWindow();
 	glUseProgram(getSP(1));
 	float xSize = ui->xSize;
 	float ySize = ui->ySize;
-	float xRatio = 2.0f / s->frameX;//(float)s->frameX / s->frame;//(float)scr->width / 10000;
-	float yRatio =  2.0f / s->frameY;//(float)s->frameY / s->frame;//(float)scr->height /10000;
+	float xRatio = 2.0f / s->width;//(float)s->frameX / s->frame;//(float)scr->width / 10000;
+	float yRatio =  2.0f / s->height;//(float)s->frameY / s->frame;//(float)scr->height /10000;
 	//printf("UI size %f, %f, ratio: %f, %f\n", ui->xSize, ui->ySize, xRatio, yRatio);
+	//printf("drawing UI as %f, %f\n", xRatio, yRatio);
 
 	/*
 	if (s->width > s->height) {
@@ -127,6 +130,7 @@ void drawUI(UI *ui) {
 	//drawUIAnim(ui->a, matrix, xSize, ySize, ui->xp, ui->yp);
 	//printf("%f, %f\n", xSize, ySize);
 	if (ui->text) {
+		//printf("text offset: %f, %f\n", ui->text->xOffset, ui->text->yOffset);
 		float xp = ((1 + ui->xp + ui->text->xOffset)/2) * s->width ;//(-0.5 * s->width) + (ui->xp  * s->width);
 		float yp = ((1 + ui->yp + ui->text->yOffset)/2) * s->height;
 		drawText(ui->text, xp, yp);

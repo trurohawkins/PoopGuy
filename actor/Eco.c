@@ -56,7 +56,7 @@ void groundWater(){
 		}
 		// printf("---------------------------------------------------------------------- \n");
 		if (rCtr >= rInt) {
-		 	printf("\n it's rained! \n");
+		 	//printf("\n it's rained! \n");
 			rCtr = 0;
 		}
 		wCtr = 0;

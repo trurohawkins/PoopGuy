@@ -13,10 +13,12 @@ void textInput(bool active, char **output) {
 			free(curString);
 		}
 		if (curText == 0) {
-			curText = makeText("", 1, false, 0, 0, 0, 0.75);
-			curText->xOffset = -0.43;
+			// make some sort of calculation to make sure that the text is centered, and teh right font size to not leave the text box
+			curText = makeText("", 0.5, false, 0, 0, 0, 0.75);
+			curText->xOffset = -0.13;
 			curText->yOffset = -0.01;
 			drawBox = makeUI("resources/textBox.png", 0, 1, 1);
+			setScale(drawBox->a, 200, 100);
 			/*
 	Camera *cam = getDefaultCam();
 	float xSize = 2.0 / cam->frameX;

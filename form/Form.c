@@ -132,7 +132,8 @@ void deleteForm(void *form) {
 }
 
 
-int compareForms(Form *f1, Form *f2) {
+bool compareForms(Form *f1, Form *f2) {
+	return f1 == f2;
 	if (f1->color[0] == f2->color[0] && f1->color[1] == f2->color[1] && f1->color[2] == f2->color[2]) {
 		return 1;
 	} else {

@@ -440,3 +440,7 @@ void freeAnim(Anim *a) {
 	free(a);
 }
 
+bool compareAnims(void *a1, void *a2) {
+	return (Anim*)a1 == (Anim*)a2;
+}
+

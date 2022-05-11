@@ -126,6 +126,21 @@ int** genRain( int **map) {
 	return map;
 }
 
+void fillWorld() {
+	float moist = 0;;
+	for (int x = 0; x < theWorld->x; x++) {
+		for(int y = 0; y < theWorld->y; y++) {
+			if (x == theWorld->x/2 && y == theWorld->y/2) {
+				placeForm(x, y, makeStone(0));
+			} else {
+				TYPE *d = makeDirt(moist);
+				placeForm(x, y, d);
+			}
+		}
+	}	
+}
+
+
 void genWorld(int **map) {
 	float moist;
 	for (int x = 0; x < theWorld->x; x++) {

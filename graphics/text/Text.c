@@ -160,10 +160,10 @@ void setOrtho(float screenScale) {//float left, float right, float bottom, float
 		screenScaleY = screenScale * ((float)screen->width / screen->height);
 	}
 	*/
-	
-	screenScaleX = screenScale;///= 2;// screenScale;
-	screenScaleY = screenScale;///= 2;//screenScale;
-	printf("%f, %f\n", screenScaleX, screenScaleY);
+	// not changing screenscale, so that text is the same size noi matter what the screen size iss	
+	screenScaleX = 1;//screenScale;///= 2;// screenScale;
+	screenScaleY = 1;//screenScale;///= 2;//screenScale;
+	//printf("%f, %f\n", screenScaleX, screenScaleY);
 	mat4 dest;
 	glm_ortho(0, screen->width, 0, screen->height, 0, 1000, dest);
 	glUniformMatrix4fv(glGetUniformLocation(textShader, "projection"), 1, GL_FALSE, &(dest[0][0]));

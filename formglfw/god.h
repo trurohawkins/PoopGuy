@@ -5,13 +5,15 @@ typedef struct GOD {
 	Player *p;
 	short *move;
 	bool *zoom;
-	float *pos;
+	int *pos;
 	int *frame;
-	float speed;
+	int speed;
 	int zoomSpeedX;
 	int zoomSpeedY;
+	int maxZoom;
+	int minZoom;
 	World *world;
-	Camera *cam;
+	WorldView *cam;
 } GOD;
 
 GOD *makeGodPlayer(float x, float y, int fx, int fy);

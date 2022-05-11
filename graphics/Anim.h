@@ -67,5 +67,5 @@ void drawUIAnim(Anim *a, float *sMatrix, float xSize, float ySize, float xp, flo
 void setUpTiles(Anim *a, float *sMatrix, float xSize, float ySize);
 void drawTiles(Anim *a, float *sMatrix, float xSize, float ySize, float xp, float yp);
 void loadPalette(Anim *a, float *palette);
-
+bool compareAnims(void *a1, void *a2);
 #endif

@@ -23,7 +23,7 @@ int getEdge (Form *f, int side, int d);
 void deleteForm(void *form);
 void makeInert();
 void printForm(void *f);
-int compareForms(Form *f1, Form *f2);
+bool compareForms(Form *f1, Form *f2);
 bool checkFormIsSolid(void *form);
 bool isFormCenter(Form *f, int x, int y);
 /*

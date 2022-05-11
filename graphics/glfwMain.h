@@ -11,19 +11,24 @@
 #include "input/Input.h"
 #include "text/Text.h"
 #include "Anim.h"
+#include "Camera.h"
 #include "../helper/helper.h"
 
 typedef struct Screen {
 	GLFWwindow *window;
 	int width;
 	int height;
+	float xRatio;
+	float yRatio;
+	int frame;
+	/*
 	int frameX;
 	int frameY;
-	int frame;
 	int frameMax;
+	*/
 } Screen;
 
-int initializeGLFW();
+int initializeGLFW(int windowX, int windowY);
 void glfwWindowSizeCallback(GLFWwindow *window, int width, int height);
 void sizeScreen(int newFrame);
 void setScreenMax(int max);

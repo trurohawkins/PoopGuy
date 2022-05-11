@@ -4,7 +4,8 @@
 #include "../helper/helper.h"
 #include "../graphics/glfwMain.h"
 #include "Player.h"
-#include "Camera.h"
+#include "WorldView.h"
+#include "god.h"
 #include "DrawWorld.h"
 
 int mainMenu();
@@ -25,6 +26,7 @@ void setGrid(bool state);
 void togglePauseMenu(void *,float val);
 void toggleDebugDraw(void *,float val);
 void toggleGod(void *,float);
+void centerOnForm(Form *f);
 void exitGame();
 void saveMap();
 void exitMenu();

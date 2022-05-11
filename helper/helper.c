@@ -226,6 +226,14 @@ int decPlace(int d) {
 	}
 	return num;
 }
+float intToFrac(int i, int pow) {
+	int num = (i / pow) * pow;//pow(10, decPlace(i));
+	//printf("%i\n", num);
+	int res = i - num;//((i / 10) * num);
+	//printf("pulled %i from %i\n", res, i);
+	return (float)res / pow;
+}
+
 #include "list.c"
 #include "binaryWriter.c"
 

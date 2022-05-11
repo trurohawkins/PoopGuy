@@ -22,13 +22,14 @@ double clampF(double, double, double);
 float max(float a, float b);
 float min(float a, float b);
 int sign(int);
-int abs(int);
+//int abs(int);
 float distance(float x1, float y1, float x2, float y2);
 char *fileToString(char *txt);
 bool strCompare(char *str1, char *str2);
 void printArray(int**, int, int);
 bool compareColor(void *c1, void *c2);
 int decPlace(int d);
+float intToFrac(int i, int pow);
 
 #include "list.h"
 #include "binaryWriter.h"

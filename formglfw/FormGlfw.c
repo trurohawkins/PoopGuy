@@ -1,11 +1,12 @@
 #include "FormGlfw.h"
 #include "Player.c"
-#include "Camera.c"
+#include "god.c"
+#include "WorldView.c"
 #include "DrawWorld.c"
 #include "../actor/Cloud.c"
 #include "../controllerDB.c"
 
-Camera *cam;
+WorldView *cam;
 int frameX = 50;
 int frameY = 50;
 int defaultFrameY = -1;
@@ -27,18 +28,21 @@ char *fileName = 0;
 int mainMenu() {
 	Screen *screen = getWindow();
 	Menu *startMenu = makeMenu(1000);
-
+	Camera *menuCam = makeCamera();
+	int buttSizeX = 100;
+	int buttSizeY = 70;
+	float textSize = 0.5;
 	Button *loadButt = makeButton("resources/button.png", 0, 2, 1, loadGame);
-	setScale(loadButt->graphics->a, 0.7, 0.5);
-	Text *load = makeText("LOAD", 1, true, 0.5, 0.5, 0.5, 0.5);
+	setScale(loadButt->graphics->a, buttSizeX, buttSizeY);
+	Text *load = makeText("LOAD", textSize, true, 0.5, 0.5, 0.5, 0.5);
 	addButtonText(loadButt, load);
 	addButtonSubColor(loadButt, 1,1,1,1);
 	placeUI(loadButt->graphics, 0, 0.35);
 	addButton(startMenu, loadButt);
 
 	Button *newButt = makeButton("resources/button.png", 0, 2, 1, playGame);
-	setScale(newButt->graphics->a, 0.7, 0.5);
-	Text *new = makeText("NEW", 1, true, 0.5, 0.5, 0.5, 0.5);
+	setScale(newButt->graphics->a, buttSizeX, buttSizeY);
+	Text *new = makeText("NEW", textSize, true, 0.5, 0.5, 0.5, 0.5);
 	addButtonText(newButt, new);
 	addButtonSubColor(newButt, 1,1,1,1);
 	placeUI(newButt->graphics, 0, 0);
@@ -46,8 +50,8 @@ int mainMenu() {
 
 
 	Button *exitButt = makeButton("resources/button.png", 0, 2, 1, quitGame);
-	setScale(exitButt->graphics->a, 0.7, 0.5);
-	Text *exit = makeText("EXIT", 1, true, 0.5, 0.5, 0.5, 0.5);
+	setScale(exitButt->graphics->a, buttSizeX, buttSizeY);
+	Text *exit = makeText("EXIT", textSize, true, 0.5, 0.5, 0.5, 0.5);
 	addButtonText(exitButt, exit);
 	addButtonSubColor(exitButt, 1,1,1,1);
 	placeUI(exitButt->graphics, 0, -0.35);
@@ -113,17 +117,22 @@ int defaultFrame = 0;
 
 void updateLoop() {
 	Screen *screen = getWindow();
-	defaultFrame = screen->frame;
-	cam = getDefaultCam();
-	Camera *cam = getDefaultCam();
+	// why?? defaultFrame = screen->frame;
+	cam = getDefaultView();
+	WorldView *wv = getDefaultView();
 	//printf("screen: %i, %i cam: %i, %i\n", screen->width, screen->height, cam->frameX, cam->frameY);
 	//float xSize = 2.0 / cam->frameX;
 	//float ySize = 2.0 / cam->frameY;
 	World *w = getWorld();
+	//setCameraSize(mainCam, 1);
 	
 	//makeStoneSquare((w->x/2), (w->y/2) - 40, 10);
 	//poopers = (PoopGuy **)calloc(numPlayers, sizeof(PoopGuy*));	
 	poopers = getPoopers();
+	for (int i = 0; i < getNumPoopers(); i++) {
+		followForm(poopers[i]->me->body);
+	}
+	//unFollowForm(poopers[1]->me->body);
 	//set up offsets for rendering instances
 	Button *demonButt = makeButton("resources/demonghost.png", 0, 2, 1, tmpButtFunc);
 	Button *faceButt = makeButton("resources/faceghost.png", 0, 2, 1, exitMenu);
@@ -156,11 +165,11 @@ void updateLoop() {
 	Anim *stone = makeAnimSheet("resources/rockSheet.png", 1, 15, 1);
 	GLuint ss = makeSpriteVao(1,1);
 	animAddVao(stone, ss);
-	TileSet *dirtTiles = makeTileSet(dirt, screen->frameX, screen->frameY, w->x, w->y);
-	TileSet *stoneTiles = makeTileSet(stone, screen->frameX, screen->frameY, w->x, w->y);
+	TileSet *dirtTiles = makeTileSet(dirt, wv->frameX, wv->frameY, w->x, w->y);
+	TileSet *stoneTiles = makeTileSet(stone, wv->frameX, wv->frameY, w->x, w->y);
 
 	glfwUpdateGamepadMappings(gamecontrollerdb);
-	god = makeGodPlayer(w->x/2, w->y/2, screen->frameX, screen->frameY);
+	god = makeGodPlayer(w->x * 0.5, w->y * 0.5, 20, 20);//wv->frameX, wv->frameY);
 	Player *nullPlayer = makePlayer(NULL, -1, NULL);
 	addControl(nullPlayer, "K0G", toggleGod);
 	addControl(nullPlayer, "K0!", togglePauseMenu);//S
@@ -181,10 +190,14 @@ void updateLoop() {
 			actorListDo();
 			groundWater();
 			if (!godMode && poopers[0] != NULL) {
-				setCenter(poopers[0]->me->body->pos);
+				//centerOnForm(poopers[0]->me->body);
+				//setCenter(wv, w->x / 2, w->y / 2);
+				followForms(wv);
+				//lerpView(wv);
 				//printf("currently at %f, %f\n", pooper->me->body->pos[0], pooper->me->body->pos[1]);
-			} else if (god == NULL) {
-				setCenter(godPos);
+				//followForm(poopers[0]->me->body);
+			} else {// if (god == NULL) {
+				//setCenter(wv, godPos[0], godPos[1]);
 			}
 			//printf("poopguy index: %i\n",((Anim*)poopers[0]->me->body->anim)->sprite);	
 			glClearColor(0.1, 0.2, 0.4, 1.0);
@@ -263,23 +276,32 @@ void toggleDebugDraw(void *, float poo) {
 	}
 }
 
+void centerOnForm(Form* f) {
+	WorldView *wv = getDefaultView();
+	setCenter(wv, f->pos[0], f->pos[1]);
+}
+
 void toggleGod(void *, float poo) {
 	if (poo > 0) {
 		printf("toggle god %i\n", godMode);
+		WorldView *wv = getDefaultView();
 		if (godMode) {
-			godOff(god);
+		/*
+			//godOff(god);
 			if (poopers[0] != NULL) {
-				setCenter(poopers[0]->me->body->pos);
+				centerOnForm(poopers[0]->me->body);
 			}
 			sizeScreen(defaultFrame);
+			*/
+			godOff(god);
 			godMode = false;
 		} else {
 			Screen *screen = getWindow();
 			godMode= true;
-			setGod(god, getCenterX(), getCenterY(), screen->frame, screen->frameY);
+			//setGod(god, getCenterX(), getCenterY(), wv->frameX, wv->frameY);
 			godOn(god);
 		}
-
+		//setCameraSize(mainCam, mainCam->z + 0.1);
 	}
 }
 
