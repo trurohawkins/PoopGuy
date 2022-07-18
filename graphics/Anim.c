@@ -197,6 +197,10 @@ void drawSprite(Anim *a, float *sMatrix, float xSize, float ySize, float xp, flo
 	drawAnim(a, sMatrix, xSize, ySize);
 }
 
+void setSpriteTransMat(float *matrix) {
+	glUniformMatrix4fv(spriteTrans, 1, GL_TRUE, matrix);
+}
+
 void drawAnim(Anim *a, float *matrix, float xSize, float ySize) {
 	matrix[3] = 0;
 	matrix[7] = 0;
@@ -232,7 +236,7 @@ void drawUIAnim(Anim *a, float *sMatrix, float xSize, float ySize, float xp, flo
 	drawAnim(a, sMatrix, xSize, ySize);
 }
 
-void setUpTiles(Anim *a, float *sMatrix, float xSize, float ySize) {
+void setUpTiles(Anim *a, float *sMatrix, double xSize, double ySize) {
 	float mat[] = {
 		1.0, 0.0, 0.0, 0.0,
 		0.0, 1.0, 0.0, 0.0,
@@ -241,22 +245,13 @@ void setUpTiles(Anim *a, float *sMatrix, float xSize, float ySize) {
 	};
 	glUniformMatrix4fv(spriteRotTile, 1, GL_TRUE, mat);
 	glUniformMatrix4fv(spriteTransTile, 1, GL_TRUE, mat);
-	Screen *s = getWindow();
-	float xRatio = 1;
-	float yRatio = 1;
-	/*
-	if (s->width > s->height) {
-		xRatio = (float)s->height / s->width;
-		yRatio = 1;
-	} else {
-		xRatio = 1;
-		yRatio = (float)s->width / s->height;
-	}
-*/
 	mat[3] = 0;
 	mat[7] = 0;
-	mat[0] = xRatio * xSize * a->ratio[0] * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
-	mat[5] = yRatio * ySize * a->ratio[1] * a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
+	// for some reason gets rid of tile distortion lines when resizing screen
+	xSize += 0.00001;
+	ySize += 0.00001;
+	mat[0] = xSize * a->ratio[0] * a->scale[0] * convertInvert(a->invert[0]);//a->flip[0];
+	mat[5] = ySize * a->ratio[1] * a->scale[1] * convertInvert(a->invert[1]);//a->flip[1];
 	glUniformMatrix4fv(spriteScaleTile, 1, GL_TRUE, mat);
 	float tMat [] = {
 		1.0, 0.0, getCoordX(a),

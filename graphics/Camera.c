@@ -5,7 +5,7 @@ Camera* makeCamera() {
 	cam->x = 0;
 	cam->y = 0;
 	cam->z = 1;
-	setCamera(cam);
+	//setCamera(cam);
 	return cam;
 }
 

@@ -115,22 +115,8 @@ void drawUI(UI *ui) {
 	float yRatio =  2.0f / s->height;//(float)s->frameY / s->frame;//(float)scr->height /10000;
 	//printf("UI size %f, %f, ratio: %f, %f\n", ui->xSize, ui->ySize, xRatio, yRatio);
 	//printf("drawing UI as %f, %f\n", xRatio, yRatio);
-
-	/*
-	if (s->width > s->height) {
-		xSize = (float)s->height / s->width;
-		ySize = 1;
-	} else {
-		xSize = 1;
-		ySize = (float)s->width / s->height;
-	}
-	*/
 	drawUIAnim(ui->a, matrix, xRatio, yRatio, ui->xp, ui->yp);
-	//drawSprite(ui->a, matrix, xRatio, yRatio, ui->xp, ui->yp);
-	//drawUIAnim(ui->a, matrix, xSize, ySize, ui->xp, ui->yp);
-	//printf("%f, %f\n", xSize, ySize);
 	if (ui->text) {
-		//printf("text offset: %f, %f\n", ui->text->xOffset, ui->text->yOffset);
 		float xp = ((1 + ui->xp + ui->text->xOffset)/2) * s->width ;//(-0.5 * s->width) + (ui->xp  * s->width);
 		float yp = ((1 + ui->yp + ui->text->yOffset)/2) * s->height;
 		drawText(ui->text, xp, yp);

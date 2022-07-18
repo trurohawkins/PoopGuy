@@ -16,22 +16,20 @@
 
 typedef struct Screen {
 	GLFWwindow *window;
-	int width;
-	int height;
-	float xRatio;
-	float yRatio;
+	float width;
+	float height;
+	double xRatio;
+	double yRatio;
+	int aspectRatioX;
+	int aspectRatioY;
 	int frame;
-	/*
-	int frameX;
-	int frameY;
-	int frameMax;
-	*/
 } Screen;
 
 int initializeGLFW(int windowX, int windowY);
 void glfwWindowSizeCallback(GLFWwindow *window, int width, int height);
 void sizeScreen(int newFrame);
 void setScreenMax(int max);
+void setAspectRatio(int x, int y);
 GLuint squareVao2d();
 GLuint lineVao2d();
 GLuint makeVao2d(float *shape, int len);

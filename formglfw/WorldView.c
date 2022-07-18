@@ -36,34 +36,8 @@ WorldView *getDefaultView() {
 }
 //applying new screen ratio to frame data
 void resizeScreen() {
-	Screen *s = getWindow();
-	printf("screen ratio = %f, %f\n", s->xRatio, s->yRatio);
 	setFrame(defaultView, defaultView->frame);
-	//float x = (float)defaultView->frame * s->xRatio;
-	//float y = (float)defaultView->frame * s->yRatio;
 }
-
-void calculateFrameData() {
-	World *w = getWorld();
-	Screen *s = getWindow();
-	float fx = (float)defaultView->frameX/2;
-	float fy = (float)defaultView->frameY/2;
-	float cx = clampF(defaultView->centerX, fx, w->x - fx);
-	float cy = clampF(defaultView->centerY, fy, w->y - fy);
-	//defaultView->buffX= cx-fx;
-	//defaultView->buffY = cy-fy;
-	/*
-	if (defaultView->frameX >= w->x || defaultView->frameY >= w->y) {
-		//defaultView->centerX = w->x/2;
-		//defaultView->centerY = w->y/2;
-		cx = w->x/2;
-		cy = w->y/2;
-		//defaultView->buffY = 0;
-	}
-	*/
-	//printf("objS: %f, %f\n", defaultView->objSX, defaultView->objSY);
-}
-
 
 void setFrame(WorldView *wv, float frame) {
 	//printf("setting frame: %f\n", frame);
@@ -71,7 +45,7 @@ void setFrame(WorldView *wv, float frame) {
 	World *w = getWorld();
 	wv->frame = frame;
 
-	float frameX = ceil(frame  * s->xRatio); 
+	float frameX = ceil(frame  * s->xRatio) - 1; 
 	int centerBuffX = 0;
 	if ((int)frameX % 2 == 0) {
 		centerBuffX = 0.5 * wv->scalePower;//(frameX - floor(frameX)) / 2; 
@@ -79,13 +53,9 @@ void setFrame(WorldView *wv, float frame) {
 	float fx = (frameX)/2;
 	int cx = clampF(wv->centerX, (floor(fx)*wv->scalePower) - centerBuffX , (w->x * wv->scalePower) - ((ceil(fx)*wv->scalePower) + centerBuffX));
 	float xRem = intToFrac(cx + centerBuffX, wv->scalePower);// - ((cx / 10) * 10);
-	//printf("cx: %i make frac %f\n", cx + centerBuffX ,xRem);
-	//printf("modf(%f) produces %f + %f\n", cx-centerBuffX, poo, xRem);
-	//printf("cx: %.2f makes floor: %.2f so rem: %f\n", cx, floor(cx), xRem);
-	//if (xRem >= 0.999) { printf("poogaga\n"); xRem = 0; }
 	if (frameX >= w->x) {
 		wv->frameX = w->x;
-		wv->objSX = (2.0f * ((float)w->x/frameX)) / wv->frameX;//(float)scr->width / 10000;
+		wv->objSX = (2.0 * ((float)w->x/frameX)) / wv->frameX;//(float)scr->width / 10000;
 		wv->cam->x = 1 - ((float)w->x / (frameX)); 
 		wv->buffX = 0;
 	} else {
@@ -95,11 +65,11 @@ void setFrame(WorldView *wv, float frame) {
 		} else {
 			wv->buffX = max(0, round(((float)cx/wv->scalePower) - fx));
 		}
-		wv->objSX = 2.0f / frameX;//(s->xRatio * frame);//wv->frameX);//(float)scr->height /10000;
+		wv->objSX = 2.0 / frameX;//(s->xRatio * (double)frame);//(s->xRatio * frame);//wv->frameX);//(float)scr->height /10000;
 		wv->cam->x = -xRem * wv->objSX;
 	}
 	
-	float frameY = ceil(frame  * s->yRatio);
+	float frameY = ceil(frame  * s->yRatio) - 1;
 	int centerBuffY = 0;
 	if ((int)frameY % 2 == 0) {
 		centerBuffY = 0.5 * wv->scalePower;
@@ -109,7 +79,7 @@ void setFrame(WorldView *wv, float frame) {
 	float yRem =  intToFrac(cy + centerBuffY, wv->scalePower);
 	if (frameY >= w->y) {
 		wv->frameY = w->y;
-		wv->objSY = (2.0f * ((float)w->y/frameY)) / wv->frameY;//(float)scr->height /10000;
+		wv->objSY = (2.0 * ((float)w->y/frameY)) / wv->frameY;//(float)scr->height /10000;
 		wv->cam->y = 1 - ((float)w->y / frameY);
 		wv->buffY = 0;
 	} else {
@@ -120,7 +90,7 @@ void setFrame(WorldView *wv, float frame) {
 		} else {
 			wv->buffY = max(0, round(((float)cy/wv->scalePower) - fy));
 		}
-		wv->objSY = 2.0f / frameY;//(s->yRatio * frame);//(wv->frameY);//(float)scr->height /10000;
+		wv->objSY = 2.0 / frameY;//((double)frame * s->yRatio);//(s->yRatio * frame);//(wv->frameY);//(float)scr->height /10000;
 		wv->cam->y = -yRem * wv->objSY;
 	}
 	//printf("drawing world with dimensions %f, %f at %i, %i\n", frameX, frameY, cx, cy);
@@ -136,7 +106,7 @@ void setFrame(WorldView *wv, float frame) {
 	for (int i = 0; i < getTileCount(); i++) {
 		TileSet *ts = getTile(i);
 		setTileSize(ts, wv->objSX, wv->objSY);
-		resizeTileSet(ts, ceil(wv->frameX) + 0, ceil(wv->frameY), false, false);//wv->frameX != w->x, wv->frameY != w->y);
+		resizeTileSet(ts, wv->frameX, wv->frameY);//wv->frameX != w->x, wv->frameY != w->y);
 	}
 	//printf("\n");
 }
@@ -144,24 +114,6 @@ void setFrame(WorldView *wv, float frame) {
 void setCenter(WorldView *wv, float xp, float yp) {
 	wv->centerX = xp * wv->scalePower;
 	wv->centerY = yp * wv->scalePower;
-	/*
-	setFrame(wv, wv->frame);
-	World *w = getWorld();
-	if (wv->frameX > w->x || wv->frameY > w->y) {
-		//float x = (float)w->x / 2;
-		//float y = (float)w->y / 2;
-		//centerCamera(wv, xp, yp); 
-		//setCameraPos(wv->cam, xp/w->frameX, yp/wv->frameY);
-		//centerCamera(wv, xp, yp);
-		//centerCamera(wv, wv->frameX/2, wv->frameY/2);
-	} else {
-		wv->centerX = xp;
-		wv->centerY = yp;
-		//setCameraPos(wv->cam, 0, 0);
-
-	}
-	calculateFrameData();
-	*/
 }
 
 void centerCamera(WorldView *wv, float x, float y) {
@@ -178,6 +130,36 @@ void centerCamera(WorldView *wv, float x, float y) {
 	//printf("camera set %f, %f from %f, %f\n", fx, fy, x ,y);
 	//mulltiply x and y coordinates so that the scaling is applied to the movement
 	setCameraPos(wv->cam, fx * wv->cam->z, fy * wv->cam->z);
+}
+
+void wvMakeBackground(WorldView *wv, char *image) {
+	/*
+	char **sprites = (char**)calloc(sizeof(char*), 1);
+	*sprites = (char*)calloc(sizeof(char), strlen(image) + 1);
+	strcpy(*sprites, image);
+	*/
+	World *w = getWorld();
+	char **sprites = makeSheet(image, 1);
+	Anim *bg = makeAnim(sprites, 1, false, 1, 1);//makeAnimSheet(image, 1, 1, 1);
+	int wid = bg->texture->width / 5;
+	int hei = bg->texture->height;
+	int scaleX = 100;//max(w->x * 5, wid) / min(w->x * 5, wid);
+	int scaleY = max(w->y, hei) / min(w->y, hei);
+	printf("scale: %i from world: %i and width %i\n", scaleX, w->x, wid);
+	setScale(bg, w->x, w->y);//scaleX, scaleY);
+	animAddVao(bg, makeSpriteVao(1, 1));
+	wv->background = bg;
+}
+
+Anim *wvChangeBackground(WorldView *wv, Anim *bg) {
+	Anim *tmp = wv->background;
+	wv->background = bg;
+	return tmp;
+}
+
+void wvDrawBackground(WorldView *wv, float *matrix) {
+	World *w = getWorld();
+	drawSprite(wv->background, matrix, wv->objSX, wv->objSY, (float)w->x/2 -(int)wv->buffX - 0.5f, (float)w->y/2 - (int)wv->buffY - 0.5f);
 }
 
 void followForm(Form *f) {
@@ -220,9 +202,10 @@ void followForms(WorldView *wv) {
 		}
 		xp /= count;
 		yp /= count;
-		maxDistance = clamp(maxDistance + 10, 40, 500);
 		World *w = getWorld();
+		maxDistance = clamp(maxDistance + 10, 40, max(w->x, w->y) + 1);
 		if (xp * wv->scalePower != wv->centerX || yp * wv->scalePower != wv->centerY || maxDistance != wv->frame) {
+		printf("resizing frame to %f\n", maxDistance);
 		//if (xp != wv->centerX || yp != wv->centerY) {
 			setCenter(wv, xp, yp);
 		//wv->cenDestX = xp;

@@ -9,13 +9,11 @@ typedef struct DrawScreen {
 	float ratioY;
 	int maxX;
 	int maxY;
-	float buffX;
-	float buffY;
 	int stride;
 	GLuint vbo;
 	int location;
-	float sizeX;
-	float sizeY;
+	double sizeX;
+	double sizeY;
 } DrawScreen;
 
 typedef struct TileSet {
@@ -36,8 +34,8 @@ int getTileCount();
 DrawScreen *makeDrawScreen(int dimensionX, int dimensionY, int maxDimensionX, int maxDimensionY, int location, int stride, bool base);
 void initializeData(DrawScreen *ds, bool base);
 void setScreenVBO(DrawScreen *ds);
-void sizeDrawScreen(DrawScreen *ds, int newSizeX, int newSizeY, bool base, bool bufferedX, bool bufferedY);
-void resizeTileSet(TileSet *t, int newSizeX, int newSizeY, bool bufferX, bool bufferY);
+void sizeDrawScreen(DrawScreen *ds, int newSizeX, int newSizeY, bool base);
+void resizeTileSet(TileSet *t, int newSizeX, int newSizeY);
 void setTileSize(TileSet *t, float sizeX, float sizeY);
 void editData(DrawScreen *ds, int x, int y, float val, int mod);
 int *getXY(DrawScreen *ds, int index);

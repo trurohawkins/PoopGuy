@@ -114,15 +114,9 @@ void drawWorld(World *w) {
 					}
 				}
 				free(residents);
-				//editData(ds, x, y, 1.8333, 1);
-			} else {
-				//editData(ds, x, y, 0, 2);
 			}
 		}
-		//printf("\n");
 	}
-		//printf("\n");
-	//printData(ds);
 	float mat[] = {
 		1.0, 0.0, 0.0, 0.0,
 		0.0, 1.0, 0.0, 0.0,
@@ -130,6 +124,7 @@ void drawWorld(World *w) {
 		0.0, 0.0, 0.0, 1.0
 	};
 	glUseProgram(texShader);
+	wvDrawBackground(getDefaultView(), mat);	
 	drawBG(sMatrix);
 	drawAnimOrder(back, mat, curView->objSX, curView->objSY);
 	GLuint squa = squareVao2d();
@@ -139,11 +134,9 @@ void drawWorld(World *w) {
 		void **tileSets = getContents(&tileList, tileSeen);
 		for (int i = 0; i < tileSeen; i++) {
 			int cur = *((int*)tileSets[i]);
-			//printf("drawing set for %i\n", cur);
 			TileSet *tmp = getTile(cur);
 			setTileVBO(tmp);
 			setUpTiles(tmp->set, sMatrix, curView->objSX, curView->objSY);
-			//tileData(tmp, w);
 			bindData(tmp->trans);
 			bindData(tmp->rot);
 			bindData(tmp->color);
@@ -154,7 +147,6 @@ void drawWorld(World *w) {
 	}
 	freeList(&tileList);
 	glUseProgram(texShader);
-	//bindVertexArray(squa);
 	drawAnimOrder(mid, mat, curView->objSX, curView->objSY); 
 	drawAnimOrder(front, mat, curView->objSX, curView->objSY);
 	freeAnimOrder(back);
@@ -169,22 +161,8 @@ void tileCell(TileSet *t, float remainder, int x, int y) {
 	DrawScreen *rot = t->rot;
 	World *w = getWorld();
 	Screen *s = getWindow();
-	/*
-	int fx = s->frameX/2;
-	int fy = s->frameY/2;
-	int cenX = curView->centerX;
-	int cenY = curView->centerY;
-	if (s->frameX >= w->x || s->frameY >= w->y) {
-		cenX = w->x/2;
-		cenY = w->y/2;
-	}
-	int cx = clamp(cenX, fx, w->x - fx);
-	int cy = clamp(cenY, fy, w->y - fy);
-	*/
 	int id = getFormID(x, y);
-	//if (getData(ds, x, y, 2) == 1) {
 	if (id == t->typeID) {
-		//printf("%i, %i - got type id %i\n", x, y, id);
 		int mostOpen = -1;
 		int start = 0;
 		int startSide = start;
@@ -193,14 +171,9 @@ void tileCell(TileSet *t, float remainder, int x, int y) {
 			start = (start + i) % 4;
 			for (int j = 0; j < 4; j++) {
 				int cur = (start + j) % 4;
-				//printf("  from dir: %i got %i, %i\n", cur, d[cur][0], d[cur][1]);
-				//printf("    ergo checking %i, %i\n", x + d[cur][0], y + d[cur][1]);
-				//if (getData(ds, x + d[cur][0], y + d[cur][1], 2) == 0) {
 				if (getFormID(x + d[cur][0], y + d[cur][1]) != t->typeID) {
 					openSides++;
 				} else {
-					//printf("got %i\n",getFormID(x + d[cur][0], y + d[cur][1] 
-					//printf("break\n");
 					break;
 				}
 			}
@@ -212,16 +185,13 @@ void tileCell(TileSet *t, float remainder, int x, int y) {
 
 		if (mostOpen == 1) {
 			int oppoSide = (startSide + 2) % 4;
-			//if (getData(ds, x + d[oppoSide][0], y + d[oppoSide][1], 2) == 0) {
 			if (getFormID(x + d[oppoSide][0], y + d[oppoSide][1]) != t->typeID) {
 				mostOpen = 5;
 			} else {
 				int **d8 = getDir8();
 				int nextCorn = ((startSide*2) + 3) % 8;
 				int preCorn = ((startSide*2) + 5) % 8;
-				//float nc = getData(ds, x + d8[nextCorn][0], y + d8[nextCorn][1], 2);
 				float nc = getFormID(x + d8[nextCorn][0], y + d8[nextCorn][1]);
-				//float pc = getData(ds, x + d8[preCorn][0], y + d8[preCorn][1], 2);
 				float pc = getFormID(x + d8[preCorn][0], y + d8[preCorn][1]);
 				if (nc != t->typeID && pc != t->typeID) {
 					mostOpen = 13;
@@ -234,7 +204,6 @@ void tileCell(TileSet *t, float remainder, int x, int y) {
 		} else if (mostOpen == 2) {
 				int **d8 = getDir8();
 				int oppoCorn = ((startSide*2) + 5) % 8;
-				//if (getData(ds, x + d8[oppoCorn][0], y + d8[oppoCorn][1], 2) == 0) {
 				if (getFormID(x + d8[oppoCorn][0], y + d8[oppoCorn][1]) != t->typeID) {
 					mostOpen = 14;
 				}
@@ -249,7 +218,6 @@ void tileCell(TileSet *t, float remainder, int x, int y) {
 				start = (s + (i * 2)) % 8;
 				for (int j = 0; j < 4; j++) {
 					int cur = (start + (j * 2)) % 8;
-					//if (getData(ds, x + d8[cur][0], y + d8[cur][1], 2) == 0) {
 					if (getFormID(x + d8[cur][0], y + d8[cur][1]) != t->typeID) {
 						corners++;
 					} else {
@@ -267,11 +235,9 @@ void tileCell(TileSet *t, float remainder, int x, int y) {
 			}
 		}
 
-		//printf("mostOpen: %i and startSide: %i\n", mostOpen, startSide);
 		float texVal = (t->set->spriteNum-1 - mostOpen) * (t->set->frameY)+1; 
 		float texValX = (int)(round(remainder * (t->set->length[0] - 1))) * t->set->frameX;
 		editData(ds, x - (int)curView->buffX, y - (int)curView->buffY, texVal, 1);
-		//printf("X value: %f\n", getData(ds, x - frame[0], y - frame[1], 2));
 		editData(ds, x -(int)curView->buffX, y - (int)curView->buffY, texValX, 2);
 		setRot(rot, x - (int)curView->buffX, y - (int)curView->buffY, dirToRad(startSide));
 	}
@@ -344,40 +310,10 @@ void drawWorldDebug(World *w) {
 			0.0, 0.0, 0.0, 1.0
 		};
 	GLuint baseShader = getSP(0);//makeShaderProgram("graphicsSource/matVS.glsl", "graphicsSource/simpFS.glsl");
-	/*
-	Screen *s = getWindow();
-	int fx = s->frameX/2;
-	int fy = s->frameY/2;
-	//int cx = clamp(curView->centerX, fx, w->x - fx);
-	//int cy = clamp(curView->centerY, fy, w->y - fy);
-	int cenX = curView->centerX;
-	int cenY = curView->centerY;
-	if (s->frameX >= w->x || s->frameY >= w->y) {
-		cenX = w->x/2;
-		cenY = w->y/2;
-	}
-	int cx = clamp(cenX, fx, w->x - fx);
-	int cy = clamp(cenY, fy, w->y - fy);
-	float xRatio = 1;
-	float yRatio = 1;
-	if (s->width > s->height) {
-		xRatio = (float)s->height / s->width;
-		yRatio = 1;
-	} else {
-		xRatio = 1;
-		yRatio = (float)s->width / s->height;
-	}
-	
-	float xSize = 2.0f / s->frameX;//curView->frameX;//(float)scr->width / 10000;
-	float ySize = 2.0f / s->frameY;//curView->frameY;//(float)scr->height /10000;
-	//float xSize = (float)s->frameX / s->frame;//(float)scr->width / 10000;
-	//float ySize =  (float)s->frameY / s->frame;//(float)scr->height /10000;
-*/
 	glUseProgram(baseShader);
 	glUniformMatrix4fv(rMat, 1, GL_TRUE, rMatrix);
 	mat[0] = curView->objSX;
 	mat[5] = curView->objSY;
-	//printf("scale %f, %f\n", frame[2], frame[3]);
 	glUniformMatrix4fv(sMat, 1, GL_TRUE, mat);
 	glBindVertexArray(square);
 	mat[0] = 1;
@@ -392,9 +328,6 @@ void drawWorldDebug(World *w) {
 			if (xp >= 0 && xp < w->x && yp >= 0 && yp < w->y) {
 				Form *f = checkSolidForm(w->map[xp][yp]);
 				if (f != NULL) {
-					//float xfp = f->pos[0] - (cx-fx);//x + (cx-fx);
-					//float yfp = f->pos[1] - (cy-fy);
-					//glBindVertexArray(squa);
 					mat[7] = (startY + curView->objSY) + (y * curView->objSY);	
 					glUniformMatrix4fv(tMat, 1, GL_TRUE, mat);
 					float *m = getStat(f, "moisture");

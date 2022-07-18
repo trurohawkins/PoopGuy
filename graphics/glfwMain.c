@@ -2,6 +2,8 @@
 #include "shaders/glslLib.c"
 
 const unsigned int screenWidth = 800*8/5, screenHeight = 450*8/5;
+int aspectRatioX = 0;
+int aspectRatioY = 0;
 //GLFWwindow *window;
 Screen *curScreen;
 GLuint baseShaderProgram;
@@ -140,50 +142,65 @@ GLuint makeSpriteVao(float sx, float sy) {
 
 void glfwWindowSizeCallback(GLFWwindow *window, int width, int height) {
 	printf("resizing\n");
+	float sx = 0, sy = 0;
+	if (curScreen->aspectRatioX != 0 && curScreen->aspectRatioY != 0) {
+		float w = width;
+		float h = height;
+		printf("%i x %i ", width, height);
+		if (width > height) {
+			while (w > 0) {
+				h = (w * curScreen->aspectRatioY) / curScreen->aspectRatioX;
+				if (h <= height) {
+					break;
+				} else {
+					w--;
+				}
+			}
+			//h = (w * curScreen->aspectRatioY) / curScreen->aspectRatioX;
+		} else {
+			while (h > 0) {
+				w = (h * curScreen->aspectRatioX) / curScreen->aspectRatioY;
+				if (w <= width) {
+					break;
+				} else {
+					h--;
+				}
+			}
+
+		}
+				printf("ratio %i:%i creates %f x %f\n",curScreen->aspectRatioX, curScreen->aspectRatioY, w, h);
+		sx = (width - w) / 2;
+		sy = (height - h) / 2;
+		width = w;
+		height = h;
+	}
 	float scale = sqrt(width * height) / sqrt(curScreen->width * curScreen->height);
 	curScreen->width = width;
 	curScreen->height = height;
-	glViewport(0, 0, curScreen->width, curScreen->height);
+	glViewport(sx, sy, curScreen->width, curScreen->height);
 	sizeScreen(curScreen->frame);
 	setOrtho(scale);//for text rendering
 }
 
 void sizeScreen(int frame) {
 	curScreen->frame = frame;
-	float xRatio = 1;
-	float yRatio = 1;
-	float xRatioInv = 1;
-	float yRatioInv = 1;
+	double xRatio = 1;
+	double yRatio = 1;
+	double xRatioInv = 1;
+	double yRatioInv = 1;
 	if (curScreen->width > curScreen->height) {
-		xRatio = (float)curScreen->width / curScreen->height;
+		xRatio = (double)curScreen->width / curScreen->height;
 		yRatio = 1;
-		xRatioInv = (float)curScreen->height / curScreen->width;
+		xRatioInv = (double)curScreen->height / curScreen->width;
 		yRatioInv = 1;
 	} else {
 		xRatio = 1;
-		yRatio = (float)curScreen->height / curScreen->width;
+		yRatio = (double)curScreen->height / curScreen->width;
 		xRatioInv = 1;
-		yRatioInv = (float)curScreen->width / curScreen->height;
+		yRatioInv = (double)curScreen->width / curScreen->height;
 	}
 	curScreen->xRatio = xRatio;
 	curScreen->yRatio = yRatio;
-	/*
-	if (frame * xRatio > curScreen->frameMax) {
-		curScreen->frameX = curScreen->frameMax;
-	} else {
-		curScreen->frameX = frame * xRatio;
-	}
-	if (frame * yRatio > curScreen->frameMax) {
-		curScreen->frameY = curScreen->frameMax;
-	} else {
-		curScreen->frameY = frame * yRatio;
-	}
-	curScreen->frameX = frame * xRatio;
-	curScreen->frameY = frame * yRatio;
-
-	printf("screen at %i, %i\n", curScreen->frameX, curScreen->frameY);
-	*/
-	//printf("screen at %f, %f\n", (float)curScreen->frameX/ frame, (float)curScreen->frameY/frame);
 	if (camFunc != 0) {
 		camFunc();
 	}
@@ -213,4 +230,11 @@ GLuint getSP(int shader) {
 void setCamFunction(void (*newFunc)(void)){
 	camFunc = newFunc;
 	camFunc();
+}
+
+void setAspectRatio(int x, int y) {
+	if (curScreen) {
+		curScreen->aspectRatioX = x;
+		curScreen->aspectRatioY = y;
+	}
 }

@@ -31,6 +31,7 @@ unsigned int genTexture(unsigned char *data, int wid, int hei) {
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//printf("generating texture of size %ix%i @%p\n", wid, hei, data);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, wid, hei, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	return tex;
@@ -71,7 +72,7 @@ textureSource *makeTexture(char *img, bool single) {
 	textureSource *ts = (textureSource*)calloc(sizeof(textureSource), 1);
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char *data = stbi_load(img, &(ts->width), &(ts->height), &(ts->channels), 0);
-	//printf("texture-%s has width of %d\n", img, ts->width);
+	printf("texture-%s has width of %d\n", img, ts->width);
 	if (data) {
 		/*
 		unsigned int tex = genTexture(data, ts->width, ts->height);
@@ -85,7 +86,7 @@ textureSource *makeTexture(char *img, bool single) {
 			makeLayerTexture(ts, data, 0);
 			//separateImgByColor(ts, data, 0, false);
 		} else {
-			//printf("single sprite being made to texture\n");
+			printf("single sprite being made to texture\n");
 			unsigned int tex = genTexture(data, ts->width, ts->height);
 			ts->tex = (unsigned int*)calloc(sizeof(unsigned int), 1);
 			*(ts->tex) = tex;
@@ -99,7 +100,7 @@ textureSource *makeTexture(char *img, bool single) {
 		//printf("number of textures %i\n", ts->numTex);
 	} else {
 		free(ts);
-		//printf("failed to load texture from file %s\n", img);
+		printf("failed to load texture from file %s\n", img);
 		ts = 0;
 	}
 	stbi_image_free(data);

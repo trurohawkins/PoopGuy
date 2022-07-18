@@ -13,8 +13,8 @@ int main(int argc, char **argv) {
 	}
 	srand(time(NULL));
 	initDirections();
-	int worldY = 300;
-	int worldX = 300; 
+	int worldY = 100;
+	int worldX = 100; 
 	int windowX = 100;
 	int windowY = 100;
 	int frameX = 4;
@@ -33,6 +33,7 @@ int main(int argc, char **argv) {
 	}
 	\*/
 	initializeGLFW(windowX, windowY);
+	//setAspectRatio(16, 9);
 	//setScreenMax(worldX);
 	//sizeScreen(windowX);
 	glfwSetJoystickCallback(joystickCallback);

@@ -134,6 +134,7 @@ void updateLoop() {
 	}
 	//unFollowForm(poopers[1]->me->body);
 	//set up offsets for rendering instances
+	wvMakeBackground(wv, "resources/skyy.png");
 	Button *demonButt = makeButton("resources/demonghost.png", 0, 2, 1, tmpButtFunc);
 	Button *faceButt = makeButton("resources/faceghost.png", 0, 2, 1, exitMenu);
 	Text *resume = makeText("RESUME", 1, true, 0.3, 0.6, 0.1, 0.8);
@@ -200,7 +201,7 @@ void updateLoop() {
 				//setCenter(wv, godPos[0], godPos[1]);
 			}
 			//printf("poopguy index: %i\n",((Anim*)poopers[0]->me->body->anim)->sprite);	
-			glClearColor(0.1, 0.2, 0.4, 1.0);
+			glClearColor(0, 0, 0, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			if (debugDraw) {
 				drawWorldDebug(w);

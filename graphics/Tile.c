@@ -57,63 +57,13 @@ DrawScreen *makeDrawScreen(int dimensionX ,int dimensionY, int maxDimensionX ,in
 	ds->stride = stride;
 	ds->location = location;
 
-	sizeDrawScreen(ds, dimensionX, dimensionY, base, dimensionX < maxDimensionX, dimensionY < maxDimensionY);
-	/*
-	if (dimensionX > maxDimensionX) {
-		ds->ratioX = (float)maxDimensionX / dimensionX; 
-		dimensionX = maxDimensionX;
-	} else {
-		ds->ratioX = 1;
-	}
-	if (dimensionY > maxDimensionY) {
-		ds->ratioY = (float)maxDimensionY / dimensionY;
-		dimensionY = maxDimensionY;
-	} else {
-		ds->ratioY = 1;
-	}
-	ds->dimensionX = dimensionX;// + 1;
-	ds->dimensionY = dimensionY;// + 1;
-	initializeData(ds, base);
-	glGenBuffers(1, &(ds->vbo));
-	glBindBuffer(GL_ARRAY_BUFFER, ds->vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * ((dimensionX ) * (dimensionY ) * stride), &translations[0], GL_STATIC_DRAW);
-	*/
+	sizeDrawScreen(ds, dimensionX, dimensionY, base);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	return ds;
 }
 
-void sizeDrawScreen(DrawScreen *ds, int newSizeX, int newSizeY, bool base, bool bufferedX, bool bufferedY) {
-	//printf("resizing tile sets\n");
+void sizeDrawScreen(DrawScreen *ds, int newSizeX, int newSizeY, bool base) {
 	if (newSizeX > 0 && newSizeY > 0) {// && newSizeX <= ds->maxX && newSizeY <= ds->maxY) {
-		if (bufferedX) {// && newSizeY < ds->maxY) {
-			ds->buffX = 1;
-		} else {
-			ds->buffX = 0;
-		}
-		if (bufferedY) {
-			ds->buffY = 1;
-		} else {
-			ds->buffY = 0;
-		}
-		/*
-		if (newSizeX >= ds->maxX) {
-			ds->ratioX = (float)ds->maxX / newSizeX; 
-			newSizeX = ds->maxX;
-			ds->buffX = 0;
-		} else {
-			ds->ratioX = 1;
-			ds->buffX = 1;
-		}
-		if (newSizeY >= ds->maxY) {
-			ds->ratioY = (float)ds->maxY / newSizeY;
-			newSizeY = ds->maxY;
-			ds->buffY = 0;
-		} else {
-			ds->ratioY = 1;
-			ds->buffY = 1;
-		}
-		*/
-		//printf("ratio %f, %f\n", ds->ratioX, ds->ratioY);
 		ds->dimensionX = newSizeX;
 		ds->dimensionY = newSizeY;
 		initializeData(ds, base);
@@ -134,61 +84,18 @@ void initializeData(DrawScreen *ds, bool base) {
 			}
 		}
 	} else {
-		//printf("poo %f\n", sizeX);
-		//0.02
-		float xs = ds->sizeX;// * ds->ratioX;
-		float ys = ds->sizeY;/// * ds->ratioY;
-		float pooX = 0.5;//0.5;
-		if (ds->dimensionX % 2 != 0) {
-			pooX = 0;
-			//ds->buffX = 1;//-1;//0.25;
-		} else {
-			ds->buffX = 0;
-		}
-		if (ds->dimensionY % 2 != 0) {
-			ds->buffY = 0;//0.5;
-		} else {
-			ds->buffY = 1;
-		}
-		//float spx = ds->buffX * (xs);//-1;
-		//float spy = ds->buffY * (ys);//0;//-1;
-		float startX = -1 + (xs * 0.5);// + (xs * pooX);//((xs / 2) * pooX); // - spx;// - xs/2;//-0.995;
-		float startY = -1 + (ys * 0.5);// + ((ys / 2) * ds->buffY);// - spy;// - ys/2;//-0.995;
-		//printf("starting indexes %f, %f\n", spx, spy);
-		/*
-		if (ds->dimensionX >= ds->maxX) {
-			startX = -1;
-			spx = 0;
-		}
-		if (ds->dimensionY >= ds->maxY) {
-			startY = -1;
-			spy = 0;
-		}
-		*/
-		//printf("initializing frame size of %i buffer of %i\n", ds->dimensionX, ds->buffX);
+		double startX = -1 + (ds->sizeX * 0.5);
+		double startY = -1 + (ds->sizeY * 0.5);		
 		for (int y = 0; y < ds->dimensionY; y++) {
 			for (int x = 0; x < ds->dimensionX; x++) {
-		//for (int y = -ds->buffY/2; y < ds->dimensionY + ds->buffY/2; y++) {
-			//for (int x = -ds->buffX/2; x < ds->dimensionX + ds->buffX/2; x++) {
-				(ds->data)[index++]	= startX + (xs * x);
-				(ds->data)[index++]	= startY + (ys * y);
+				(ds->data)[index++]	= startX + (ds->sizeX * x);
+				(ds->data)[index++]	= startY + (ds->sizeY * y);
 				for (int i = 0; i < ds->stride-2; i++) {
 					(ds->data)[index++] = 1;	
 				}
 
 			}
 		}
-		/*
-		for (int y = -ds->dimensionY; y < ds->dimensionY; y+=2) {//screenPortion) { 
-			for (int x = -ds->dimensionX; x < ds->dimensionX; x+=2) {//screenPortion) {
-				(ds->data)[index++]	= (sizeX/2) + (((float)x / ds->dimensionX) * ds->ratioX);
-				(ds->data)[index++]	= (sizeY/2) + (((float)y / ds->dimensionY) * ds->ratioY);
-				for (int i = 0; i < ds->stride-2; i++) {
-					(ds->data)[index++] = 1;	
-				}
-			}
-		}
-	*/
 	}
 }
 
@@ -201,12 +108,12 @@ void setScreenVBO(DrawScreen *ds) {
 }
 
 
-void resizeTileSet(TileSet *t, int newSizeX, int newSizeY, bool bufferX, bool bufferY) {
+void resizeTileSet(TileSet *t, int newSizeX, int newSizeY) {
 	//printf("resizing tile set %i\n", bufferX);
-	sizeDrawScreen(t->trans, newSizeX, newSizeY, false, bufferX, bufferY);
-	sizeDrawScreen(t->rot, newSizeX, newSizeY, true, bufferX, bufferY);
-	sizeDrawScreen(t->color, newSizeX, newSizeY, true, bufferX, bufferY);
-	sizeDrawScreen(t->texture, newSizeX, newSizeY, true, bufferX, bufferY);
+	sizeDrawScreen(t->trans, newSizeX, newSizeY, false);
+	sizeDrawScreen(t->rot, newSizeX, newSizeY, true);
+	sizeDrawScreen(t->color, newSizeX, newSizeY, true);
+	sizeDrawScreen(t->texture, newSizeX, newSizeY, true);
 }
 
 void setTileSize(TileSet *t, float sizeX, float sizeY) {

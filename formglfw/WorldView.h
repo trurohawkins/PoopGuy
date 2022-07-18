@@ -11,18 +11,22 @@ typedef struct WorldView {
 	//int defaultFrameY;
 	int buffX;
 	int buffY;
-	float objSX;
-	float objSY;
+	double objSX;
+	double objSY;
 	float frameDest;
 	float cenDestX;
 	float cenDestY;
 	float moveSpeed;
 	float zoomSpeed;
 	Camera *cam;
+	Anim *background;
 } WorldView;
 
 WorldView *makeWorldView(int scale);
 void initWorldView(int x, int y);
+void wvMakeBackground(WorldView *wv, char *image);
+Anim *wvChangeBackground(WorldView *wv, Anim *bg);
+void wvDrawBackground(WorldView *wv, float *matrix); 
 WorldView *getDefaultView();
 //void setCenter(WorldView *c, float cp[2]);
 void resizeScreen();
