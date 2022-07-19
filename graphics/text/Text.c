@@ -31,7 +31,7 @@ void initText() {
 	//glUniformMatrix4fv(glGetUniformLocation(textShader, "projection"), 1, GL_FALSE, projection);
 	glUniform4f(glGetUniformLocation(textShader, "textColor"), 0.5, 0.8, 0.2, 0.5);
 	screenVolume = screen->width * screen->height;
-	setOrtho(1);
+	setTextOrtho(screen);
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft)) {
 		printf("Freetype error couldnt init\n");
@@ -138,10 +138,10 @@ void setTextDrawColor(float *col) {
 }
 
 //called for resizing operations
-void setOrtho(float screenScale) {//float left, float right, float bottom, float top, float near, float far) {
+void setTextOrtho(Screen *screen) {//float screenScale) {//float left, float right, float bottom, float top, float near, float far) {
 	GLuint textShader = getSP(3);
 	glUseProgram(textShader);
-	Screen *screen = getWindow();
+	//Screen *screen = getWindow();
 	/*
 	float newVolume = (screen->width * screen->height);
 	if (screenVolume == 0) {
@@ -161,8 +161,8 @@ void setOrtho(float screenScale) {//float left, float right, float bottom, float
 	}
 	*/
 	// not changing screenscale, so that text is the same size noi matter what the screen size iss	
-	screenScaleX = 1;//screenScale;///= 2;// screenScale;
-	screenScaleY = 1;//screenScale;///= 2;//screenScale;
+	screenScaleX = screen->scale;///= 2;// screenScale;
+	screenScaleY = screen->scale;///= 2;//screenScale;
 	//printf("%f, %f\n", screenScaleX, screenScaleY);
 	mat4 dest;
 	glm_ortho(0, screen->width, 0, screen->height, 0, 1000, dest);

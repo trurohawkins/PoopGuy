@@ -35,7 +35,7 @@ textCharacter *makeTextCharacter(unsigned int texture, int xs, int ys, int xb, i
 void initText();
 void renderText(char *string, float x, float y, float scale);
 void setTextDrawColor(float *col);
-void setOrtho(float screenScale);
+void setTextOrtho(Screen *screen);
 void drawText(Text *t, float x, float y);
 Text *makeText(char *str, float scale, bool centered, float r, float g, float b, float a);
 void setTextText(Text *t, char *str);

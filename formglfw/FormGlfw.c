@@ -28,9 +28,9 @@ char *fileName = 0;
 int mainMenu() {
 	Screen *screen = getWindow();
 	Menu *startMenu = makeMenu(1000);
-	Camera *menuCam = makeCamera();
-	int buttSizeX = 100;
-	int buttSizeY = 70;
+	cam = getDefaultView();
+	int buttSizeX = 1;
+	int buttSizeY = 1;
 	float textSize = 0.5;
 	Button *loadButt = makeButton("resources/button.png", 0, 2, 1, loadGame);
 	setScale(loadButt->graphics->a, buttSizeX, buttSizeY);
@@ -68,7 +68,7 @@ int mainMenu() {
 		processKeys();
 		glClearColor(0.1, 0.1, 0.1, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		drawPause();
+		drawActiveMenu();
 		updateMenu();
 		renderTextInput();
 		if (fileVal == 1) {
@@ -216,7 +216,7 @@ void updateLoop() {
 		} else {
 			glClearColor(0.1, 0.1, 0.1, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			drawPause();
+			drawActiveMenu();
 			updateMenu();
 			renderTextInput();
 			if (fileVal == 1) {

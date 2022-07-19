@@ -69,8 +69,9 @@ void freeFG();
 void initPauseUI();
 void addPauseUI(UI *ui);
 void removePauseUI(UI *ui);
-void drawPause();
+void drawActiveMenu();
 void updateMenu();
 void freePause();
 void tmpButtFunc();
+void setUIOrtho(float n_scale);
 #endif

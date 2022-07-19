@@ -15,8 +15,9 @@ int main(int argc, char **argv) {
 	initDirections();
 	int worldY = 100;
 	int worldX = 100; 
-	int windowX = 100;
-	int windowY = 100;
+	// 0 means use monitors x and y and start in full screen mode
+	int windowX = 0;//960;
+	int windowY = 0;//640;
 	int frameX = 4;
 	int frameY = 4;
 /*
@@ -46,6 +47,11 @@ int main(int argc, char **argv) {
 	makePlayerManager();
 	makeAnimList();
 	initTileSets();
+	Camera *defCam = makeCamera();
+	setCamera(defCam);
+	free(defCam);
+	Screen *s = getWindow();
+	glfwWindowSizeCallback(s->window, s->width, s->height);
 
 	initRecipes(3, 10);
 	addRecipe(makePoopPlayer, savePoopPlayer, 0);

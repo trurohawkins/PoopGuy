@@ -2,6 +2,7 @@ linkedList *BG;
 linkedList *FG;
 linkedList *pauseScreen;
 Menu *curMenu;
+float scale;
 
 void drawGround(linkedList *ground) {
 	linkedList *cur = ground;
@@ -109,13 +110,9 @@ void drawUI(UI *ui) {
 	};
 	Screen *s = getWindow();
 	glUseProgram(getSP(1));
-	float xSize = ui->xSize;
-	float ySize = ui->ySize;
-	float xRatio = 2.0f / s->width;//(float)s->frameX / s->frame;//(float)scr->width / 10000;
-	float yRatio =  2.0f / s->height;//(float)s->frameY / s->frame;//(float)scr->height /10000;
-	//printf("UI size %f, %f, ratio: %f, %f\n", ui->xSize, ui->ySize, xRatio, yRatio);
-	//printf("drawing UI as %f, %f\n", xRatio, yRatio);
-	drawUIAnim(ui->a, matrix, xRatio, yRatio, ui->xp, ui->yp);
+	float xSize = ui->xSize * s->yRatio;// * scale;
+	float ySize = ui->ySize * s->xRatio;// * scale;
+	drawUIAnim(ui->a, matrix, xSize, ySize, ui->xp, ui->yp);
 	if (ui->text) {
 		float xp = ((1 + ui->xp + ui->text->xOffset)/2) * s->width ;//(-0.5 * s->width) + (ui->xp  * s->width);
 		float yp = ((1 + ui->yp + ui->text->yOffset)/2) * s->height;
@@ -403,7 +400,7 @@ void removePauseUI(UI *ui) {
 	removeFromList(&pauseScreen, (void*)ui);
 }
 
-void drawPause() {
+void drawActiveMenu() {
 	drawGround(pauseScreen);
 }
 
@@ -416,4 +413,8 @@ void tmpButtFunc() {
 	glfwSetWindowShouldClose(screen->window, 1);
 	
 	//printf("butt has been pressed\n");
+}
+
+void setUIOrtho(float n_scale) {
+	scale = n_scale;
 }

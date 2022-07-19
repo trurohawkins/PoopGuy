@@ -5,6 +5,18 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 //#include<GL/gl.h>
+
+typedef struct Screen {
+	GLFWwindow *window;
+	int width;
+	int height;
+	double xRatio;
+	double yRatio;
+	int aspectRatioX;
+	int aspectRatioY;
+	int frame;
+	float scale;
+} Screen;
 #include <stdio.h>
 
 #include "shaders/Shaders.h"
@@ -14,20 +26,10 @@
 #include "Camera.h"
 #include "../helper/helper.h"
 
-typedef struct Screen {
-	GLFWwindow *window;
-	float width;
-	float height;
-	double xRatio;
-	double yRatio;
-	int aspectRatioX;
-	int aspectRatioY;
-	int frame;
-} Screen;
-
 int initializeGLFW(int windowX, int windowY);
 void glfwWindowSizeCallback(GLFWwindow *window, int width, int height);
 void sizeScreen(int newFrame);
+void setOrtho(float scale);
 void setScreenMax(int max);
 void setAspectRatio(int x, int y);
 GLuint squareVao2d();

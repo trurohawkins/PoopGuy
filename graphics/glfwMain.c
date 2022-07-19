@@ -2,15 +2,13 @@
 #include "shaders/glslLib.c"
 
 const unsigned int screenWidth = 800*8/5, screenHeight = 450*8/5;
-int aspectRatioX = 0;
-int aspectRatioY = 0;
-//GLFWwindow *window;
 Screen *curScreen;
 GLuint baseShaderProgram;
 GLuint textureShaderProgram;
 GLuint tileShaderProgram;
 GLuint textShaderProgram;
 void (*camFunc)(void) = 0;
+GLFWmonitor *cur;
 
 int initializeGLFW(int windowX, int windowY) {
 	if (!glfwInit()) {
@@ -28,7 +26,16 @@ int initializeGLFW(int windowX, int windowY) {
 	//window = glfwCreateWindow(screenWidth, screenHeight, "poop", glfwGetPrimaryMonitor(), NULL); full screen
 	//window = glfwCreateWindow(screenWidth, screenHeight, "poop", NULL, NULL);
 //	GLFWwindow *window = glfwCreateWindow(screenWidth, screenHeight, "poop", NULL, NULL);
-	GLFWwindow *window = glfwCreateWindow(windowX, windowY, "poop", NULL, NULL);
+	GLFWmonitor *mon = glfwGetPrimaryMonitor();
+	if (windowX == 0 || windowY == 0) {
+		const GLFWvidmode *vid = glfwGetVideoMode(mon);
+		printf("monitor is of size %i x %i\n", vid->width, vid->height);
+		windowX = vid->width;
+		windowY = vid->height;
+	} else {
+		mon = NULL;
+	}
+	GLFWwindow *window = glfwCreateWindow(windowX, windowY, "poop", mon, NULL);
 
 	if (window == NULL) {
 		fprintf(stderr, "ERROR: could not open window with GLFW3\n");
@@ -38,10 +45,14 @@ int initializeGLFW(int windowX, int windowY) {
 		glfwMakeContextCurrent(window);
 		curScreen = (Screen*)calloc(sizeof(Screen), 1);
 		curScreen->window = window;
-		curScreen->width = screenWidth;
-		curScreen->height = screenHeight;
+		curScreen->aspectRatioX = windowX;
+		curScreen->aspectRatioY = windowY;
+		curScreen->scale = 1;
+		glfwGetWindowSize(curScreen->window, &(curScreen->width), &(curScreen->height));
+		/*
 		curScreen->xRatio = 1;
 		curScreen->yRatio = 1;
+		*/
 		//glfwWindowSizeCallback(window, screenWidth, screenHeight);
 		glfwSetWindowSizeCallback(window, glfwWindowSizeCallback);
 	}
@@ -141,12 +152,11 @@ GLuint makeSpriteVao(float sx, float sy) {
 }
 
 void glfwWindowSizeCallback(GLFWwindow *window, int width, int height) {
-	printf("resizing\n");
 	float sx = 0, sy = 0;
 	if (curScreen->aspectRatioX != 0 && curScreen->aspectRatioY != 0) {
 		float w = width;
 		float h = height;
-		printf("%i x %i ", width, height);
+		//printf("%i x %i ", width, height);
 		if (width > height) {
 			while (w > 0) {
 				h = (w * curScreen->aspectRatioY) / curScreen->aspectRatioX;
@@ -168,18 +178,21 @@ void glfwWindowSizeCallback(GLFWwindow *window, int width, int height) {
 			}
 
 		}
-				printf("ratio %i:%i creates %f x %f\n",curScreen->aspectRatioX, curScreen->aspectRatioY, w, h);
+		//printf("ratio %i:%i creates %f x %f\n",curScreen->aspectRatioX, curScreen->aspectRatioY, w, h);
 		sx = (width - w) / 2;
 		sy = (height - h) / 2;
 		width = w;
 		height = h;
 	}
-	float scale = sqrt(width * height) / sqrt(curScreen->width * curScreen->height);
+	//curScreen->scale used to maintain proportions when shifting back and fourth between sizes
+	curScreen->scale = sqrt(width * height) / sqrt(curScreen->width * curScreen->height) * curScreen->scale;
 	curScreen->width = width;
 	curScreen->height = height;
 	glViewport(sx, sy, curScreen->width, curScreen->height);
 	sizeScreen(curScreen->frame);
-	setOrtho(scale);//for text rendering
+	setTextOrtho(curScreen);
+	//setUIOrtho(scaleUI);
+	//setOrtho(scale);//for text & UI rendering
 }
 
 void sizeScreen(int frame) {

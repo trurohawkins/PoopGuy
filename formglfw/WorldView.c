@@ -141,18 +141,15 @@ void wvMakeBackground(WorldView *wv, char *image) {
 	World *w = getWorld();
 	char **sprites = makeSheet(image, 1);
 	Anim *bg = makeAnim(sprites, 1, false, 1, 1);//makeAnimSheet(image, 1, 1, 1);
-	int wid = bg->texture->width / 5;
-	int hei = bg->texture->height;
-	int scaleX = 100;//max(w->x * 5, wid) / min(w->x * 5, wid);
-	int scaleY = max(w->y, hei) / min(w->y, hei);
-	printf("scale: %i from world: %i and width %i\n", scaleX, w->x, wid);
 	setScale(bg, w->x, w->y);//scaleX, scaleY);
 	animAddVao(bg, makeSpriteVao(1, 1));
 	wv->background = bg;
 }
 
 Anim *wvChangeBackground(WorldView *wv, Anim *bg) {
+	World *w = getWorld();
 	Anim *tmp = wv->background;
+	setScale(bg, w->x, w->y);//scaleX, scaleY);
 	wv->background = bg;
 	return tmp;
 }
