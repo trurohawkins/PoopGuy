@@ -1,4 +1,4 @@
-CC = gcc -c -g
+CC = gcc -c -g -I/usr/include/freetype2
 LC = gcc -c -g 
 WC = x86_64-w64-mingw32-gcc -c -g
 RELEASELIBS = -l:libglfw3.a -lm -ldl -lpthread -l:libfreetype.a -l:libcglm.a
@@ -36,7 +36,7 @@ libFormGlfw.a: FormGlfw.o Form.o helper.o glfwMain.o Shaders.o Input.o Anim.o Te
 	ar rs libFormGlfw.a FormGlfw.o Form.o helper.o glfwMain.o Shaders.o Input.o Anim.o Text.o Camera.o
 
 FormGlfw.o: $(GF)FormGlfw.c $(GF)FormGlfw.h $(GF)Player.c $(GF)Player.h $(GF)poopPlayer.c $(GF)poopPlayer.h $(GF)PlayerManager.h $(GF)PlayerManager.c $(AD)Cloud.c $(AD)Cloud.h $(GF)DrawWorld.c $(GF)DrawWorld.h $(GF)WorldView.c $(GF)WorldView.h $(GF)god.h $(GF)god.c
-	$(CC) $(GF)FormGlfw.c
+	$(CC) -I/usr/include/freetype2 $(GF)FormGlfw.c
 
 libform.a: Form.o helper.o
 	ar rs libform.a Form.o helper.o
